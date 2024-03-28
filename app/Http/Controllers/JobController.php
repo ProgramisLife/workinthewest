@@ -87,7 +87,7 @@ class JobController extends Controller
      */
     public function store(JobRequest $jobrequest)
     {
-        $job = Job::create($jobrequest->validated());
+        dd($jobrequest);
         $validatedData = $jobrequest->validated();
         $job = new Job($validatedData);
 

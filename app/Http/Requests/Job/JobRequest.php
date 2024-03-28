@@ -62,6 +62,7 @@ class JobRequest extends FormRequest
             ],
 
             'deadline' => 'required|date_format:d-m-Y',
+
         ];
     }
 }
