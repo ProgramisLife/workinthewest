@@ -87,7 +87,7 @@ class JobController extends Controller
      */
     public function store(JobRequest $jobrequest)
     {
-        dd($jobrequest);
+        $jobrequest->merge(['expired' => now()->addDays(30)]);
         $validatedData = $jobrequest->validated();
         $job = new Job($validatedData);
 
@@ -128,13 +128,13 @@ class JobController extends Controller
         $job->save();
 
         // Synchronizuj typy pracy
-        $job->jobtype()->sync([$jobrequest->input('type')]);
+        $job->jobtype()->sync($jobrequest->input('type'));
 
         // Synchronizuj języki
-        $job->language()->sync([$jobrequest->input('language')]);
+        $job->language()->sync($jobrequest->input('language'));
 
         // Synchronizuj umiejętności
-        $job->skill()->sync([$jobrequest->input('skills')]);
+        $job->skill()->sync($jobrequest->input('skills'));
 
         // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos', []));

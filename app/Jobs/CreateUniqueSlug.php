@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -13,14 +12,14 @@ class CreateUniqueSlug implements ShouldQueue
 {
     use Dispatchable, SerializesModels;
 
-    protected $job;
+    private $newJob;
 
     /**
      * Create a new job instance.
      */
     public function __construct(Job $job)
     {
-        $this->job = $job;
+        $this->newJob = $job;
     }
 
     /**
@@ -37,18 +36,18 @@ class CreateUniqueSlug implements ShouldQueue
             $slug = "$slug-{$releatedJobs->count()}";
         }
 
-        $this->job->slug = $slug;
+        $this->newJob->slug = $slug;
     }
 
     protected function getCurrentJobSlug()
     {
-        return Str::slug($this->job->title);
+        return Str::slug($this->newJob->title);
     }
 
     protected function getRelatedJobs(string $slug)
     {
         return Job::where('slug', 'LIKE', "$slug%")
-            ->where('id', '<>', $this->job->id)
+            ->where('id', '<>', $this->newJob->id)
             ->get();
     }
 }

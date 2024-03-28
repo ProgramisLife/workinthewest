@@ -37,20 +37,8 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $task = $this->getAuthorizedUser()->tasks()->save(
-            new Article($request->validated())
-        );
 
-        $task->tags()->sync(
-            $request->input('tags', [])
-        );
-
-        return redirect(
-            route(
-                'tasks.show',
-                ['task' => $task]
-            )
-        );
+        return "store";
     }
 
 
