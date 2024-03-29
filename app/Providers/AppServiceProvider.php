@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->observeModels();
+        //$this->observeModels();
     }
 
     protected function observeModels()

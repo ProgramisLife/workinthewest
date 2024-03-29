@@ -208,7 +208,7 @@
         <input type="hidden" name="featured" value="false">
 
         <!-- Data wygaśnięcia -->
-        <input type="hidden" name="expiry" value="{{ $expired }}" />
+        <input type="hidden" name="expiry" value="{{ $expiry }}" />
 
         @if ($errors->any())
         <div class="alert alert-danger">

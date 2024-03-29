@@ -66,7 +66,7 @@ class JobController extends Controller
         $languages = Language::all();
         $photos = Photo::all();
         $skills = Skill::all();
-        $expired = Carbon::now()->addDays(30)->format('Y-m-d');
+        $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
         return view('jobs.add', [
             'sexOptions' => $sexOptions,
             'jobcategories' => $jobCategories,
@@ -76,7 +76,7 @@ class JobController extends Controller
             'joblanguages' => $languages,
             'jobskills' => $skills,
             'jobphotos' => $photos,
-            'expired' => $expired,
+            'expiry' => $expiry,
         ]);
     }
 
@@ -87,9 +87,9 @@ class JobController extends Controller
      */
     public function store(JobRequest $jobrequest)
     {
-        $jobrequest->merge(['expired' => now()->addDays(30)]);
-        $validatedData = $jobrequest->validated();
-        $job = new Job($validatedData);
+        $randomNumber = rand(1, 100);
+        $job = new Job($jobrequest->validated());
+        $job->slug = $job->title . $randomNumber;
 
         // // Zapisz główne zdjęcie
         // if ($jobrequest->hasFile('photo')) {
@@ -139,7 +139,12 @@ class JobController extends Controller
         // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos', []));
 
-        return redirect()->route('jobs.show', ['job' => $job]);
+        return redirect(
+            route(
+                'jobs.show',
+                ['job' => $job]
+            )
+        );
     }
 
     /**
@@ -150,7 +155,7 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        return view('tasks.show', ['job' => $job]);
+        return view('jobs.show', ['job' => $job]);
     }
 
     /**
