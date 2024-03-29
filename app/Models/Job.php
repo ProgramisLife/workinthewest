@@ -14,9 +14,19 @@ use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
 use App\Models\Shared\Tag;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Job extends Model
 {
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+    use Sluggable;
     /**
      * 
      * Job Model

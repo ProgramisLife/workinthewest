@@ -87,9 +87,8 @@ class JobController extends Controller
      */
     public function store(JobRequest $jobrequest)
     {
-        $randomNumber = rand(1, 100);
         $job = new Job($jobrequest->validated());
-        $job->slug = $job->title . $randomNumber;
+        $job->slug;
 
         // // Zapisz główne zdjęcie
         // if ($jobrequest->hasFile('photo')) {

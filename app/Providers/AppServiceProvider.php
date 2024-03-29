@@ -23,20 +23,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //$this->observeModels();
-    }
-
-    protected function observeModels()
-    {
-        Job::observe(
-            JobObserver::class
-        );
-    }
-
-    protected function observeModelsArticles()
-    {
-        Article::observe(
-            ArticleObserver::class
-        );
     }
 }

@@ -44,7 +44,7 @@
 
 <div class="container">
     <div class="row py-5">
-        <div class="col-lg-10 offset-lg-1">
+        <div class="col-lg-10 offset-1">
             <div class="row">
                 <ul class="nav nav-pills nav-justified my-3 justify-content-center" id="pills-tab">
                     <li class="nav-item">
@@ -60,9 +60,9 @@
                 </ul>
                 <div class="row">
                     <div class="tab-content my-3">
-                        <div class="tab-pane fade" id="newjob">
+                        <div class="tab-pane fade show active" id="newjob">
                             @forelse($data['jobs']['newJobs'] as $newJob)
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <div class="card my-2 mx-1">
                                     <div class="card-body card-body d-flex flex-column">
                                         <div class="d-flex justify-content-between align-items-center">
@@ -89,7 +89,7 @@
                         </div>
 
                         <div class="tab-content my-3">
-                            <div class="tab-pane fade show active" id="featuredjobs">
+                            <div class="tab-pane fade" id="featuredjobs">
                                 <div class="row">
                                     @forelse($data['jobs']['featuredJobs'] as $job)
                                     <div class="col-md-6">
