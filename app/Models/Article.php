@@ -5,9 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Article extends Model
 {
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+    use Sluggable;
     /**
      * 
      * Article Model
@@ -28,6 +38,11 @@ class Article extends Model
 
     protected $atributes = [
         'description' => '',
+    ];
+
+    protected $fillable = [
+        'title', 'description', 'slug', 'owner_id', 'main_image_path', 'source', 'youtube', 'facebook', 'vimeo',
+        'x', 'linkedin'
     ];
 
     public function getRouteKeyName()

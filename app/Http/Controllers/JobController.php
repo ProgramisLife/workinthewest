@@ -14,6 +14,7 @@ use App\Models\Shared\JobType;
 use App\Models\Shared\Language;
 use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
+use Exception;
 
 class JobController extends Controller
 {
@@ -90,30 +91,20 @@ class JobController extends Controller
         $job = new Job($jobrequest->validated());
         $job->slug;
 
-        // // Zapisz główne zdjęcie
-        // if ($jobrequest->hasFile('photo')) {
-        //     $imageName = time() . '.' . $jobrequest->photo->extension();
-        //     $jobrequest->photo->move(public_path('image'), $imageName);
-        //     $job->main_image_path = $imageName;
-        // }
+        // Zapisz główne zdjęcie
+        if ($jobrequest->hasFile('photo')) {
+            $photo = $jobrequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/jobs/main-photo'), $job->id . $imageName);
+                $job->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nie prawidłowe zdjęcie');
+            }
+        }
 
 
-        // // Zapisz dodatkowe zdjęcia
-        // if ($jobrequest->hasFile('photos')) {
-        //     foreach ($jobrequest->file('photos') as $photo) {
-        //         $imageName = time() . '_' . $photo->getClientOriginalName();
-        //         $photo->move(public_path() . '/images/', $job->id . $imageName);
-
-        //         // Stwórz nowy obiekt Photo i zapisz nazwę zdjęcia
-        //         $newPhoto = new Photo();
-        //         $newPhoto->image_path = $imageName;
-
-        //         $newPhoto->save();
-
-        //         // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
-        //         $job->photos()->attach($newPhoto->id);
-        //     }
-        // }
 
         // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
@@ -126,6 +117,22 @@ class JobController extends Controller
 
         $job->save();
 
+        // Zapisz dodatkowe zdjęcia
+        if ($jobrequest->hasFile('photos')) {
+            foreach ($jobrequest->file('photos') as $photo) {
+                $imageName = time() . '_' . $photo->getClientOriginalName();
+                $photo->move(public_path('images/jobs/photos'), $imageName);
+
+                // Stwórz nowy obiekt Photo i zapisz nazwę zdjęcia
+                $newPhoto = new Photo();
+                $newPhoto->photo = $imageName;
+                $newPhoto->save(); // Najpierw zapisz nowe zdjęcie
+
+                // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
+                $job->photos()->attach($newPhoto->id);
+            }
+        }
+
         // Synchronizuj typy pracy
         $job->jobtype()->sync($jobrequest->input('type'));
 
@@ -135,8 +142,8 @@ class JobController extends Controller
         // Synchronizuj umiejętności
         $job->skill()->sync($jobrequest->input('skills'));
 
-        // Synchronizuj dodatkowe zdjęcia
-        $job->photos()->sync($jobrequest->input('photos', []));
+        // // Synchronizuj dodatkowe zdjęcia
+        // $job->photos()->sync($jobrequest->input('photos', []));
 
         return redirect(
             route(
@@ -176,9 +183,38 @@ class JobController extends Controller
      * @param Job $job
      * @return void
      */
-    public function update(JobRequest $request, Job $job)
+    public function update(JobRequest $jobrequest, Job $job)
     {
-        return "Update job";
+        // Powiąż kategorię pracy
+        $job->jobcategory()->associate($jobrequest->input('category'));
+
+        // Powiąż poziom pracy
+        $job->joblevel()->associate($jobrequest->input('level'));
+
+        // Powiąż walutę
+        $job->currency()->associate($jobrequest->input('currency'));
+
+        // Synchronizuj typy pracy
+        $job->jobtype()->sync($jobrequest->input('type'));
+
+        // Synchronizuj języki
+        $job->language()->sync($jobrequest->input('language'));
+
+        // Synchronizuj umiejętności
+        $job->skill()->sync($jobrequest->input('skills'));
+
+        if ($job->update($jobrequest->validated())) {
+            session()->flash('status', ('Twoja oferta pracy został pomyślnie zmieniona'));
+        } else {
+            session()->flash('status', ('Coś poszło nie tak :('));
+        }
+
+        return redirect(
+            route(
+                'job.show',
+                ['job' => $job]
+            )
+        );
     }
 
     /**
@@ -189,7 +225,15 @@ class JobController extends Controller
      */
     public function delete(JobRequest $request, Job $job)
     {
-        return 'delete job';
+        if ($job->delete()) {
+            session()->flash('status', 'Twoja oferta pracy została usunięta.');
+        } else {
+            session()->flash('status', 'Wystąpił błąd podczas usuwania Twojej oferty pracy :(');
+        }
+
+        return redirect(
+            route('jobs.index')
+        );
     }
 
     /**

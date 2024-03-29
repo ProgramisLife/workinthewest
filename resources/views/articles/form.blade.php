@@ -16,7 +16,7 @@
             </div>
 
             <div class="form-group">
-                <label for="photo">Wgraj zdjęcie profilowe do twojej pracy:</label>
+                <label for="photo">Wgraj zdjęcie profilowe do twojego artykułu:</label>
                 <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
             </div>
 
@@ -110,7 +110,6 @@
                 </div>
                 @enderror
             </div>
-
 
             <button type="submit" class="btn btn-primary my-3 d-block">
                 {{ $submitBtnText }}

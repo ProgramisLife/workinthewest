@@ -41,7 +41,6 @@
 
 
 
-
 <div class="container">
     <div class="row py-5">
         <div class="col-lg-10 offset-1">
@@ -61,64 +60,93 @@
                 <div class="row">
                     <div class="tab-content my-3">
                         <div class="tab-pane fade show active" id="newjob">
-                            @forelse($data['jobs']['newJobs'] as $newJob)
-                            <div class="col-md-5">
-                                <div class="card my-2 mx-1">
-                                    <div class="card-body card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h3 class="card-title d-inline-block">{{ Str::limit($newJob->title, 75) }}</h3>
-                                            <a class="btn btn-primary" href="#" role="button">Freelancer</a>
-                                        </div>
-                                        <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
-                                        <p class="card-text">{{ Str::limit($newJob->description, 100) }}</p>
-                                        @if(isset($newJob->salary_from) || isset($newJob->salary_to))
-                                        <p class="card-text">{{ $newJob->salary_from }} - {{ $newJob->salary_to }} {{ 'PLN' }}</p>
-                                        @else
-                                        <p class="card-text">do negocjacji</p>
-                                        @endif
-                                        <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
-                                        <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $newJob->created_at->year }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <div class="col-sm-12">
-                                <p>{{ $data['label']['empty'] }}</p>
-                            </div>
-                            @endforelse
-                        </div>
-
-                        <div class="tab-content my-3">
-                            <div class="tab-pane fade" id="featuredjobs">
-                                <div class="row">
-                                    @forelse($data['jobs']['featuredJobs'] as $job)
-                                    <div class="col-md-6">
-                                        <div class="card my-2 mx-1 d-flex">
-                                            <div class="card-body">
+                            <div class="row">
+                                @forelse($data['jobs']['newJobs'] as $newJob)
+                                <div class="col-md-6">
+                                    <a href="{{ route('jobs.show', ['job' => $newJob]) }}">
+                                        <div class="card my-2 mx-2">
+                                            <div class="card-body card-body d-flex flex-column">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h3 class="card-title d-inline-block">{{ Str::limit($job->title, 50) }}</h3>
-                                                    <button type="button" class="btn btn-primary">FreeLancer</button>
+                                                    <h3 class="card-title d-inline-block">{{ Str::limit($newJob->title, 25) }}</h3>
+                                                    <a class="btn btn-primary" href="#" role="button">Freelancer</a>
                                                 </div>
-                                                <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
-                                                <p class="card-text">{{ Str::limit($job->description, 75) }}</p>
-                                                @if(isset($job->salary_from) || isset($job->salary_to))
-                                                <p class="card-text">{{ $job->salary_from }} - {{ $job->salary_to }} {{ 'PLN' }}</p>
-                                                @else
-                                                <p class="card-text">do negocjacji</p>
-                                                @endif
-                                                <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
-                                                <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $job->created_at->year }}</p>
+                                                <div class="d-flex flex-row align-items-center">
+                                                    @if($newJob->main_image_path)
+                                                    <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/main-photo/' . $newJob->main_image_path)}}" alt="Card image cap">
+                                                    @else
+                                                    <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
+                                                    @endif
+
+                                                    <div class="mx-3">
+                                                        <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
+                                                        <p class="card-text">{{ Str::limit($newJob->description, 50) }}</p>
+                                                        @if(isset($newJob->salary_from) || isset($newJob->salary_to))
+                                                        <p class="card-text">{{ $newJob->salary_from }} - {{ $newJob->salary_to }} {{ 'PLN' }}</p>
+                                                        @else
+                                                        <p class="card-text">do negocjacji</p>
+                                                        @endif
+                                                        <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
+                                                        <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $newJob->created_at->year }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </a>
+                                </div>
+                                @empty
+                                <div class="col-sm-12">
+                                    <p>{{ $data['label']['empty'] }}</p>
+                                </div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="tab-content my-3">
+                                <div class="tab-pane fade" id="featuredjobs">
+                                    <div class="row">
+                                        @forelse($data['jobs']['featuredJobs'] as $job)
+                                        <div class="col-md-6">
+                                            <a href="{{ route('jobs.show', ['job' => $newJob]) }}">
+                                                <div class="card my-2 mx-2">
+                                                    <div class="card-body card-body d-flex flex-column">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <h3 class="card-title d-inline-block">{{ Str::limit($job->title, 50) }}</h3>
+                                                            <button type="button" class="btn btn-primary">FreeLancer</button>
+                                                        </div>
+                                                        <div class="d-flex flex-row align-items-center">
+                                                            @if($newJob->main_image_path)
+                                                            <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/main-photo/' . $newJob->main_image_path)}}" alt="Card image cap">
+                                                            @else
+                                                            <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
+                                                            @endif
+                                                            <div class="mx-3">
+                                                                <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
+                                                                <p class="card-text">{{ Str::limit($job->description, 75) }}</p>
+                                                                @if(isset($job->salary_from) || isset($job->salary_to))
+                                                                <p class="card-text">{{ $job->salary_from }} - {{ $job->salary_to }} {{ 'PLN' }}</p>
+                                                                @else
+                                                                <p class="card-text">do negocjacji</p>
+                                                                @endif
+                                                                <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
+                                                                <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $job->created_at->year }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        @empty
+                                        <div class="col-sm-12">
+                                            <p>{{ $data['label']['empty'] }}</p>
+                                        </div>
+                                        @endforelse
                                     </div>
-                                    @empty
-                                    <div class="col-sm-12">
-                                        <p>{{ $data['label']['empty'] }}</p>
-                                    </div>
-                                    @endforelse
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -173,7 +201,7 @@
 <h1 class="text-center py-5">{{$data['label']['news']}}</h1>
 <p class="text-center">{{$data['label']['news-content']}}</p>
 
-<div class="container cold-md-12">
+<div class="cold-md-12">
     <div class="row mx-5 my-5">
         @forelse($newArticles as $article)
         <div class="cold-md-4 mx-3">
@@ -183,7 +211,7 @@
                     <h5 class="card-title">{{ Str::limit($article->title, 50) }}</h5>
                     <p class="card-text">{{ Str::limit($article->description, 75) }}</p>
                     <div class="d-flex justify-content-end">
-                        <a href="" class="btn btn-primary text-light">
+                        <a href="{{ route('articles.show', ['article' => $article]) }}" class="btn btn-primary text-light">
                             Czytaj dalej <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
@@ -197,9 +225,4 @@
         @endforelse
     </div>
 </div>
-
-
-
-
-
 @endsection
