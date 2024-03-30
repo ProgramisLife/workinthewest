@@ -17,7 +17,7 @@
                             <a class="nav-link text-light" href="{{ route('jobs.index') }}">STRONA GŁÓWNA</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#">STREFA PRACODAWCY</a>
+                            <a class="nav-link text-light" href="{{ route('jobs.search') }}">STREFA PRACODAWCY</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" href="#">STREFA PRACOWNIKA</a>

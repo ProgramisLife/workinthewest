@@ -244,6 +244,26 @@ class JobController extends Controller
      */
     public function search(Request $request, Job $job)
     {
-        return 'search';
+        $keyword = $request->input('keyword');
+        $localisation = $request->input('localisation');
+        $category = $request->input('category');
+
+        if (!is_null($keyword)) {
+            $results = Job::where('title', 'like', "%$keyword%")
+                ->orWhere('localisation', 'like', "%$keyword%")
+                ->orWhere('category', 'like', "%$keyword%")
+                ->get();
+        } else if (!is_null($localisation)) {
+            $results = Job::where('title', 'like', "%$keyword%")->get();
+        } else if (!is_null($category)) {
+            //$results = Job::where($job->jobcategory->category, 'like', "%$keyword%")->get();
+            $results = Job::whereHas('jobcategory', function ($query) use ($category) {
+                $query->where('category', 'like', "%$category%");
+            })->get();
+        }
+
+
+
+        return view('jobs.search', ['results' => $results]);
     }
 }

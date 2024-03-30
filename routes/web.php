@@ -28,6 +28,8 @@ Route::prefix('/jobs')->group(function () {
 
     Route::post('/store', [JobController::class, 'store'])->name('jobs.store'); // Zapisujemy pracę
 
+    Route::match(['get', 'post'], '/search', [JobController::class, 'search'])->name('jobs.search'); // Wszukiwarka ?
+
     Route::get('/{job}', [JobController::class, 'show'])->name('jobs.show'); //Pokazywanie pojedyńczego pracy
 
     Route::get('/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit'); // Edytowanie konkretnej pracy.

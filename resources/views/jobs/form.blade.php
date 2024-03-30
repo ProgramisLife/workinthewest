@@ -76,11 +76,11 @@
         <!-- Wynagrodzenie od -->
         <div class="d-flex justify-content-between">
             <div class="col-6 mx-1 form-group d-inline-block my-3">
-                <label class="text-uppercase" for="salary-from">
+                <label class="text-uppercase" for="salary_from">
                     wynagrodzenie od
                 </label>
-                <input type="text" class="form-control @error('salary-from') is-invalid @enderror" id="salary-from" name="salary-from" placeholder="4000" value="{{ $salaryFromValue }}">
-                @error('salary-from')
+                <input type="text" class="form-control @error('salary_from') is-invalid @enderror" id="salary_from" name="salary_from" placeholder="4000" value="{{ $salaryFromValue }}">
+                @error('salary_from')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
@@ -89,11 +89,11 @@
 
             <!-- Wynagrodzenie do -->
             <div class="col-6 form-group mx-1 my-3 d-inline-block">
-                <label class="text-uppercase" for="salary-to">
+                <label class="text-uppercase" for="salary_to">
                     wynagrodzenie do
                 </label>
-                <input type="text" class="form-control @error('salary-to') is-invalid @enderror" id="salary-to" name="salary-to" placeholder="10000" value="{{ $salaryToValue }}">
-                @error('salary-to')
+                <input type="text" class="form-control @error('salary_to') is-invalid @enderror" id="salary_to" name="salary_to" placeholder="10000" value="{{ $salaryToValue }}">
+                @error('salary_to')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>

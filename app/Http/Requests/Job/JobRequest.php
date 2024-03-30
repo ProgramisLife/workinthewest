@@ -22,8 +22,8 @@ class JobRequest extends FormRequest
             'main_image_path' => 'nullable|image|mimes:jpeg,png|max:1',
             'description'   => 'required|string|min:5',
 
-            'salary_from' => 'nullable|numeric|min:1|lt:salary_to',
-            'salary_to' => 'nullable|numeric|gt:salary_from',
+            'salary_from' => 'nullable|integer|min:1|lt:salary_to',
+            'salary_to' => 'nullable|integer|gt:salary_from',
 
             'email' => 'required|email',
 
@@ -61,6 +61,9 @@ class JobRequest extends FormRequest
                 'max:2048'
             ],
             'expiry' => 'date',
+
+            'sex' => ['required', Rule::in(['Mężczyzna', 'Kobieta', 'Inne'])],
+
             'deadline' => 'required|date_format:d-m-Y',
         ];
     }
