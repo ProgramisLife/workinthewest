@@ -28,11 +28,11 @@
                         <label class="text-uppercase py-1" for="category">
                             branża ?
                         </label>
-                        <select class="form-select">
+                        <select class="form-select" name="category">
                             <option value="" selected>Wybierz kategorię</option>
-                            @foreach($data['categories'] as $jobcategory)
-                            <option value="{{$jobcategory->id}}" @if($jobcategory->id == old('jobcategory')) selected @endif>
-                                {{$jobcategory->category}}
+                            @foreach($data['categories'] as $category)
+                            <option value="{{$category->category}}" @if($category->id == old('category', $category)) selected @endif> <!-- Użyj 'category' zamiast 'jobcategory' -->
+                                {{$category->category}}
                             </option>
                             @endforeach
                         </select>

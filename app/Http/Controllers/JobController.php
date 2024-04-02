@@ -271,15 +271,8 @@ class JobController extends Controller
         if (!is_null($keyword)) {
             if (is_numeric($keyword)) {
                 $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', "%$keyword%")
-                        ->orWhere('salary_from', '<=', $keyword)
-                        ->orWhere('salary_to', '>=', $keyword)
-                        ->orWhereHas('joblevel', function ($query) use ($keyword) {
-                            $query->where('level', 'like', "%$keyword%");
-                        })
-                        ->orWhereHas('skill', function ($query) use ($keyword) {
-                            $query->where('skill', 'like', "%$keyword%");
-                        });
+                    $query->where('salary_from', '<=', $keyword)
+                        ->orWhere('salary_to', '>=', $keyword);
                 });
             } else {
                 $query->where('title', 'like', "%$keyword%")
