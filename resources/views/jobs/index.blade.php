@@ -28,7 +28,19 @@
                         <label class="text-uppercase py-1" for="category">
                             branża ?
                         </label>
-                        <input type="text" class="form-control inline-block @error('category') is-invalid @enderror" id="category" placeholder="Wpisz kategorię">
+                        <select class="form-select">
+                            <option value="" selected>Wybierz kategorię</option>
+                            @foreach($data['categories'] as $jobcategory)
+                            <option value="{{$jobcategory->id}}" @if($jobcategory->id == old('jobcategory')) selected @endif>
+                                {{$jobcategory->category}}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('category')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div>
                     <button type="submit" class="btn btn-search btn-primary"><i class="bi d-flex justify-content-center bi-arrow-right-short"></i></button>
                     @method('POST')
@@ -38,8 +50,6 @@
         </div>
     </div>
 </div>
-
-
 
 <div class="container">
     <div class="row py-5">
@@ -143,8 +153,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

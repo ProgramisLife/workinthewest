@@ -26,6 +26,8 @@ class JobController extends Controller
      */
     public function index()
     {
+        $jobCategories = JobCategory::all();
+
         $newJobs = Job::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
 
         $featuredJobs = Job::where('featured', true)->paginate(self::JOBS_PER_PAGE);
@@ -43,7 +45,8 @@ class JobController extends Controller
                 'news' => 'Centrum Aktualności',
                 'news-content' => 'Tutaj możesz śledzić najnowsze newsy z świata pracy.',
                 'articles' => 'Brak artykułów do wyświetlenia.',
-            ]
+            ],
+            'categories' => $jobCategories,
         ];
         return view('jobs.index', [
             'data' => $data,
@@ -242,28 +245,68 @@ class JobController extends Controller
      * @param Job $job
      * @return void
      */
-    public function search(Request $request, Job $job)
+    public function search(Request $request)
     {
+        // Parametry wyszukiwania
         $keyword = $request->input('keyword');
         $localisation = $request->input('localisation');
         $category = $request->input('category');
 
-        if (!is_null($keyword)) {
-            $results = Job::where('title', 'like', "%$keyword%")
-                ->orWhere('localisation', 'like', "%$keyword%")
-                ->orWhere('category', 'like', "%$keyword%")
-                ->get();
-        } else if (!is_null($localisation)) {
-            $results = Job::where('title', 'like', "%$keyword%")->get();
-        } else if (!is_null($category)) {
-            //$results = Job::where($job->jobcategory->category, 'like', "%$keyword%")->get();
-            $results = Job::whereHas('jobcategory', function ($query) use ($category) {
-                $query->where('category', 'like', "%$category%");
-            })->get();
+        // Sortowanie
+        $sortBy = $request->input('sorting');
+
+        $query = Job::query();
+
+        if ($sortBy == 'newest') {
+            $query->orderBy('created_at', 'desc');
+        } else if ($sortBy == 'salary') {
+            $query->orderBy('salary_from', 'asc');
+        } else if ($sortBy == 'title') {
+            $query->orderBy('title', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
         }
 
+        // Wyszukiwanie.
+        if (!is_null($keyword)) {
+            if (is_numeric($keyword)) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('title', 'like', "%$keyword%")
+                        ->orWhere('salary_from', '<=', $keyword)
+                        ->orWhere('salary_to', '>=', $keyword)
+                        ->orWhereHas('joblevel', function ($query) use ($keyword) {
+                            $query->where('level', 'like', "%$keyword%");
+                        })
+                        ->orWhereHas('skill', function ($query) use ($keyword) {
+                            $query->where('skill', 'like', "%$keyword%");
+                        });
+                });
+            } else {
+                $query->where('title', 'like', "%$keyword%")
+                    ->orWhereHas('joblevel', function ($query) use ($keyword) {
+                        $query->where('level', 'like', "%$keyword%");
+                    })
+                    ->orWhereHas('skill', function ($query) use ($keyword) {
+                        $query->where('skill', 'like', "%$keyword%");
+                    });
+            }
+        }
+        // Dodawanie warunku dla kategorii
+        else if (!is_null($category)) {
+            $query->whereHas('jobcategory', function ($query) use ($category) {
+                $query->where('category', 'like', "%$category%");
+            });
+        }
 
+        // Wyszukiwanie po lokalizacji
+        // else if (!is_null($localisation)) {
+        //     $results = Job::whereHas('localization', function ($query) use ($localisation) {
+        //         $query->where('lokalization', 'like', "%$localisation%");
+        //     })->get();
+        // }
 
-        return view('jobs.search', ['results' => $results]);
+        $results = $query->paginate(20);
+
+        return view('jobs.search', isset($results) ? ['results' => $results] : []);
     }
 }
