@@ -18,7 +18,9 @@ class ArticleController extends Controller
     {
         $newestArticle = Article::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
 
-        return view('articles.index');
+        $files = ['job.png', 'job2.jpg'];
+
+        return view('articles.index', ['articles' => $newestArticle, 'files' => $files]);
     }
 
     /**
@@ -58,69 +60,32 @@ class ArticleController extends Controller
 
         $article->save();
 
-        return redirect(
-            route(
-                'articles.show',
-                ['article' => $article]
-            )
-        );
+        return redirect()->route('articles.show', ['article' => $article]);
     }
 
-
-    /**
-     * Show single job details.
-     *
-     * @param Job $job
-     * @return void
-     */
     public function show(Article $article)
     {
         return view('articles.show', ['article' => $article]);
     }
 
-    /**
-     * Show edit job form.
-     *
-     * @param Job $job
-     * @return void
-     */
     public function edit(Article $article)
     {
-        return view('articles.edit', [
-            'article' => $article
-        ]);
+        return view('articles.edit', ['article' => $article]);
     }
 
-    /**
-     * Update job.
-     *
-     * @param Job $job
-     * @return void
-     */
-    public function update(Request $request, Article $article)
+    public function update(Article $article)
     {
-        return "Update job";
+        return redirect()->route('articles.show', ['article' => $article]);
     }
 
-    /**
-     * Delete job.
-     *
-     * @param Job $job
-     * @return void
-     */
-    public function delete(Request $request, Article $article)
+    public function delete(Article $article)
     {
-        return 'delete job';
-    }
+        if ($article->delete()) {
+            session()->flash('status', 'Artykuł został usunięty.');
+        } else {
+            session()->flash('status', 'Wystąpił błąd podczas usuwania artykułu :(');
+        }
 
-    /**
-     * Search job.
-     *
-     * @param Job $job
-     * @return void
-     */
-    public function search(Request $request, Article $article)
-    {
-        return 'search';
+        return redirect()->route('articles.index');
     }
 }

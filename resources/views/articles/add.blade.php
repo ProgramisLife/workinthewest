@@ -17,6 +17,7 @@
             'xValue' => old('x'),
             'linkedinValue' => old('linkedin'),
             'submitBtnText' => 'Dodaj nowy artykuł',
+            'method' => 'POST',
             ])
         </div>
     </div>

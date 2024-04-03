@@ -26,13 +26,14 @@ class JobController extends Controller
      */
     public function index()
     {
+        $newArticles = Article::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
+
         $jobCategories = JobCategory::all();
 
         $newJobs = Job::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
 
         $featuredJobs = Job::where('featured', true)->paginate(self::JOBS_PER_PAGE);
 
-        $newArticles = Article::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
 
         $data = [
             'jobs' => [
@@ -84,11 +85,7 @@ class JobController extends Controller
         ]);
     }
 
-    /**
-     * Store new job.
-     *
-     * @return void
-     */
+
     public function store(JobRequest $jobrequest)
     {
         $job = new Job($jobrequest->validated());
@@ -106,8 +103,6 @@ class JobController extends Controller
                 session()->flash('status', 'Nie prawidłowe zdjęcie');
             }
         }
-
-
 
         // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
@@ -156,36 +151,40 @@ class JobController extends Controller
         );
     }
 
-    /**
-     * Show single job details.
-     *
-     * @param Job $job
-     * @return void
-     */
+
     public function show(Job $job)
     {
         return view('jobs.show', ['job' => $job]);
     }
 
-    /**
-     * Show edit job form.
-     *
-     * @param Job $job
-     * @return void
-     */
+
     public function edit(Job $job)
     {
+        $sexOptions = ['Mężczyzna', 'Kobieta', 'Inne'];
+
+        $jobCategories = JobCategory::all();
+        $joblevels = JobLevel::all();
+        $jobtypes = JobType::all();
+        $jobcurrencies = Currency::all();
+        $languages = Language::all();
+        $photos = Photo::all();
+        $skills = Skill::all();
+        $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
         return view('jobs.edit', [
-            'job' => $job
+            'job' => $job,
+            'sexOptions' => $sexOptions,
+            'jobcategories' => $jobCategories,
+            'joblevels' => $joblevels,
+            'jobtypes' => $jobtypes,
+            'jobcurrencies' => $jobcurrencies,
+            'joblanguages' => $languages,
+            'jobskills' => $skills,
+            'jobphotos' => $photos,
+            'expiry' => $expiry,
         ]);
     }
 
-    /**
-     * Update job.
-     *
-     * @param Job $job
-     * @return void
-     */
+
     public function update(JobRequest $jobrequest, Job $job)
     {
         // Powiąż kategorię pracy
@@ -212,21 +211,11 @@ class JobController extends Controller
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect(
-            route(
-                'job.show',
-                ['job' => $job]
-            )
-        );
+        return redirect()->route('jobs.show', ['job' => $job]);
     }
 
-    /**
-     * Delete job.
-     *
-     * @param Job $job
-     * @return void
-     */
-    public function delete(JobRequest $request, Job $job)
+
+    public function delete(Job $job)
     {
         if ($job->delete()) {
             session()->flash('status', 'Twoja oferta pracy została usunięta.');
@@ -234,17 +223,10 @@ class JobController extends Controller
             session()->flash('status', 'Wystąpił błąd podczas usuwania Twojej oferty pracy :(');
         }
 
-        return redirect(
-            route('jobs.index')
-        );
+        return redirect()->route('jobs.index');
     }
 
-    /**
-     * Search job.
-     *
-     * @param Job $job
-     * @return void
-     */
+
     public function search(Request $request)
     {
         // Parametry wyszukiwania
@@ -257,9 +239,7 @@ class JobController extends Controller
 
         $query = Job::query();
 
-        if ($sortBy == 'newest') {
-            $query->orderBy('created_at', 'desc');
-        } else if ($sortBy == 'salary') {
+        if ($sortBy == 'salary') {
             $query->orderBy('salary_from', 'asc');
         } else if ($sortBy == 'title') {
             $query->orderBy('title', 'asc');
@@ -267,14 +247,11 @@ class JobController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        // Wyszukiwanie.
-        if (!is_null($keyword)) {
-            if (is_numeric($keyword)) {
-                $query->where(function ($query) use ($keyword) {
-                    $query->where('salary_from', '<=', $keyword)
-                        ->orWhere('salary_to', '>=', $keyword);
-                });
-            } else {
+        $query->when(!is_null($keyword), function ($query) use ($keyword) {
+            return is_numeric($keyword) ? $query->where(function ($query) use ($keyword) {
+                $query->where('salary_from', '<=', $keyword)
+                    ->orWhere('salary_to', '>=', $keyword);
+            }) : $query->where(function ($query) use ($keyword) {
                 $query->where('title', 'like', "%$keyword%")
                     ->orWhereHas('joblevel', function ($query) use ($keyword) {
                         $query->where('level', 'like', "%$keyword%");
@@ -282,14 +259,13 @@ class JobController extends Controller
                     ->orWhereHas('skill', function ($query) use ($keyword) {
                         $query->where('skill', 'like', "%$keyword%");
                     });
-            }
-        }
-        // Dodawanie warunku dla kategorii
-        else if (!is_null($category)) {
-            $query->whereHas('jobcategory', function ($query) use ($category) {
+            });
+        })->when(!is_null($category), function ($query) use ($category) {
+            return $query->whereHas('jobcategory', function ($query) use ($category) {
                 $query->where('category', 'like', "%$category%");
             });
-        }
+        });
+
 
         // Wyszukiwanie po lokalizacji
         // else if (!is_null($localisation)) {
@@ -298,8 +274,8 @@ class JobController extends Controller
         //     })->get();
         // }
 
-        $results = $query->paginate(20);
+        $jobSearchs = $query->paginate(20);
 
-        return view('jobs.search', isset($results) ? ['results' => $results] : []);
+        return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs] : []);
     }
 }

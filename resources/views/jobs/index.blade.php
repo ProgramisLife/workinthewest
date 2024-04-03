@@ -31,7 +31,7 @@
                         <select class="form-select" name="category">
                             <option value="" selected>Wybierz kategorię</option>
                             @foreach($data['categories'] as $category)
-                            <option value="{{$category->category}}" @if($category->id == old('category', $category)) selected @endif> <!-- Użyj 'category' zamiast 'jobcategory' -->
+                            <option value="{{$category->category}}" @if($category->id == old('category', $category)) selected @endif>
                                 {{$category->category}}
                             </option>
                             @endforeach
@@ -78,7 +78,7 @@
                                             <div class="card-body card-body d-flex flex-column">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <h3 class="card-title d-inline-block">{{ Str::limit($newJob->title, 20) }}</h3>
-                                                    <a class="btn btn-primary" href="#" role="button">{{$newJob->jobtype->first()->type}}</a>
+                                                    <a class="btn btn-primary" href="{{ route('jobs.search', ['results' => $newJob->jobtype->first()->type ]) }}" role="button">{{$newJob->jobtype->first()->type}}</a>
                                                 </div>
                                                 <div class="d-flex flex-row align-items-center">
                                                     @if($newJob->main_image_path)

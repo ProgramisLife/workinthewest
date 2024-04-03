@@ -50,7 +50,7 @@ Route::prefix('/articles')->group(function () {
 
     Route::get('/{article}', [ArticleController::class, 'show'])->name('articles.show'); //Pokazywanie pojedyńczego zadania
 
-    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit'); // Edytowanie konkretnego zadania.
+    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
 
     Route::put('/{article}', [ArticleController::class, 'update'])->name('articles.update');
 

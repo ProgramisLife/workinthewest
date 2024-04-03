@@ -106,7 +106,7 @@
             <label for="language" class="text-uppercase">języki</label>
             <select multiple class="form-control" id="language" name="language[]">
                 @foreach($joblanguages as $language)
-                <option value="{{$language->id}} @if(in_array($language->id, $languageValue)) selected @endif">{{$language->language}}</option>
+                <option value="{{$language->id}}" @if(in_array($language->id, $languageValue)) selected @endif>{{$language->language}}</option>
                 @endforeach
             </select>
         </div>

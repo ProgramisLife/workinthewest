@@ -85,46 +85,45 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
                 <div class="d-flex justify-content-between">
                     <select class="form-select my-1" name="sorting">
                         <option selected>Ustawienia domyślne</option>
-                        <option value="newest">Nowa oferta</option>
                         <option value="salary">Wynagrodzenie</option>
                         <option value="title">Tytuł pracy</option>
                     </select>
                     <button type="submit" class="btn btn-primary mx-3">Szukaj</button>
                 </div>
             </form>
-            @foreach($results as $result)
-            <a class="text-decoration-none" href="{{ route('jobs.show', ['job' => $result]) }}">
+            @foreach($jobSearchs as $jobSearch)
+            <a class="text-decoration-none" href="{{ route('jobs.show', ['job' => $jobSearch]) }}">
                 <div class="card my-2">
                     <div class="card-body card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title d-inline-block">{{ Str::limit($result->title, 20) }}</h3>
-                            <a class="btn btn-primary" href="#" role="button">{{$result->jobtype->first()->type}}</a>
+                            <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
+                            <a class="btn btn-primary" href="{{ route('jobs.search', ['jobSearchs' => $jobSearch->jobtype->first()->type ]) }}" role="button">{{$jobSearch->jobtype->first()->type}}</a>
                         </div>
                     </div>
                     <div class="d-flex flex-row align-items-center">
-                        @if($result->main_image_path)
-                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/main-photo/' . $result->main_image_path)}}" alt="Card image cap">
+                        @if($jobSearch->main_image_path)
+                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}" alt="Card image cap">
                         @else
                         <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
                         @endif
                         <div class="mx-3">
                             <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
-                            @if(!is_null($result->salary_from) && !is_null($result->salary_to))
-                            <p class="card-text">Od: {{ $result->salary_from }} Do: {{ $result->salary_to }} {{$result->currency->currency}}</p>
+                            @if(!is_null($jobSearch->salary_from) && !is_null($jobSearch->salary_to))
+                            <p class="card-text">Od: {{ $jobSearch->salary_from }} Do: {{ $jobSearch->salary_to }} {{$jobSearch->currency->currency}}</p>
                             @else
                             <p class="card-text">do negocjacji</p>
                             @endif
                             <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
-                            <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $result->created_at->year }}</p>
+                            <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $jobSearch->created_at->year }}</p>
                         </div>
                     </div>
                 </div>
             </a>
             @endforeach
 
-            {{ $results->links() }}
+            {{ $jobSearchs->links() }}
 
-            @if($results->isEmpty())
+            @if($jobSearchs->isEmpty())
             <div class="col-sm-12">
                 <p>Nie znaleziono takiej oferty</p>
             </div>
