@@ -18,6 +18,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 
 class Job extends Model
 {
+    use Sluggable;
     public function sluggable(): array
     {
         return [
@@ -26,7 +27,6 @@ class Job extends Model
             ]
         ];
     }
-    use Sluggable;
     /**
      * 
      * Job Model

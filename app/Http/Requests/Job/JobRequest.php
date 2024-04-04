@@ -56,8 +56,8 @@ class JobRequest extends FormRequest
             'photos.*' => [
                 'nullable',
                 'image',
-                'mimes:jpg,png,jpeg,gif,svg',
-                'dimensions:min_width=100,min_height=100,max_width=1080,max_height=1920',
+                'mimes:jpg,png,jpeg,svg',
+                'dimensions:min_width=100,min_height=100',
                 'max:2048'
             ],
             'expiry' => 'date',

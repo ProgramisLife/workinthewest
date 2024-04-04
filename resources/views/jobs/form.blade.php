@@ -201,7 +201,7 @@
         <!-- Zdjęcia -->
         <div class="form-group my-3">
             <label for="photos">Zdjęcia</label>
-            <input type="file" name="photos[]" class="form-control-file" id="photos" multiple accept=".jpg, .jpeg, .png">
+            <input type="file" name="photos[]" class="form-control-file" id="photos" multiple accept=".jpg, .jpeg, .png, ,svg">
         </div>
 
         <!-- Wyróżnione -->
