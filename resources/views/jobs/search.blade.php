@@ -124,7 +124,7 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             {{ $jobSearchs->links() }}
 
             @if($jobSearchs->isEmpty())
-            <div class="col-sm-12">
+            <div class="col-sm-4">
                 <p>Nie znaleziono takiej oferty</p>
             </div>
             @endif

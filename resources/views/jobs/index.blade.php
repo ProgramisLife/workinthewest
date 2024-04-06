@@ -78,7 +78,9 @@
                                             <div class="card-body card-body d-flex flex-column">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <h3 class="card-title d-inline-block">{{ Str::limit($newJob->title, 20) }}</h3>
+                                                    @if($newJob->jobtype->isNotEmpty())
                                                     <a class="btn btn-primary" href="{{ route('jobs.search', ['results' => $newJob->jobtype->first()->type ]) }}" role="button">{{$newJob->jobtype->first()->type}}</a>
+                                                    @endif
                                                 </div>
                                                 <div class="d-flex flex-row align-items-center">
                                                     @if($newJob->main_image_path)

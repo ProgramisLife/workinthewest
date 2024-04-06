@@ -36,9 +36,19 @@
 
         </div>
 
+        <!-- Zdjęcie -->
         <div class="form-group">
-            <label for="photo">Wgraj zdjęcie profilowe do twojej pracy:</label>
+            <label for="photo">Zdjęcie profilowe:</label>
+            @if($hasExistingPhoto)
+            <p>Obecne zdjęcie:</p>
+            <img style="max-width: 10rem; max-height:10rem;" src="{{ asset('images/jobs/main-photo/' . $job->main_image_path) }}" alt="Obecne zdjęcie">
+            <p>Obecna nazwa pliku: {{ $job->main_image_path }}</p>
+            <p>Jeśli chcesz zaktualizować to zdjęcie, wybierz nowe poniżej:</p>
+            @endif
             <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
+            @if($hasExistingPhoto)
+            <p>Jeśli nie chcesz zmieniać obecnego zdjęcia, pozostaw to pole puste.</p>
+            @endif
         </div>
 
         <!-- Kategoria pracy -->
@@ -201,7 +211,19 @@
         <!-- Zdjęcia -->
         <div class="form-group my-3">
             <label for="photos">Zdjęcia</label>
+            @if($hasExistingPhotos)
+            <p>Obecne zdjęcia:</p>
+            <div class="text-align-center">
+                @foreach($job->photos as $photo)
+                <img style="max-width: 10rem; max-height:10rem;" src="{{ asset('images/jobs/photos/' . $photo->photo) }}" alt="Zdjęcie">
+                <p>Obecna nazwa pliku: {{ Str::limit($photo->photo, 20) }} , </p>
+                @endforeach
+            </div>
+            @endif
             <input type="file" name="photos[]" class="form-control-file" id="photos" multiple accept=".jpg, .jpeg, .png, ,svg">
+            @if($hasExistingPhotos)
+            <p>Jeśli nie chcesz zmieniać obecnego zdjęcia, pozostaw to pole puste.</p>
+            @endif
         </div>
 
         <!-- Wyróżnione -->

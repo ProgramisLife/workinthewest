@@ -31,5 +31,14 @@ class Photo extends Model
     {
         return $this->belongsToMany(Job::class, 'photo_job', 'photo_id', 'job_id');
     }
+
+    public function delete()
+    {
+        $oldPath = public_path('images/jobs/photos/' . $this->photo);
+        if (file_exists($oldPath)) {
+            unlink($oldPath);
+        }
+        return parent::delete();
+    }
     use HasFactory;
 }

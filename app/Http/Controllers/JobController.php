@@ -14,9 +14,6 @@ use App\Models\Shared\JobType;
 use App\Models\Shared\Language;
 use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
-use Exception;
-
-use function PHPUnit\Framework\isNull;
 
 class JobController extends Controller
 {
@@ -64,6 +61,10 @@ class JobController extends Controller
      */
     public function add()
     {
+        $job = new Job();
+        $hasExistingPhoto = !empty($job->main_image_path);
+        $hasExistingPhotos = $job->photos()->exists();
+
         $sexOptions = ['Mężczyzna', 'Kobieta', 'Inne'];
 
         $jobCategories = JobCategory::all();
@@ -84,6 +85,8 @@ class JobController extends Controller
             'jobskills' => $skills,
             'jobphotos' => $photos,
             'expiry' => $expiry,
+            'hasExistingPhoto' => $hasExistingPhoto,
+            'hasExistingPhotos' => $hasExistingPhotos,
         ]);
     }
 
@@ -117,7 +120,7 @@ class JobController extends Controller
 
         $job->save();
 
-        // Zapisz dodatkowe zdjęcia
+        // Zapisz dodatkowe zdjęcia !!!!!!!!
         if ($jobrequest->hasFile('photos')) {
             foreach ($jobrequest->file('photos') as $photo) {
                 $imageName = time() . '_' . $photo->getClientOriginalName();
@@ -126,7 +129,7 @@ class JobController extends Controller
                 // Stwórz nowy obiekt Photo i zapisz nazwę zdjęcia
                 $newPhoto = new Photo();
                 $newPhoto->photo = $imageName;
-                $newPhoto->save(); // Najpierw zapisz nowe zdjęcie
+                $newPhoto->save();
 
                 // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
                 $job->photos()->attach($newPhoto->id);
@@ -160,6 +163,10 @@ class JobController extends Controller
 
     public function edit(Job $job)
     {
+
+        $hasExistingPhoto = !empty($job->main_image_path);
+        $hasExistingPhotos = $job->photos()->exists();
+
         $sexOptions = ['Mężczyzna', 'Kobieta', 'Inne'];
 
         $jobCategories = JobCategory::all();
@@ -181,6 +188,8 @@ class JobController extends Controller
             'jobskills' => $skills,
             'jobphotos' => $photos,
             'expiry' => $expiry,
+            'hasExistingPhoto' => $hasExistingPhoto,
+            'hasExistingPhotos' => $hasExistingPhotos,
         ]);
     }
 
@@ -205,19 +214,21 @@ class JobController extends Controller
         // Synchronizuj umiejętności
         $job->skill()->sync($jobrequest->input('skills'));
 
-        // // Synchronizuj dodatkowe zdjęcia
+        // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos'));
 
         $job->slug;
 
-        if (!empty($job->main_image_path)) {
-            $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-                $job->main_image_path = null;
+        if ($jobrequest->hasFile('photo')) {
+            if (!empty($job->main_image_path)) {
+                $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                    $job->main_image_path = null;
+                }
             }
         }
-
+        // Pojdeńcze zjęcie !
         if ($jobrequest->hasFile('photo')) {
             $photo = $jobrequest->file('photo');
             $imageName = uniqid() . '_' . $photo->getClientOriginalName();
@@ -229,16 +240,23 @@ class JobController extends Controller
             } else {
                 session()->flash('status', 'Nieprawidłowe zdjęcie');
             }
+        } else if (!$jobrequest->hasFile('photo') && !empty($job->main_image_path)) {
+            $job->main_image_path = $job->main_image_path;
         }
 
-
-        // Aktualizacja dodatkowych zdjęć.
-
-        // Usuń wszystkie aktualne dodatkowe zdjęcia
-        $job->photos()->detach();
-
-        // Sprawdź, czy są wysłane nowe zdjęcia
+        // Wiele zdjęć
         if ($jobrequest->hasFile('photos')) {
+            if ($job->photos()->exists()) {
+                foreach ($job->photos as $photo) {
+                    $oldPath = public_path('images/jobs/photos' . $photo->photo);
+                    $oldPath;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+                $job->photos()->detach();
+            }
+            // Sprawdź, czy są wysłane nowe zdjęcia
             foreach ($jobrequest->file('photos') as $photo) {
                 $imageName = time() . '_' . $photo->getClientOriginalName();
                 $photo->move(public_path('images/jobs/photos'), $imageName);
@@ -251,6 +269,8 @@ class JobController extends Controller
                 // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
                 $job->photos()->attach($newPhoto->id);
             }
+        } else {
+            // Do nothing !
         }
 
 
@@ -322,7 +342,7 @@ class JobController extends Controller
         //     })->get();
         // }
 
-        $jobSearchs = $query->paginate(20);
+        $jobSearchs = $query->paginate(12);
 
         return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs] : []);
     }
