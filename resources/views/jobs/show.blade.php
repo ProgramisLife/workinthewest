@@ -15,7 +15,7 @@
                 <p class="d-inline-block text-info py-1"><i class="bi bi-cash-coin"></i>
                     wynagrodzenie: </p>
                 @if(isset($job->salary_from) & isset($job->salary_to))
-                {{$job->salary_from}} {{$job->salary_to}}
+                od {{$job->salary_from}} do {{$job->salary_to}} {{$job->currency->currency}}
                 @else
                 <p class="d-inline-block text-lowercase">
                     do negocjacji</p>
@@ -83,6 +83,35 @@
         <!-- Lokalizacja -->
         <div class="my-5">
             Lokalizacja
+        </div>
+    </div>
+    <div>
+        <div class="bg-white col-md-3 my-4">
+            <p class="text-left my-3 mx-4" style="font-weight:bold;">
+                Podobne oferty pracy
+            </p>
+            <div class="my-4">
+                <div class="card-deck">
+                    @foreach($jobSimilarCategorys as $jobSimilarCategory)
+                    <div class="card mb-3 bg-white mx-3 border-0">
+                        <div class="d-flex align-left">
+                            @if($jobSimilarCategory->main_image_path)
+                            <img class="rounded" style="max-width: 5rem; max-height:5rem;" src="{{asset('images/jobs/main-photo/' . $jobSimilarCategory->main_image_path)}}" alt="Card image cap">
+                            @else
+                            <img class="rounded" style="max-width: 5rem; max-height:5rem;" src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
+                            @endif
+                            <div class="card-body">
+                                <a class="card-title text-decoration-none text-black" href="{{ route('jobs.show', ['job' => $job]) }}">
+                                    <p class="card-title title-hover" style="font-weight:bold;font-size: 14px;">{{ $jobSimilarCategory->title }}</p>
+                                    <p class="card-title title-hover" style="font-size: 12px;">{{ Str::limit($jobSimilarCategory->description, 20) }}</p>
+                                </a>
+                                <p class="card-text"><small>{{ $jobSimilarCategory->updated_at->format('d M Y') }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </div>
 </div>

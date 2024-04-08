@@ -14,6 +14,9 @@ use App\Models\Shared\JobType;
 use App\Models\Shared\Language;
 use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
+use Exception;
+
+use function PHPUnit\Framework\isNull;
 
 class JobController extends Controller
 {
@@ -66,7 +69,6 @@ class JobController extends Controller
         $hasExistingPhotos = $job->photos()->exists();
 
         $sexOptions = ['Mężczyzna', 'Kobieta', 'Inne'];
-
         $jobCategories = JobCategory::all();
         $joblevels = JobLevel::all();
         $jobtypes = JobType::all();
@@ -94,20 +96,8 @@ class JobController extends Controller
     public function store(JobRequest $jobrequest)
     {
         $job = new Job($jobrequest->validated());
+
         $job->slug;
-
-        // Zapisz główne zdjęcie
-        if ($jobrequest->hasFile('photo')) {
-            $photo = $jobrequest->file('photo');
-            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
-
-            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
-                $photo->move(public_path('images/jobs/main-photo'), $job->id . $imageName);
-                $job->main_image_path = $imageName;
-            } else {
-                session()->flash('status', 'Nie prawidłowe zdjęcie');
-            }
-        }
 
         // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
@@ -118,7 +108,33 @@ class JobController extends Controller
         // Powiąż walutę
         $job->currency()->associate($jobrequest->input('currency'));
 
+        // Zapisz główne zdjęcie
+        if ($jobrequest->hasFile('photo')) {
+            $photo = $jobrequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/jobs/main-photo'), $imageName);
+                $job->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+        }
+
         $job->save();
+
+        // Synchronizuj typy pracy
+        $job->jobtype()->sync($jobrequest->input('type'));
+
+        // Synchronizuj języki
+        $job->language()->sync($jobrequest->input('language'));
+
+        // Synchronizuj umiejętności
+        $job->skill()->sync($jobrequest->input('skills'));
+
+        // Synchronizuj dodatkowe zdjęcia
+        $job->photos()->sync($jobrequest->input('photos'));
 
         // Zapisz dodatkowe zdjęcia !!!!!!!!
         if ($jobrequest->hasFile('photos')) {
@@ -136,17 +152,12 @@ class JobController extends Controller
             }
         }
 
-        // Synchronizuj typy pracy
-        $job->jobtype()->sync($jobrequest->input('type'));
-
-        // Synchronizuj języki
-        $job->language()->sync($jobrequest->input('language'));
-
-        // Synchronizuj umiejętności
-        $job->skill()->sync($jobrequest->input('skills'));
-
-        // // Synchronizuj dodatkowe zdjęcia
-        $job->photos()->sync($jobrequest->input('photos'));
+        try {
+            $job->save();
+            session()->flash('status', ('Twoja oferta pracy został pomyślnie dodana'));
+        } catch (Exception $message) {
+            session()->flash('status', ('Coś poszło nie tak :('));
+        }
 
         return redirect()->route(
             'jobs.show',
@@ -157,7 +168,15 @@ class JobController extends Controller
 
     public function show(Job $job)
     {
-        return view('jobs.show', ['job' => $job]);
+
+        $jobCategory = $job->jobcategory;
+        $jobSimilarCategorys = Job::where('jobcategory_id', $jobCategory->id)
+            ->where('id', '!=', $job->id)
+            ->get();
+        return view('jobs.show', [
+            'job' => $job,
+            'jobSimilarCategorys' => $jobSimilarCategorys,
+        ]);
     }
 
 
@@ -196,6 +215,8 @@ class JobController extends Controller
 
     public function update(JobRequest $jobrequest, Job $job)
     {
+        $job->slug;
+
         // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
 
@@ -204,6 +225,31 @@ class JobController extends Controller
 
         // Powiąż walutę
         $job->currency()->associate($jobrequest->input('currency'));
+
+        // Zapisz główne zdjęcie
+        if ($jobrequest->hasFile('photo')) {
+            if (!empty($job->main_image_path)) {
+                $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                    $job->main_image_path = null;
+                }
+            }
+            $photo = $jobrequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/jobs/main-photo/'), $imageName);
+                $job->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+
+            if (!$jobrequest->hasFile('photo') && !empty($job->main_image_path)) {
+                $job->main_image_path = $job->main_image_path;
+            }
+        }
 
         // Synchronizuj typy pracy
         $job->jobtype()->sync($jobrequest->input('type'));
@@ -217,68 +263,35 @@ class JobController extends Controller
         // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos'));
 
-        $job->slug;
-
-        if ($jobrequest->hasFile('photo')) {
-            if (!empty($job->main_image_path)) {
-                $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                    $job->main_image_path = null;
-                }
-            }
-        }
-        // Pojdeńcze zjęcie !
-        if ($jobrequest->hasFile('photo')) {
-            $photo = $jobrequest->file('photo');
-            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
-
-            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
-            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
-                $photo->move(public_path('images/jobs/main-photo'), $imageName);
-                $job->main_image_path = $imageName;
-            } else {
-                session()->flash('status', 'Nieprawidłowe zdjęcie');
-            }
-        } else if (!$jobrequest->hasFile('photo') && !empty($job->main_image_path)) {
-            $job->main_image_path = $job->main_image_path;
-        }
-
         // Wiele zdjęć
         if ($jobrequest->hasFile('photos')) {
-            if ($job->photos()->exists()) {
+            if ($job->photos()->count() > 0) {
                 foreach ($job->photos as $photo) {
-                    $oldPath = public_path('images/jobs/photos' . $photo->photo);
-                    $oldPath;
+                    $oldPath = public_path('images/jobs/photos/' . $photo->photo);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
+                        $job->photos()->detach();
                     }
                 }
-                $job->photos()->detach();
             }
-            // Sprawdź, czy są wysłane nowe zdjęcia
             foreach ($jobrequest->file('photos') as $photo) {
                 $imageName = time() . '_' . $photo->getClientOriginalName();
-                $photo->move(public_path('images/jobs/photos'), $imageName);
+                $photo->move(public_path('images/jobs/photos/'), $imageName);
 
-                // Stwórz nowy obiekt Photo i zapisz nazwę zdjęcia
                 $newPhoto = new Photo();
                 $newPhoto->photo = $imageName;
                 $newPhoto->save();
 
-                // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
                 $job->photos()->attach($newPhoto->id);
             }
-        } else {
-            // Do nothing !
         }
-
 
         if ($job->update($jobrequest->validated())) {
             session()->flash('status', ('Twoja oferta pracy został pomyślnie zmieniona'));
         } else {
             session()->flash('status', ('Coś poszło nie tak :('));
         }
+
         return redirect()->route('jobs.show', ['job' => $job]);
     }
 
