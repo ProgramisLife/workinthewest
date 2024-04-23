@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\JobController;
+use App\Models\Shared\JobCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,10 @@ Route::prefix('/jobs')->group(function () {
     Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 
     Route::get('/add', [JobController::class, 'add'])->name('jobs.add');
+
+    Route::post('get-states-by-country', [JobController::class, 'getState'])->name('jobs.getState');
+
+    Route::post('get-cities-by-state', [JobController::class, 'getCity'])->name('jobs.getCity');
 
     Route::post('/store', [JobController::class, 'store'])->name('jobs.store'); // Zapisujemy pracę
 

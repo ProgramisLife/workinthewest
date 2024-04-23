@@ -14,7 +14,7 @@ class JobLevelTableSeeders extends Seeder
      */
     public function run(): void
     {
-        $levels = collect(['Asystent', 'Dyrektor', 'Prezes', 'Praktykant/Stażysta', 'Specjalista']);
+        $levels = collect(['Asystent', 'Dyrektor/Prezes', 'Kierownik', 'Pracownik fizyczny', 'Praktykant/Stażysta', 'Specjalista']);
 
         $levels->each(function ($levels) {
             JobLevel::firstOrCreate(['level' => $levels]);

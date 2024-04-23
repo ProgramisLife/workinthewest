@@ -14,7 +14,7 @@ class JobTypeTableSeeders extends Seeder
      */
     public function run(): void
     {
-        $type = collect(['Część Etatu', 'Kontrakt', 'Praktyka']);
+        $type = collect(['Część Etatu', 'Freelancer', 'Kontrakt', 'Pełny etat', 'Praca czasowa', 'Praktyka', 'Wolontariat']);
 
         $type->each(function ($type) {
             JobType::firstOrCreate(['type' => $type]);

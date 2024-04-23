@@ -1,14 +1,20 @@
 <?php
 
-namespace App\Http\Requests\Job;
+namespace App\Http\Requests\Accommodation;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Job;
 
-class JobRequest extends FormRequest
+class AccommodationRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return false;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,14 +22,13 @@ class JobRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
             'title'     => 'required|string|min:3|max:100',
             'main_image_path' => 'nullable|image|mimes:jpeg,png|max:1',
             'description'   => 'required|string|min:5',
 
             'salary_from' => 'nullable|integer|min:1|lt:salary_to',
-            'salary_to' => 'nullable|integer|gt:salary_from',
+            'salary_to' => 'nullable|integer|gt:salary_from|max:2147483647',
 
             'email' => 'required|email',
 
@@ -45,13 +50,6 @@ class JobRequest extends FormRequest
                 'exists:languages,id',
             ],
 
-            'jobstate' => 'required|array',
-            'jobstate.*' => [
-                'required',
-                'distinct',
-                'exists:jobstate,id',
-            ],
-
             'skill' => 'nullable|array',
             'skill.*' => [
                 'nullable',
@@ -71,7 +69,7 @@ class JobRequest extends FormRequest
 
             'sex' => ['required', Rule::in(['Mężczyzna', 'Kobieta', 'Inne'])],
 
-            'deadline' => 'date|required',
+            'deadline' => 'required|date_format:Y-m-d',
         ];
     }
 }

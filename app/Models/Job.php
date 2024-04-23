@@ -12,8 +12,11 @@ use App\Models\Shared\JobType;
 use App\Models\Shared\Language;
 use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
+use App\Models\Shared\JobState;
 use App\Models\Shared\Tag;
-use Carbon\Carbon;
+use App\Models\Shared\Localisation\Country;
+use App\Models\Shared\Localisation\State;
+use App\Models\Shared\Localisation\City;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Job extends Model
@@ -56,15 +59,6 @@ class Job extends Model
      * @property string $location {Tutaj coś wymyślę narazie string}
      * 
      */
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($job) {
-            $job->deadline = Carbon::createFromFormat('d-m-Y', $job->deadline)->format('Y-m-d');
-        });
-    }
 
     /**
      * Fillable attributes.
@@ -180,6 +174,26 @@ class Job extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class, 'currencies_id', 'id');
+    }
+
+    public function jobstate()
+    {
+        return $this->belongsToMany(JobState::class, 'job_state', 'job_id', 'jobstate_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function owner()

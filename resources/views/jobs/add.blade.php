@@ -21,6 +21,7 @@
             'sexOptionValue' => old('sex'),
             'deadlineValue' => old('deadline'),
             'skillValue' => old('skills', []),
+            'jobstateValue' => old('jobstate', []),
             'submitBtnText' => 'Dodaj nową pracę',
             ])
         </div>

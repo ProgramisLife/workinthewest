@@ -28,7 +28,9 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             @foreach($jobCategories as $category)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
-                <input class="form-check-input" type="checkbox" value="{{$category->id}}" id="category_{{$category->id}}" name="category[]" @if(in_array($category->id, old('category', []))) checked @endif>
+                <input class="form-check-input" type="checkbox" value="{{$category->id}}"
+                    id="category_{{$category->id}}" name="category[]" @if(in_array($category->id, old('category', [])))
+                checked @endif>
                 <label class="form-check-label" for="category_{{$category->id}}">
                     {{$category->category}}
                 </label>
@@ -41,7 +43,8 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             @foreach($jobSkills as $skill)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
-                <input class="form-check-input" type="checkbox" value="{{$skill->id}}" id="skill_{{$skill->id}}" name="skill[]" @if(in_array($skill->id, old('skill', []))) checked @endif>
+                <input class="form-check-input" type="checkbox" value="{{$skill->id}}" id="skill_{{$skill->id}}"
+                    name="skill[]" @if(in_array($skill->id, old('skill', []))) checked @endif>
                 <label class="form-check-label" for="skill_{{$skill->id}}">
                     {{$skill->skill}}
                 </label>
@@ -54,7 +57,8 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             @foreach($jobtype as $type)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
-                <input class="form-check-input" type="checkbox" value="{{$type->id}}" id="type_{{$type->id}}" name="type[]" @if(in_array($type->id, old('type', []))) checked @endif>
+                <input class="form-check-input" type="checkbox" value="{{$type->id}}" id="type_{{$type->id}}"
+                    name="type[]" @if(in_array($type->id, old('type', []))) checked @endif>
                 <label class="form-check-label" for="type_{{$type->id}}">
                     {{$type->type}}
                 </label>
@@ -67,7 +71,8 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             @foreach($joblevels as $level)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
-                <input class="form-check-input" type="checkbox" value="{{$level->id}}" id="level_{{$level->id}}" name="level[]" @if(in_array($level->id, old('level', []))) checked @endif>
+                <input class="form-check-input" type="checkbox" value="{{$level->id}}" id="level_{{$level->id}}"
+                    name="level[]" @if(in_array($level->id, old('level', []))) checked @endif>
                 <label class="form-check-label" for="level_{{$level->id}}">
                     {{$level->level}}
                 </label>
@@ -97,24 +102,50 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
                     <div class="card-body card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
-                            <a class="btn btn-primary" href="{{ route('jobs.search', ['jobSearchs' => $jobSearch->jobtype->first()->type ]) }}" role="button">{{$jobSearch->jobtype->first()->type}}</a>
+                            <a class="btn btn-primary"
+                                href="{{ route('jobs.search', ['jobSearchs' => $jobSearch->jobtype->first()->type ]) }}"
+                                role="button">{{$jobSearch->jobtype->first()->type}}</a>
                         </div>
                     </div>
                     <div class="d-flex flex-row align-items-center">
                         @if($jobSearch->main_image_path)
-                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}" alt="Card image cap">
+                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
+                            src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}"
+                            alt="Card image cap">
                         @else
-                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;" src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
+                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
+                            src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
                         @endif
                         <div class="mx-3">
                             <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika</p>
                             @if(!is_null($jobSearch->salary_from) && !is_null($jobSearch->salary_to))
-                            <p class="card-text">Od: {{ $jobSearch->salary_from }} Do: {{ $jobSearch->salary_to }} {{$jobSearch->currency->currency}}</p>
+                            <p class="card-text">Od: {{ $jobSearch->salary_from }} Do: {{ $jobSearch->salary_to }}
+                                {{$jobSearch->currency->currency}}
+                            </p>
                             @else
                             <p class="card-text">do negocjacji</p>
                             @endif
-                            <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>Niemcy</p>
-                            <p class="card-text"><i class="bi bi-calendar-week text-primary"></i> {{ $jobSearch->created_at->year }}</p>
+                            <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
+                                @if(isset($jobSearch->country->country))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->country->country ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->country->country}},
+                                </a>
+                                @endif
+                                @if(isset($jobSearch->state->state))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->state->state ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->state->state}},
+                                </a>
+                                @endif
+                                @if(isset($jobSearch->city->city))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->city->city ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->city->city}}
+                                </a>
+                                @endif
+                            </p>
+
                         </div>
                     </div>
                 </div>
@@ -157,7 +188,8 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             @foreach($latestJob as $latest)
             <p class="newesttitle text-uppercase p-bold">{{$latest->title}}</p>
             <p class="newesttitle">opublikowano w</p>
-            <a href="{{ route('jobs.search', ['category' => $latest->jobcategory->category]) }}" class="newestcontent">{{$latest->jobcategory->category}}</a>
+            <a href="{{ route('jobs.search', ['category' => $latest->jobcategory->category]) }}"
+                class="newestcontent">{{$latest->jobcategory->category}}</a>
             @endforeach
 
 

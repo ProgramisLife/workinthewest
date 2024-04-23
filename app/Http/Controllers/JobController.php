@@ -14,7 +14,10 @@ use App\Models\Shared\JobType;
 use App\Models\Shared\Language;
 use App\Models\Shared\Photo;
 use App\Models\Shared\Skill;
-use Exception;
+use App\Models\Shared\JobState;
+use App\Models\Shared\Localisation\Country;
+use App\Models\Shared\Localisation\State;
+use App\Models\Shared\Localisation\City;
 
 use function PHPUnit\Framework\isNull;
 
@@ -36,11 +39,34 @@ class JobController extends Controller
 
         $featuredJobs = Job::where('featured', true)->paginate(self::JOBS_PER_PAGE);
 
+        $currentDate = Carbon::now();
+
+        $jobstate = JobState::all();
+
+        $yearsDifference = 0;
+        $monthsDifference = 0;
+        $daysDifference = 0;
+        $hoursDifference = 0;
+        $minutesDifference = 0;
+
+        foreach ($newJobs as $job) {
+        $createdAt = $job->created_at;
+        $diff = $currentDate->diff($createdAt);
+
+        // Tutaj możesz wykorzystać różnicę czasu dla każdego rekordu
+        $yearsDifference = $diff->y;
+        $monthsDifference = $diff->m;
+        $daysDifference = $diff->d;
+        $hoursDifference = $diff->h;
+        $minutesDifference = $diff->i;
+    }
+
 
         $data = [
             'jobs' => [
                 'newJobs' => $newJobs,
                 'featuredJobs' => $featuredJobs,
+                'jobstate' => $jobstate,
             ],
             'label' => [
                 'cooperation' => 'współpracujemy:',
@@ -48,8 +74,18 @@ class JobController extends Controller
                 'news' => 'Centrum Aktualności',
                 'news-content' => 'Tutaj możesz śledzić najnowsze newsy z świata pracy.',
                 'articles' => 'Brak artykułów do wyświetlenia.',
+                'business-register' => 'Zarejestruj firmę',
+                'newest-ofert' => 'Najnowsze oferty',
+                'featured-ofert' => 'Wyróżnione',
             ],
             'categories' => $jobCategories,
+            'date' => [
+                'yearsDifference' => $yearsDifference,
+                'monthsDifference' => $monthsDifference,
+                'daysDifference' => $daysDifference,
+                'hoursDifference' => $hoursDifference,
+                'minutesDifference' => $minutesDifference,
+            ],
         ];
         return view('jobs.index', [
             'data' => $data,
@@ -77,19 +113,42 @@ class JobController extends Controller
         $photos = Photo::all();
         $skills = Skill::all();
         $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
+        $countries = Country::get(["country", "id"]);
+        $jobstate = JobState::all();
+
+
+        $data = [
+            'job' => [
+                'sexOptions' => $sexOptions,
+                'jobcategories' => $jobCategories,
+                'joblevels' => $joblevels,
+                'jobtypes' => $jobtypes,
+                'jobcurrencies' => $jobcurrencies,
+                'joblanguages' => $languages,
+                'jobskills' => $skills,
+                'jobphotos' => $photos,
+                'expiry' => $expiry,
+                'jobstate' => $jobstate
+            ],
+            'photo' => [
+                'hasExistingPhoto' => $hasExistingPhoto,
+                'hasExistingPhotos' => $hasExistingPhotos,
+            ],
+            'countries' => $countries
+        ];
         return view('jobs.add', [
-            'sexOptions' => $sexOptions,
-            'jobcategories' => $jobCategories,
-            'joblevels' => $joblevels,
-            'jobtypes' => $jobtypes,
-            'jobcurrencies' => $jobcurrencies,
-            'joblanguages' => $languages,
-            'jobskills' => $skills,
-            'jobphotos' => $photos,
-            'expiry' => $expiry,
-            'hasExistingPhoto' => $hasExistingPhoto,
-            'hasExistingPhotos' => $hasExistingPhotos,
+            'data' => $data
         ]);
+    }
+
+    public function getState(Request $request){
+        $data['states'] = State::where('country_id', $request->country_id)->get(['state', 'id']);
+        return response()->json($data);
+    }
+
+    public function getCity(Request $request){
+        $data['cities'] = City::where('state_id', $request->state_id)->get(['city', 'id']);
+        return response()->json($data);
     }
 
 
@@ -99,21 +158,22 @@ class JobController extends Controller
 
         $job->slug;
 
-        // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
 
-        // Powiąż poziom pracy
         $job->joblevel()->associate($jobrequest->input('level'));
 
-        // Powiąż walutę
         $job->currency()->associate($jobrequest->input('currency'));
 
-        // Zapisz główne zdjęcie
+        $job->country()->associate($jobrequest->input('countries'));
+
+        $job->state()->associate($jobrequest->input('states'));
+
+        $job->city()->associate($jobrequest->input('cities'));
+
         if ($jobrequest->hasFile('photo')) {
             $photo = $jobrequest->file('photo');
             $imageName = uniqid() . '_' . $photo->getClientOriginalName();
 
-            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
             if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
                 $photo->move(public_path('images/jobs/main-photo'), $imageName);
                 $job->main_image_path = $imageName;
@@ -124,45 +184,36 @@ class JobController extends Controller
 
         $job->save();
 
-        // Synchronizuj typy pracy
         $job->jobtype()->sync($jobrequest->input('type'));
 
-        // Synchronizuj języki
         $job->language()->sync($jobrequest->input('language'));
 
-        // Synchronizuj umiejętności
         $job->skill()->sync($jobrequest->input('skills'));
 
-        // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos'));
 
-        // Zapisz dodatkowe zdjęcia !!!!!!!!
+        $job->jobstate()->sync($jobrequest->input('jobstate'));
+
         if ($jobrequest->hasFile('photos')) {
             foreach ($jobrequest->file('photos') as $photo) {
                 $imageName = time() . '_' . $photo->getClientOriginalName();
                 $photo->move(public_path('images/jobs/photos'), $imageName);
 
-                // Stwórz nowy obiekt Photo i zapisz nazwę zdjęcia
                 $newPhoto = new Photo();
                 $newPhoto->photo = $imageName;
                 $newPhoto->save();
 
-                // Dołącz dodatkowe zdjęcie do modelu Job poprzez relację wiele do wielu
                 $job->photos()->attach($newPhoto->id);
             }
         }
 
-        try {
-            $job->save();
-            session()->flash('status', ('Twoja oferta pracy został pomyślnie dodana'));
-        } catch (Exception $message) {
+        if ($job->save($jobrequest->validated())) {
+            session()->flash('status', ('Twoja oferta pracy został pomyślnie zmieniona'));
+        } else {
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect()->route(
-            'jobs.show',
-            ['job' => $job]
-        );
+        return redirect()->route('jobs.show',['job' => $job]);
     }
 
 
@@ -217,16 +268,12 @@ class JobController extends Controller
     {
         $job->slug;
 
-        // Powiąż kategorię pracy
         $job->jobcategory()->associate($jobrequest->input('category'));
 
-        // Powiąż poziom pracy
         $job->joblevel()->associate($jobrequest->input('level'));
 
-        // Powiąż walutę
         $job->currency()->associate($jobrequest->input('currency'));
 
-        // Zapisz główne zdjęcie
         if ($jobrequest->hasFile('photo')) {
             if (!empty($job->main_image_path)) {
                 $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
@@ -238,7 +285,6 @@ class JobController extends Controller
             $photo = $jobrequest->file('photo');
             $imageName = uniqid() . '_' . $photo->getClientOriginalName();
 
-            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
             if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
                 $photo->move(public_path('images/jobs/main-photo/'), $imageName);
                 $job->main_image_path = $imageName;
@@ -251,19 +297,14 @@ class JobController extends Controller
             }
         }
 
-        // Synchronizuj typy pracy
         $job->jobtype()->sync($jobrequest->input('type'));
 
-        // Synchronizuj języki
         $job->language()->sync($jobrequest->input('language'));
 
-        // Synchronizuj umiejętności
         $job->skill()->sync($jobrequest->input('skills'));
 
-        // Synchronizuj dodatkowe zdjęcia
         $job->photos()->sync($jobrequest->input('photos'));
 
-        // Wiele zdjęć
         if ($jobrequest->hasFile('photos')) {
             if ($job->photos()->count() > 0) {
                 foreach ($job->photos as $photo) {
@@ -345,16 +386,17 @@ class JobController extends Controller
             return $query->whereHas('jobcategory', function ($query) use ($category) {
                 $query->where('category', 'like', "%$category%");
             });
+        })->when(!is_null($localisation), function ($query) use ($localisation) {
+        $query->whereHas('country', function ($query) use ($localisation) {
+        $query->where('country', 'like', "%$localisation%")
+        ->orWhereHas('states', function ($query) use ($localisation) {
+        $query->where('state', 'like', "%$localisation%")
+        ->orWhereHas('cities', function ($query) use ($localisation) {
+        $query->where('city', 'like', "%$localisation%");
         });
-
-
-        // Wyszukiwanie po lokalizacji
-        // else if (!is_null($localisation)) {
-        //     $results = Job::whereHas('localization', function ($query) use ($localisation) {
-        //         $query->where('lokalization', 'like', "%$localisation%");
-        //     })->get();
-        // }
-
+        });
+        });
+    });
         $jobSearchs = $query->paginate(12);
 
         return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs] : []);
