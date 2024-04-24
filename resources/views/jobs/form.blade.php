@@ -144,7 +144,7 @@
 
                 <div class="col-lg-3 mx-4 form-group d-sm-block mx-2">
                     <label class="text-uppercase" for="datepicker">termin składania aplikacji</label>
-                    <input id="datepicker" width="300" name="deadline" value="{{ $deadlineValue }}"
+                    <input id="datepicker" width="300" name="deadline" value="{{ old('deadline', $deadlineValue) }}"
                         class="@error('deadline') is-invalid @enderror" />
                     @error('deadline')
                     <div class="invalid-feedback">

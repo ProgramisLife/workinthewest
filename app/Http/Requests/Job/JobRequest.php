@@ -19,7 +19,7 @@ class JobRequest extends FormRequest
 
         return [
             'title'     => 'required|string|min:3|max:100',
-            'main_image_path' => 'nullable|image|mimes:jpeg,png|max:1',
+            'main_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048|dimensions:max_width=600,max_height=600',
             'description'   => 'required|string|min:5',
 
             'salary_from' => 'nullable|integer|min:1|lt:salary_to',
@@ -65,7 +65,8 @@ class JobRequest extends FormRequest
                 'image',
                 'mimes:jpg,png,jpeg,svg',
                 'dimensions:min_width=100,min_height=100',
-                'max:2048'
+                'dimensions:min_width=1920,min_height=1080',
+                'max:4096'
             ],
             'expiry' => 'date',
 

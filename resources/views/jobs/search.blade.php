@@ -4,28 +4,16 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 
-@php
-$jobCategories = \App\Models\Shared\JobCategory::all();
-$jobSkills = \App\Models\Shared\Skill::all();
-$joblevels = \App\Models\Shared\JobLevel::all();
-$jobtype = \App\Models\Shared\JobType::all();
-$jobCount = \App\Models\Job::count();
-$latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
-@endphp
-
-
-
 <div class="container">
     <div class="row py-2">
         <h1 class="text-left text-uppercase oferty my-5">oferty pracy</h1>
     </div>
     <div class="row">
         <div class="d-inline-block offset-1 bg-white col-md-2">
-
             <p class="p-bold text-uppercase pt-3">branża
             <div class="border-top border-dark border-1 mb-0"></div>
             </p>
-            @foreach($jobCategories as $category)
+            @foreach($data['jobs']['jobCategories'] as $category)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
                 <input class="form-check-input" type="checkbox" value="{{$category->id}}"
@@ -40,7 +28,7 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             <p class="p-bold text-uppercase pt-3 font-weight-bold">umiejętności
             <div class="border-top border-dark border-1 mb-0"></div>
             </p>
-            @foreach($jobSkills as $skill)
+            @foreach($data['jobs']['jobSkills'] as $skill)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
                 <input class="form-check-input" type="checkbox" value="{{$skill->id}}" id="skill_{{$skill->id}}"
@@ -54,7 +42,7 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             <p class="p-bold text-uppercase pt-3 font-weight-bold">typy
             <div class="border-top border-dark border-1 mb-0"></div>
             </p>
-            @foreach($jobtype as $type)
+            @foreach($data['jobs']['jobtype'] as $type)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
                 <input class="form-check-input" type="checkbox" value="{{$type->id}}" id="type_{{$type->id}}"
@@ -68,7 +56,7 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
             <p class="p-bold text-uppercase pt-3 font-weight-bold">poziomy
             <div class="border-top border-dark border-1 mb-0"></div>
             </p>
-            @foreach($joblevels as $level)
+            @foreach($data['jobs']['joblevels'] as $level)
             <div class="d-block"></div>
             <div class="form-check" style="margin-left: 10px;">
                 <input class="form-check-input" type="checkbox" value="{{$level->id}}" id="level_{{$level->id}}"
@@ -102,16 +90,19 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
                     <div class="card-body card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
-                            <a class="btn btn-primary"
-                                href="{{ route('jobs.search', ['jobSearchs' => $jobSearch->jobtype->first()->type ]) }}"
+                            @if($jobSearch->jobtype->isNotEmpty())
+                            <a class="btn btn-primary my-1"
+                                href="{{ route('jobs.search', ['jobSearch' => $jobSearch->jobtype->first()->type]) }}"
                                 role="button">{{$jobSearch->jobtype->first()->type}}</a>
+                            @endif
                         </div>
                     </div>
                     <div class="d-flex flex-row align-items-center">
                         @if($jobSearch->main_image_path)
-                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
-                            src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}"
-                            alt="Card image cap">
+                        <div class="mx-1 my-1 image-container">
+                            <img src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}"
+                                class="img-fluid rounded" alt="...">
+                        </div>
                         @else
                         <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
                             src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
@@ -146,6 +137,40 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
                                 @endif
                             </p>
 
+                            @if($jobSearch->jobstate->isNotEmpty())
+                            <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
+                                @foreach($jobSearch->jobstate->take(2) as $jobstate)
+                                {{ $jobstate->name }},
+                                @endforeach
+                            </p>
+                            @endif
+
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock text-primary"></i>
+                                    Ogłoszenie dodano:
+                                    @if($data['date']['yearsDifference'] > 0)
+                                    {{ $data['date']['yearsDifference'] }} lat temu
+                                    @elseif($data['date']['monthsDifference'] > 0 )
+                                    {{ $data['date']['monthsDifference'] }} miesięcy temu
+                                    @elseif($data['date']['daysDifference'] > 0 )
+                                    {{ $data['date']['daysDifference'] }} dni temu
+                                    @elseif($data['date']['hoursDifference'] > 0 )
+                                    {{ $data['date']['hoursDifference'] }} godzin temu
+                                    @elseif($data['date']['minutesDifference'] > 0 )
+                                    {{ $data['date']['minutesDifference'] }} minut temu
+                                    @else
+                                    <p>Przed chwilą</p>
+                                    @endif
+                                </small>
+                            </p>
+
+                            <div class="skill-badge my-2">
+                                @foreach($jobSearch->skill as $skill)
+                                <a href="{{ route('jobs.search', ['keyword' => $skill->skill]) }}"
+                                    class="badge badge-pill bg-primary text-decoration-none">{{ $skill->skill }}</a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,22 +203,22 @@ $latestJob = \App\Models\Job::orderBy('created_at', 'desc')->paginate(20);
                 <p class="p-bold text-uppercase text-center pt-3 mb-0 green">utworzono cv</p>
             </div>
             <div class="display-info my-2">
-                <div class="h1 text-light text-center mb-0">{{ $jobCount }}</div>
+                <div class="h1 text-light text-center mb-0">{{ $data['jobs']['jobCount'] }}</div>
                 <p class="p-bold text-uppercase text-center pt-3 mb-0 green">opublikowane prace</p>
             </div>
 
             <p class="p-bold text-uppercase pt-4">ostatnie prace
             <div class="border-top border-dark border-1 mb-0"></div>
             </p>
-            @foreach($latestJob as $latest)
+            @foreach($data['jobs']['latestJob'] as $latest)
             <p class="newesttitle text-uppercase p-bold">{{$latest->title}}</p>
             <p class="newesttitle">opublikowano w</p>
             <a href="{{ route('jobs.search', ['category' => $latest->jobcategory->category]) }}"
                 class="newestcontent">{{$latest->jobcategory->category}}</a>
             @endforeach
-
-
         </div>
+    </div>
+</div>
 
 
-        @endsection
+@endsection

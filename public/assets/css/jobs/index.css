@@ -16,7 +16,7 @@
 .h-work {
     padding-top: 7rem;
     font-size: 50px;
-    color: #DB890F;
+    color: #db890f;
     font-weight: bold;
 }
 
@@ -33,4 +33,13 @@
 .caroseul-image-log {
     height: 20rem;
     width: 50rem;
+}
+
+.image-container img {
+    max-width: 180px;
+    max-height: 180px;
+    min-width: 180px;
+    min-height: 180px;
+    width: auto;
+    height: auto;
 }

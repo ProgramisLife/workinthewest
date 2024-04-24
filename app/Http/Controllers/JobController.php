@@ -351,6 +351,22 @@ class JobController extends Controller
 
     public function search(Request $request)
     {
+        $jobCategories = \App\Models\Shared\JobCategory::all();
+        $jobSkills = Skill::all();
+        $joblevels = JobLevel::all();
+        $jobtype = JobType::all();
+        $jobCount = Job::count();
+        $latestJob = Job::orderBy('created_at', 'desc')->paginate(20);
+        $currentDate = Carbon::now();
+        $jobstate = JobState::all();
+        $skills = Skill::all();
+
+        $yearsDifference = 0;
+        $monthsDifference = 0;
+        $daysDifference = 0;
+        $hoursDifference = 0;
+        $minutesDifference = 0;
+
         // Parametry wyszukiwania
         $keyword = $request->input('keyword');
         $localisation = $request->input('localisation');
@@ -369,36 +385,76 @@ class JobController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $query->when(!is_null($keyword), function ($query) use ($keyword) {
-            return is_numeric($keyword) ? $query->where(function ($query) use ($keyword) {
-                $query->where('salary_from', '<=', $keyword)
-                    ->orWhere('salary_to', '>=', $keyword);
-            }) : $query->where(function ($query) use ($keyword) {
-                $query->where('title', 'like', "%$keyword%")
-                    ->orWhereHas('joblevel', function ($query) use ($keyword) {
-                        $query->where('level', 'like', "%$keyword%");
-                    })
-                    ->orWhereHas('skill', function ($query) use ($keyword) {
-                        $query->where('skill', 'like', "%$keyword%");
-                    });
-            });
-        })->when(!is_null($category), function ($query) use ($category) {
+                $query->when(!is_null($keyword), function ($query) use ($keyword) {
+            return is_numeric($keyword) 
+                ? $query->where(function ($query) use ($keyword) {
+                    $query->where('salary_from', '<=', $keyword)
+                        ->orWhere('salary_to', '>=', $keyword);
+                }) 
+                : $query->where(function ($query) use ($keyword) {
+                    $query->where('title', 'like', "%$keyword%")
+                        ->orWhereHas('joblevel', function ($query) use ($keyword) {
+                            $query->where('level', 'like', "%$keyword%");
+                        })
+                        ->orWhereHas('skill', function ($query) use ($keyword) {
+                            $query->where('skill', 'like', "%$keyword%");
+                        })
+                        ->orWhereHas('jobtype', function ($query) use ($keyword){
+                            $query->where('type', 'like', "%$keyword%");
+                        });
+                });
+        })
+        ->when(!is_null($category), function ($query) use ($category) {
             return $query->whereHas('jobcategory', function ($query) use ($category) {
                 $query->where('category', 'like', "%$category%");
             });
-        })->when(!is_null($localisation), function ($query) use ($localisation) {
-        $query->whereHas('country', function ($query) use ($localisation) {
-        $query->where('country', 'like', "%$localisation%")
-        ->orWhereHas('states', function ($query) use ($localisation) {
-        $query->where('state', 'like', "%$localisation%")
-        ->orWhereHas('cities', function ($query) use ($localisation) {
-        $query->where('city', 'like', "%$localisation%");
+        })
+        ->when(!is_null($localisation), function ($query) use ($localisation) {
+            return $query->when(!is_null($localisation), function ($query) use ($localisation) {
+                return $query->whereHas('country', function ($query) use ($localisation) {
+                    $query->where('country', 'like', "%$localisation%");
+                })
+                ->orWhereHas('state', function ($query) use ($localisation) {
+                    $query->where('state', 'like', "%$localisation%");
+                })
+                ->orWhereHas('city', function ($query) use ($localisation) {
+                    $query->where('city', 'like', "%$localisation%");
+                });
+            });
         });
-        });
-        });
-    });
         $jobSearchs = $query->paginate(12);
 
-        return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs] : []);
+        foreach ($jobSearchs as $job) {
+        $createdAt = $job->created_at;
+        $diff = $currentDate->diff($createdAt);
+
+        $yearsDifference = $diff->y;
+        $monthsDifference = $diff->m;
+        $daysDifference = $diff->d;
+        $hoursDifference = $diff->h;
+        $minutesDifference = $diff->i;
+}
+
+        $data = [
+            'jobs' => [
+                'jobCategories' => $jobCategories,
+                'jobstate' => $jobstate,
+                'jobSkills' => $skills,
+                'joblevels' => $joblevels,
+                'jobtype' => $jobtype,
+                'jobCount' => $jobCount,
+                'latestJob' => $latestJob,
+            ],
+            'date' => [
+                'yearsDifference' => $yearsDifference,
+                'monthsDifference' => $monthsDifference,
+                'daysDifference' => $daysDifference,
+                'hoursDifference' => $hoursDifference,
+                'minutesDifference' => $minutesDifference,
+            ],
+        ];
+
+        return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs, 
+        'data' => $data] : []);
     }
 }

@@ -92,7 +92,7 @@
                                                 <div class="mx-2 my-2">
                                                     @if($newJob->jobtype->isNotEmpty())
                                                     <a class="btn btn-primary my-1"
-                                                        href="{{ route('jobs.search', ['results' => $newJob->jobtype->first()->type ]) }}"
+                                                        href="{{ route('jobs.search', ['keyword' => $newJob->jobtype->first()->type]) }}"
                                                         role="button">{{$newJob->jobtype->first()->type}}</a>
                                                     @endif
                                                 </div>
@@ -100,15 +100,19 @@
 
                                             <div class="col-md-4">
                                                 @if($newJob->main_image_path)
-                                                <img src="{{asset('images/jobs/main-photo/' . $newJob->main_image_path)}}"
-                                                    class="img-fluid rounded-start" alt="...">
+                                                <div class="mx-1 my-3 image-container">
+                                                    <img src="{{asset('images/jobs/main-photo/' . $newJob->main_image_path)}}"
+                                                        class="img-fluid rounded" alt="...">
+                                                </div>
                                                 @else
-                                                <img src="{{asset('images/jobs/default-images/skytower.jpg/')}}"
-                                                    class="img-fluid rounded-start" alt="...">
+                                                <div class="mx-1 my-3 image-container">
+                                                    <img src="{{asset('images/jobs/default-images/skytower.jpg/')}}"
+                                                        class="img-fluid rounded" alt="...">
+                                                </div>
                                                 @endif
                                             </div>
                                             <div class="col-md-8">
-                                                <div class="card-body">
+                                                <div class="mx-1 card-body">
                                                     <p class="card-text"><i
                                                             class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa
                                                         użytkownika</p>
@@ -145,6 +149,14 @@
                                                         @endif
                                                     </p>
 
+                                                    @if($newJob->jobstate->isNotEmpty())
+                                                    <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
+                                                        @foreach($newJob->jobstate->take(2) as $jobstate)
+                                                        {{ $jobstate->name }},
+                                                        @endforeach
+                                                    </p>
+                                                    @endif
+
                                                     <p class="card-text">
                                                         <small class="text-muted">
                                                             <i class="bi bi-clock text-primary"></i>
@@ -165,16 +177,9 @@
                                                         </small>
                                                     </p>
 
-                                                    <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
-                                                        @foreach($data['jobs']['jobstate']->take(2) as $jobstate)
-                                                        {{ $jobstate->name }},
-                                                        @endforeach
-                                                    </p>
-
-                                                    <div class="skill-badge" @if($newJob->skill->count() > 5)
-                                                        style="display: none;" @endif>
+                                                    <div class="skill-badge" id="skill-badge">
                                                         @foreach($newJob->skill as $skill)
-                                                        <a href="{{ route('jobs.search', ['skill' => $skill->skill ]) }}"
+                                                        <a href="{{ route('jobs.search', ['keyword' => $skill->skill ]) }}"
                                                             class="badge badge-pill bg-primary text-decoration-none">{{$skill->skill}}</a>
                                                         @endforeach
                                                     </div>
@@ -211,7 +216,7 @@
                                                 <div class="mx-2 my-2">
                                                     @if($featuredJobs->jobtype->isNotEmpty())
                                                     <a class="btn btn-primary my-1"
-                                                        href="{{ route('jobs.search', ['results' => $featuredJobs->jobtype->first()->type ]) }}"
+                                                        href="{{ route('jobs.search', ['keyword' => $featuredJobs->jobtype->first()->type ]) }}"
                                                         role="button">{{$featuredJobs->jobtype->first()->type}}</a>
                                                     @endif
                                                 </div>
@@ -219,11 +224,15 @@
 
                                             <div class="col-md-4">
                                                 @if($featuredJobs->main_image_path)
-                                                <img src="{{asset('images/jobs/main-photo/' . $featuredJobs->main_image_path)}}"
-                                                    class="img-fluid rounded-start" alt="...">
+                                                <div class="mx-1 my-3 image-container">
+                                                    <img src="{{asset('images/jobs/main-photo/' . $featuredJobs->main_image_path)}}"
+                                                        class="img-fluid rounded-start" alt="...">
+                                                </div>
                                                 @else
-                                                <img src="{{asset('images/jobs/default-images/skytower.jpg/')}}"
-                                                    class="img-fluid rounded-start" alt="...">
+                                                <div class="mx-1 my-3 image-container">
+                                                    <img src="{{asset('images/jobs/default-images/skytower.jpg/')}}"
+                                                        class="img-fluid rounded-start" alt="...">
+                                                </div>
                                                 @endif
                                             </div>
                                             <div class="col-md-8">
@@ -265,6 +274,12 @@
                                                         @endif
                                                     </p>
 
+                                                    <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
+                                                        @foreach($featuredJobs->jobstate->take(2) as $jobstate)
+                                                        {{ $jobstate->name }},
+                                                        @endforeach
+                                                    </p>
+
                                                     <p class="card-text">
                                                         <small class="text-muted">
                                                             <i class="bi bi-clock text-primary"></i>
@@ -285,17 +300,10 @@
                                                         </small>
                                                     </p>
 
-                                                    <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
-                                                        @foreach($data['jobs']['jobstate']->take(2) as $jobstate)
-                                                        {{ $jobstate->name }},
-                                                        @endforeach
-                                                    </p>
-
-                                                    <div class="skill-badge" @if($newJob->skill->count() > 5)
-                                                        style="display: none;" @endif>
+                                                    <div class="skill-badge">
                                                         @foreach($featuredJobs->skill as $skill)
-                                                        <a href="{{ route('jobs.search', ['skill' => $skill->skill ]) }}"
-                                                            class="badge badge-pill bg-primary text-decoration-none">{{$skill->skill}}</a>
+                                                        <a href="{{ route('jobs.search', ['keyword' => $skill->skill]) }}"
+                                                            class="badge badge-pill bg-primary text-decoration-none">{{ $skill->skill }}</a>
                                                         @endforeach
                                                     </div>
                                                 </div>
