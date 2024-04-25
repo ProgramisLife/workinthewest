@@ -409,13 +409,13 @@ class JobController extends Controller
         $query->whereIn('jobcategory_id', $categoryRequest);
         }
         if (!empty($skillsRequest)) {
-        $query->whereHas('skill', function ($query) use ($skillsRequest) {
-        $query->whereIn('skill', $skillsRequest);
+        $query->WhereHas('skill', function ($query) use ($skillsRequest) {
+        $query->whereIn('id', $skillsRequest);
         });
         }
         if (!empty($typesRequest)) {
-        $query->whereHas('jobtype', function ($query) use ($typesRequest) {
-        $query->whereIn('type', $typesRequest );
+        $query->WhereHas('jobtype', function ($query) use ($typesRequest) {
+        $query->whereIn('id', $typesRequest );
         });
         }
         if (!empty($levelsRequest)) {
