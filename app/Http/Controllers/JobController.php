@@ -18,8 +18,7 @@ use App\Models\Shared\JobState;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
-
-use function PHPUnit\Framework\isNull;
+use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
 {
@@ -238,7 +237,6 @@ class JobController extends Controller
         $hasExistingPhotos = $job->photos()->exists();
 
         $sexOptions = ['Mężczyzna', 'Kobieta', 'Inne'];
-
         $jobCategories = JobCategory::all();
         $joblevels = JobLevel::all();
         $jobtypes = JobType::all();
@@ -247,19 +245,32 @@ class JobController extends Controller
         $photos = Photo::all();
         $skills = Skill::all();
         $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
+        $countries = Country::get(["country", "id"]);
+        $jobstate = JobState::all();
+
+        $data = [
+            'job' => [
+                'sexOptions' => $sexOptions,
+                'jobcategories' => $jobCategories,
+                'joblevels' => $joblevels,
+                'jobtypes' => $jobtypes,
+                'jobcurrencies' => $jobcurrencies,
+                'joblanguages' => $languages,
+                'jobskills' => $skills,
+                'jobphotos' => $photos,
+                'expiry' => $expiry,
+                'jobstate' => $jobstate
+            ],
+            'photo' => [
+                'hasExistingPhoto' => $hasExistingPhoto,
+                'hasExistingPhotos' => $hasExistingPhotos,
+            ],
+            'countries' => $countries
+        ];
+
         return view('jobs.edit', [
             'job' => $job,
-            'sexOptions' => $sexOptions,
-            'jobcategories' => $jobCategories,
-            'joblevels' => $joblevels,
-            'jobtypes' => $jobtypes,
-            'jobcurrencies' => $jobcurrencies,
-            'joblanguages' => $languages,
-            'jobskills' => $skills,
-            'jobphotos' => $photos,
-            'expiry' => $expiry,
-            'hasExistingPhoto' => $hasExistingPhoto,
-            'hasExistingPhotos' => $hasExistingPhotos,
+            'data' => $data,
         ]);
     }
 
@@ -278,7 +289,7 @@ class JobController extends Controller
             if (!empty($job->main_image_path)) {
                 $oldPath = public_path('images/jobs/main-photo/' . $job->main_image_path);
                 if (file_exists($oldPath)) {
-                    unlink($oldPath);
+                    Storage::delete($oldPath);
                     $job->main_image_path = null;
                 }
             }
@@ -306,16 +317,18 @@ class JobController extends Controller
         $job->photos()->sync($jobrequest->input('photos'));
 
         if ($jobrequest->hasFile('photos')) {
-            if ($job->photos()->count() > 0) {
+            if ($job->photos()->exists()) {
                 foreach ($job->photos as $photo) {
-                    $oldPath = public_path('images/jobs/photos/' . $photo->photo);
+                    $oldPath = 'images/jobs/photos/' . $photo->photo;
                     if (file_exists($oldPath)) {
-                        unlink($oldPath);
+                        Storage::delete($oldPath);
                         $job->photos()->detach();
                     }
                 }
             }
             foreach ($jobrequest->file('photos') as $photo) {
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false)
+            {
                 $imageName = time() . '_' . $photo->getClientOriginalName();
                 $photo->move(public_path('images/jobs/photos/'), $imageName);
 
@@ -324,8 +337,11 @@ class JobController extends Controller
                 $newPhoto->save();
 
                 $job->photos()->attach($newPhoto->id);
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
             }
         }
+    }
 
         if ($job->update($jobrequest->validated())) {
             session()->flash('status', ('Twoja oferta pracy został pomyślnie zmieniona'));
@@ -351,7 +367,7 @@ class JobController extends Controller
 
     public function search(Request $request)
     {
-        $jobCategories = \App\Models\Shared\JobCategory::all();
+        $jobCategories = JobCategory::all();
         $jobSkills = Skill::all();
         $joblevels = JobLevel::all();
         $jobtype = JobType::all();
@@ -359,7 +375,6 @@ class JobController extends Controller
         $latestJob = Job::orderBy('created_at', 'desc')->paginate(20);
         $currentDate = Carbon::now();
         $jobstate = JobState::all();
-        $skills = Skill::all();
 
         $yearsDifference = 0;
         $monthsDifference = 0;
@@ -371,6 +386,11 @@ class JobController extends Controller
         $keyword = $request->input('keyword');
         $localisation = $request->input('localisation');
         $category = $request->input('category');
+
+        $categoryRequest = $request->input('selectcategory');
+        $skillsRequest = $request->input('skill');
+        $typesRequest = $request->input('type');
+        $levelsRequest = $request->input('level');
 
         // Sortowanie
         $sortBy = $request->input('sorting');
@@ -385,7 +405,24 @@ class JobController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-                $query->when(!is_null($keyword), function ($query) use ($keyword) {
+        if (!empty($categoryRequest)) {
+        $query->whereIn('jobcategory_id', $categoryRequest);
+        }
+        if (!empty($skillsRequest)) {
+        $query->whereHas('skill', function ($query) use ($skillsRequest) {
+        $query->whereIn('skill', $skillsRequest);
+        });
+        }
+        if (!empty($typesRequest)) {
+        $query->whereHas('jobtype', function ($query) use ($typesRequest) {
+        $query->whereIn('type', $typesRequest );
+        });
+        }
+        if (!empty($levelsRequest)) {
+        $query->whereIn('joblevel_id', $levelsRequest);
+        }
+
+        $query->when(!is_null($keyword), function ($query) use ($keyword) {
             return is_numeric($keyword) 
                 ? $query->where(function ($query) use ($keyword) {
                     $query->where('salary_from', '<=', $keyword)
@@ -422,6 +459,7 @@ class JobController extends Controller
                 });
             });
         });
+        
         $jobSearchs = $query->paginate(12);
 
         foreach ($jobSearchs as $job) {
@@ -439,7 +477,7 @@ class JobController extends Controller
             'jobs' => [
                 'jobCategories' => $jobCategories,
                 'jobstate' => $jobstate,
-                'jobSkills' => $skills,
+                'jobSkills' => $jobSkills,
                 'joblevels' => $joblevels,
                 'jobtype' => $jobtype,
                 'jobCount' => $jobCount,

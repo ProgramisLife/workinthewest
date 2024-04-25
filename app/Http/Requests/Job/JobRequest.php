@@ -65,7 +65,7 @@ class JobRequest extends FormRequest
                 'image',
                 'mimes:jpg,png,jpeg,svg',
                 'dimensions:min_width=100,min_height=100',
-                'dimensions:min_width=1920,min_height=1080',
+                'dimensions:max_width=1920,max_height=1080',
                 'max:4096'
             ],
             'expiry' => 'date',

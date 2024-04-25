@@ -17,10 +17,14 @@
             'salaryFromValue' => old('salary_from', $job->salary_from),
             'salaryToValue' => old('salary_to', $job->salary_to),
             'currencyValue' => old('currency', $job->currencies_id),
-            'languageValue' => old('language', optional($job->language)->isNotEmpty() ? $job->language->pluck('id')->toArray() : []),
+            'languageValue' => old('language', optional($job->language)->isNotEmpty() ?
+            $job->language->pluck('id')->toArray() : []),
             'sexOptionValue' => old('sex', $job->sex),
-            'deadlineValue' => old('deadline', optional($job->deadline)->format('Y-m-d')),
-            'skillValue' => old('skills', optional($job->skill)->isNotEmpty() ? $job->skill->pluck('id')->toArray() : []),
+            'deadlineValue' => old('deadline', $job->deadline),
+            'skillValue' => old('skills', optional($job->skill)->isNotEmpty() ? $job->skill->pluck('id')->toArray() :
+            []),
+            'jobstateValue' => old('jobstate', optional($job->jobstate)->isNotEmpty() ?
+            $job->jobstate->pluck('id')->toArray() : []),
             'submitBtnText' => 'Zaktualizuj ofertę pracy',
             'method' => 'PUT'
             ])

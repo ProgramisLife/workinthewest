@@ -52,6 +52,7 @@
                     src="{{ asset('images/jobs/main-photo/' . $job->main_image_path) }}" alt="Obecne zdjęcie">
                 <p>Obecna nazwa pliku: {{ $job->main_image_path }}</p>
                 <p>Jeśli chcesz zaktualizować to zdjęcie, wgraj nowe poniżej:</p>
+                <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                 @else
                 <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                 @endif
@@ -67,7 +68,10 @@
                     <img style="max-width: 10rem; max-height:10rem;"
                         src="{{ asset('images/jobs/photos/' . $photo->photo) }}" alt="Zdjęcie">
                     <p>Obecna nazwa pliku: {{ Str::limit($photo->photo, 20) }} , </p>
+                    <p>Jeśli chcesz zaktualizować te zdjęcia, wgraj nowe poniżej:</p>
                     @endforeach
+                    <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
+                        accept=".jpg, .jpeg, .png, ,svg">
                 </div>
                 @else
                 <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
@@ -168,8 +172,8 @@
                     <label class="text-uppercase" for="levels">poziom stanowiska *</label>
                     <select class="form-control @error('level') is-invalid @enderror" id="levels" name="level">
                         @foreach($data['job']['joblevels'] as $level)
-                        <option value="{{$level->id}}" {{ old('level')==$level->id ? 'selected' : ''
-                            }}>{{$level->level}}
+                        <option value="{{$level->id}}" {{ $level->id == $levelValue ? 'selected' :''}}>
+                            {{$level->level}}
                         </option>
                         @endforeach
                     </select>
@@ -186,8 +190,9 @@
                     <select class="form-control @error('category') is-invalid @enderror" id="categories"
                         name="category">
                         @foreach($data['job']['jobcategories'] as $category)
-                        <option value="{{$category->id}}" {{ old('category')==$category->id ? 'selected' :
-                            ''}}>{{$category->category}}</option>
+                        <option value="{{$category->id}}" {{ $category->id == $categoryValue ? 'selected' :''}}>
+                            {{$category->category}}
+                        </option>
                         @endforeach
                     </select>
                     @error('category')
@@ -265,7 +270,7 @@
             @foreach($data['job']['sexOptions'] as $option)
             <div>
                 <input class="form-check-input @error('sex') is-invalid @enderror" type="radio" id="sex_{{ $option }}"
-                    name="sex" value="{{ $option }}">
+                    name="sex" value="{{ $option }}" {{ $option==$sexOptionValue ? 'checked' : '' }}>
                 <label class="form-check-label" for="sex_{{ $option }}">{{ ucfirst($option) }}</label>
             </div>
             @endforeach
