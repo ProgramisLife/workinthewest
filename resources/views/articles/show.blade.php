@@ -13,19 +13,21 @@
             <div class="mb-4"></div>
             <div class="card bg-white">
                 @if($article->main_image_path)
-                <img class="card-img-top" src="{{asset('images/article/main-photo/' . $article->main_image_path)}}" alt="Article Image">
+                <img class="card-img-top" src="{{asset('images/article/main-photo/' . $article->main_image_path)}}"
+                    alt="Article Image">
                 @endif
                 <div class="card-body border-0">
-                    <h1>{{$article->title}}</h1>
-                    <p><b>Data publikacji:</b> {{$article->updated_at->format('d-M-Y')}}</p>
-                    <p>{{$article->description}}</p>
-                    <div class="d-flex">
+                    <div class="h1 px-5 my-4">{{$article->title}}</div>
+                    <div class="px-5 my-4"><b>Data publikacji:</b> {{$article->updated_at->format('d-M-Y')}}</div>
+                    <div class="px-5">{!!$article->description!!}</div>
+                    <div class="d-flex px-5 my-4">
                         <p>Źródło:</p>
                         <a href="{{$article->source}}" class="text-decoration-none mx-3">
                             {{$article->source}}
                         </a>
                     </div>
-                    @if(isset($article->youtube) || isset($article->facebook) || isset($article->vimeo) || isset($article->linkedin))
+                    @if(isset($article->youtube) || isset($article->facebook) || isset($article->vimeo) ||
+                    isset($article->linkedin))
                     <div class="row align-items-center">
                         <div class="col-auto">
                             <p class="mb-0">Udostępnij:</p>
@@ -52,7 +54,8 @@
                 @if($previousArticle)
                 <div class="d-flex text-center mt-3">
                     <p>Poprzedni artykuł: </p>
-                    <a href="{{ route('articles.show', ['article' => $previousArticle]) }}" class="text-decoration-none mx-2">{{$previousArticle->title}}</a>
+                    <a href="{{ route('articles.show', ['article' => $previousArticle]) }}"
+                        class="text-decoration-none mx-2">{{$previousArticle->title}}</a>
                 </div>
                 @endif
             </div>
@@ -60,7 +63,8 @@
                 @if($nextArticle)
                 <div class="d-flex text-center mt-3">
                     <p>Następny artykuł: </p>
-                    <a href="{{ route('articles.show', ['article' => $nextArticle]) }}" class="text-decoration-none mx-2">{{$nextArticle->title}}</a>
+                    <a href="{{ route('articles.show', ['article' => $nextArticle]) }}"
+                        class="text-decoration-none mx-2">{{$nextArticle->title}}</a>
                 </div>
                 @endif
             </div>
@@ -76,13 +80,20 @@
                     <div class="card mb-3 bg-white mx-3 border-0">
                         <div class="align-left">
                             @if($article->main_image_path)
-                            <img class="rounded" style="max-width: 15rem; max-height:15rem;" src="{{ asset('images/article/main-photo/' . $article->main_image_path) }}" alt="Card image cap">
+                            <img class="rounded" style="max-width: 15rem; max-height:15rem;"
+                                src="{{ asset('images/article/main-photo/' . $article->main_image_path) }}"
+                                alt="Card image cap">
                             @else
-                            <img class="rounded" style="max-width: 15rem; max-height:15rem;" src="{{ asset('images/article/default-images/' . ($files[array_rand($files)])) }}" alt="Default Image">
+                            <img class="rounded" style="max-width: 15rem; max-height:15rem;"
+                                src="{{ asset('images/article/default-images/' . ($files[array_rand($files)])) }}"
+                                alt="Default Image">
                             @endif
                             <div class="card-body">
-                                <a class="card-title text-decoration-none text-black" href="{{ route('articles.show', ['article' => $article]) }}">
-                                    <p class="card-title title-hover" style="font-weight:bold;font-size: 12px;">{{ $article->title }}</p>
+                                <a class="card-title text-decoration-none text-black"
+                                    href="{{ route('articles.show', ['article' => $article]) }}">
+                                    <p class="card-title title-hover" style="font-weight:bold;font-size: 12px;">
+                                        {{ $article->title }}
+                                    </p>
                                 </a>
                                 <p class="card-text"><small>{{ $article->updated_at->format('d-m-Y') }}</small></p>
                             </div>

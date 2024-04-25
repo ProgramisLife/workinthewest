@@ -18,7 +18,8 @@
                         <label class="text-uppercase" for="title">
                             Tytuł*
                         </label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Wprowadź Tytuł" value="{{ $titleValue }}">
+                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
+                            name="title" placeholder="Wprowadź Tytuł" value="{{ $titleValue }}">
                         @error('title')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -31,7 +32,8 @@
                         <label for="description" class="text-uppercase">
                             Opis*
                         </label>
-                        <textarea autofocus class="ckeditor form-control @error('description') is-invalid @enderror" id="editor" name="description">{!! $descriptionValue !!}</textarea>
+                        <textarea autofocus class="ckeditor form-control @error('description') is-invalid @enderror"
+                            id="editor" name="description">{!! $descriptionValue !!}</textarea>
                         @error('description')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -48,12 +50,14 @@
                         <label for="photo">Wybierz zdjęcie profilowe:</label>
                         @if ($data['photos']['hasExistingPhoto'])
                         <p>Obecne zdjęcie:</p>
-                        <img style="max-width: 10rem; max-height:10rem;" src="{{ asset('images/accommodation/main-photo/' . $accommodation->main_image_path) }}" alt="Obecne zdjęcie">
+                        <img style="max-width: 10rem; max-height:10rem;"
+                            src="{{ asset('images/accommodation/main-photo/' . $accommodation->main_image_path) }}"
+                            alt="Obecne zdjęcie">
                         <p>Obecna nazwa pliku: {{ $accommodation->main_image_path }}</p>
                         <p>Jeśli chcesz zaktualizować to zdjęcie, wybierz nowe poniżej:</p>
                         @else
                         <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                        @error('photos')
+                        @error('photo')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -68,12 +72,14 @@
                         <p>Obecne zdjęcia:</p>
                         <div class="text-align-center">
                             @foreach ($job->photos as $photo)
-                            <img style="max-width: 10rem; max-height:10rem;" src="{{ asset('images/accommodation/photos/' . $photos->photo) }}" alt="Zdjęcie">
+                            <img style="max-width: 10rem; max-height:10rem;"
+                                src="{{ asset('images/accommodation/photos/' . $photos->photo) }}" alt="Zdjęcie">
                             <p>Obecna nazwa pliku: {{ Str::limit($photos->photo, 20) }} , </p>
                             @endforeach
                         </div>
                         @else
-                        <input type="file" name="photos[]" class="form-control-file" id="photos" multiple accept=".jpg, .jpeg, .png, ,svg">
+                        <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
+                            accept=".jpg, .jpeg, .png, ,svg">
                         @error('photos')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -90,8 +96,10 @@
                         <p class="text-uppercase my-1">kategorie</p>
                         @foreach ($data['accommodation']['accommodationCategory'] as $category)
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input category_checkbox" type="checkbox" id="category_{{ $category->id }}" name="categories[]" value="{{ $category->id }}">
-                            <label class="form-check-label" for="category_{{ $category->id }}">{{ $category->name }}</label>
+                            <input class="form-check-input category_checkbox" type="checkbox"
+                                id="category_{{ $category->id }}" name="categories[]" value="{{ $category->id }}">
+                            <label class="form-check-label"
+                                for="category_{{ $category->id }}">{{ $category->name }}</label>
                         </div>
                         @endforeach
                     </div>
@@ -101,7 +109,8 @@
                         <label class="text-uppercase" for="price_buy">
                             cena do zakupu
                         </label>
-                        <input type="text" class="form-control @error('price_buy') is-invalid @enderror" id="price_buy" name="price_buy" placeholder="4000" value="{{ $priceBuyValue }}">
+                        <input type="text" class="form-control @error('price_buy') is-invalid @enderror" id="price_buy"
+                            name="price_buy" placeholder="4000" value="{{ $priceBuyValue }}">
                         @error('price_buy')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -114,7 +123,8 @@
                         <label class="text-uppercase" for="price_rent">
                             cena do wynajęcia
                         </label>
-                        <input type="text" class="form-control @error('price_buy') is-invalid @enderror" id="price_rent" name="price_rent" placeholder="4000" value="{{ $priceRentValue }}">
+                        <input type="text" class="form-control @error('price_buy') is-invalid @enderror" id="price_rent"
+                            name="price_rent" placeholder="4000" value="{{ $priceRentValue }}">
                         @error('price_rent')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -125,7 +135,8 @@
                     <!-- Waluta -->
                     <div class="col-3 form-group mx-1 my-3 d-inline-block">
                         <label class="text-uppercase" for="currency">waluta *</label>
-                        <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency">
+                        <select class="form-control @error('currency') is-invalid @enderror" id="currency"
+                            name="currency">
                             @foreach ($data['accommodation']['currency'] as $currency)
                             <option value="{{ $currency->id }}" @if (old('currency')==$currency->id) selected @endif>
                                 {{ $currency->currency }}
@@ -168,7 +179,8 @@
                         <label class="text-uppercase" for="contact">
                             Osoba kontaktowa / Nazwa firmy*
                         </label>
-                        <input type="text" class="form-control @error('contact') is-invalid @enderror" id="contact" name="contact" placeholder="Januszex" value="{{ $contactValue }}">
+                        <input type="text" class="form-control @error('contact') is-invalid @enderror" id="contact"
+                            name="contact" placeholder="Januszex" value="{{ $contactValue }}">
                         @error('contact')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -180,7 +192,8 @@
                         <label class="text-uppercase" for="email">
                             e-mail*
                         </label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="administrator123@work.pl" value="{{ $emailValue }}">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                            name="email" placeholder="administrator123@work.pl" value="{{ $emailValue }}">
                         @error('email')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -189,11 +202,12 @@
                     </div>
                     <!-- Numer telefonu -->
                     <div class="col-5 form-group my-3 mx-2 d-inline-block">
-                        <label class="text-uppercase" for="phone-number">
+                        <label class="text-uppercase" for="phone_number">
                             Numer telefonu
                         </label>
-                        <input type="text" class="form-control @error('phone-number') is-invalid @enderror" id="phone-number" name="phone-number" placeholder="899 677 555" value="{{ $phoneNumber }}">
-                        @error('phone-number')
+                        <input type="text" class="form-control @error('phone_number') is-invalid @enderror"
+                            id="phone_number" name="phone_number" placeholder="899 677 555" value="{{ $phoneNumber }}">
+                        @error('phone_number')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -209,7 +223,7 @@
                 <label class="text-uppercase" for="countries">wybierz kraj</label>
                 <select class="form-control @error('countries') is-invalid @enderror" id="countries" name="countries">
                     @foreach ($data['countries'] as $country)
-                    <option value="{{ $country->id }}" {{ old('countries') == $country->id ? 'selected' : '' }}>
+                    <option value="{{ $country->id }}" {{ old('countries')==$country->id ? 'selected' : '' }}>
                         {{ $country->country }}
                     </option>
                     @endforeach
@@ -248,9 +262,6 @@
             </div>
         </div>
 
-        <!-- Wyróżnione -->
-        <input type="hidden" name="featured" value="false">
-
         @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -279,7 +290,7 @@
             if (countryId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('jobs.getState') }}",
+                    url: "{{ route('accommodation.getState') }}",
                     data: {
                         country_id: countryId,
                         _token: "{{ csrf_token() }}"
@@ -310,7 +321,7 @@
             if (stateId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('jobs.getCountry') }}",
+                    url: "{{ route('accommodation.getCity') }}",
                     data: {
                         state_id: stateId,
                         _token: "{{ csrf_token() }}"

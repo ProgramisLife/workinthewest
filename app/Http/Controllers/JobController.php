@@ -68,6 +68,11 @@ class JobController extends Controller
                 'jobstate' => $jobstate,
             ],
             'label' => [
+                'searchimg1' => 'znajdź pracę',
+                'searchimg2' => 'Przeszukaj naszą bazę ofert, by odkryć coś dla siebie!',
+                'searchimg3' => 'Słowo kluczowe?',
+                'searchimg4' => 'gdzie ?',
+                'searchimg5' => 'branża ?',
                 'cooperation' => 'współpracujemy:',
                 'empty' => 'Brak ofert pracy',
                 'news' => 'Centrum Aktualności',

@@ -11,6 +11,7 @@ use App\Models\Shared\Currency;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
+use App\Http\Requests\Accommodation\AccommodationRequest;
 
 
 class AccommodationController extends Controller
@@ -24,7 +25,7 @@ class AccommodationController extends Controller
     public function index()
     {
         $data = [];
-        return view('jobs.index', [
+        return view('accommodation.index', [
             'data' => $data,
         ]);
     }
@@ -42,6 +43,7 @@ class AccommodationController extends Controller
         $hasExistingPhotos = $accommodation->photos()->exists();
 
         $accommodationCategory = AccommodationCategory::all();
+        $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
         $currency = Currency::all();
         $photos = APhoto::all();
         $countries = Country::get(["country", "id"]);
@@ -50,6 +52,7 @@ class AccommodationController extends Controller
             'accommodation' => [
                 'accommodationCategory' => $accommodationCategory,
                 'currency' => $currency,
+                'expiry' => $expiry,
             ],
             'photos' => [
                 'hasExistingPhoto' => $hasExistingPhoto,
@@ -70,24 +73,72 @@ class AccommodationController extends Controller
         return response()->json($data);
     }
 
-    public function getCountry(Request $request)
+    public function getCity(Request $request)
     {
         $data["cities"] = City::where("state_id", $request->state_id)->get(["city", "id"]);
         return response()->json($data);
     }
 
 
-    public function store()
+    public function store(AccommodationRequest $accommodationRequest)
+    {
+        $accommodation = new Accommodation($accommodationRequest->validated());
+
+        $accommodation->slug;
+
+        $accommodation->currency()->associate($accommodationRequest->input('currency'));
+
+        $accommodation->country()->associate($accommodationRequest->input('countries'));
+
+        $accommodation->state()->associate($accommodationRequest->input('states'));
+
+        $accommodation->city()->associate($accommodationRequest->input('cities'));
+
+        $accommodation->save();
+
+         if ($accommodationRequest->hasFile('photo')) {
+            $photo = $accommodationRequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/accommodation/main-photo'), $imageName);
+                $accommodation->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+        }
+
+        $accommodation->photos()->sync($accommodationRequest->input('photos'));
+
+        if ($accommodationRequest->hasFile('photos')) {
+            foreach ($accommodationRequest->file('photos') as $photo) {
+                $imageName = time() . '_' . $photo->getClientOriginalName();
+                $photo->move(public_path('images/accommodation/photos'), $imageName);
+
+                $newPhoto = new APhoto();
+                $newPhoto->photo = $imageName;
+                $newPhoto->save();
+
+                $accommodation->photos()->attach($newPhoto->id);
+            }
+        }
+
+        if ($accommodation->save($accommodationRequest->validated())) {
+            session()->flash('status', ('Twoja zakwaterowanie został pomyślnie zmieniona'));
+        } else {
+            session()->flash('status', ('Coś poszło nie tak :('));
+        }
+
+        return redirect()->route('accommodation.show',['accommodation' => $accommodation]);
+    }
+
+
+    public function show(Accommodation $accommodation)
     {
     }
 
 
-    public function show()
-    {
-    }
-
-
-    public function edit()
+    public function edit(Accommodation $accommodation)
     {
     }
 

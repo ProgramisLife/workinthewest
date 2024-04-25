@@ -4,10 +4,17 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 
-<div class="container">
-    <div class="row py-2">
-        <h1 class="text-left text-uppercase oferty my-5">oferty pracy</h1>
+<div style="margin-top: 2rem;">
+    <div id="intro-example" class="round p-5 text-center bg-image"
+        style="background-image: url('{{asset('assets/images/szukaj.jpg') }}');background-repeat: no-repeat; background-size: cover;">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="text-white">
+                <h1 class="text-left text-uppercase fw-bold my-5">oferty pracy</h1>
+            </div>
+        </div>
     </div>
+</div>
+<div class="container my-5">
     <form action="{{ route('jobs.search') }}" method="GET">
         @csrf
         <div class="row">

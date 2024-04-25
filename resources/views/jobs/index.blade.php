@@ -4,52 +4,58 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/jobs/index.css') }}" />
 
-<div id="main-search-carousel" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img class="caroseul-image rounded" src="{{asset('assets/images/bg-info-home-3.png') }}" alt="First slide">
-            <div class="carousel-caption d-none d-md-block" style="top: 5%;">
-                <h1 class="h-work text-center text-uppercase">znajdź pracę</h1>
-                <p class=" text-center h5 my-5">Przeszukaj naszą bazę ofert, by odkryć coś dla siebie!</p>
-                <form class="text-center" method="POST" action="{{ route('jobs.search') }}">
-                    <div class="form-group d-inline-block mx-3">
-                        <label class="text-uppercase py-1" for="keyword">
-                            Słowo kluczowe?
-                        </label>
-                        <input type="text" class="form-control d-inline-block @error('keyword') is-invalid @enderror"
-                            id="keyword" name="keyword" placeholder="Posada, zawód ...">
-                    </div>
-                    <div class="form-group d-inline-block mx-3">
-                        <label class="text-uppercase py-1" for="localisation">
-                            gdzie ?
-                        </label>
-                        <input type="text" class="form-control inline-block @error('localisation') is-invalid @enderror"
-                            id="localisation" name="localisation" placeholder="Wpisz lokalizację">
-                    </div>
-                    <div class="form-group d-inline-block mx-3">
-                        <label class="text-uppercase py-1" for="category">
-                            branża ?
-                        </label>
-                        <select class="form-select" name="category">
-                            <option value="" selected>Wybierz kategorię</option>
-                            @foreach($data['categories'] as $category)
-                            <option value="{{$category->category}}" @if($category->id == old('category', $category))
-                                selected @endif>
-                                {{$category->category}}
-                            </option>
-                            @endforeach
-                        </select>
-                        @error('category')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+<div style="margin-top: 2rem;">
+    <!-- Background image -->
+    <div id="intro-example" class="round p-5 text-center bg-image"
+        style="background-image: url('{{asset('assets/images/bg-info-home-3.png') }}');background-repeat: no-repeat; background-size: cover;">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="text-white">
+                <h1 class="mb-3 h-work text-center text-uppercase">{{$data['label']['searchimg1']}}</h1>
+                <p class="mb-4 text-center h5 my-5">{{$data['label']['searchimg2']}}</p>
+                <div class="mb-4">
+                    <form class="text-center" method="POST" action="{{ route('jobs.search') }}">
+                        <div class="form-group d-inline-block mx-3">
+                            <label class="text-uppercase py-1" for="keyword">
+                                {{$data['label']['searchimg3']}}
+                            </label>
+                            <input type="text"
+                                class="form-control d-inline-block @error('keyword') is-invalid @enderror" id="keyword"
+                                name="keyword" placeholder="Posada, zawód ...">
                         </div>
-                        @enderror
-                    </div>
-                    <button type="submit" class="btn btn-search btn-primary"><i
-                            class="bi d-flex justify-content-center bi-arrow-right-short"></i></button>
-                    @method('POST')
-                    @csrf
-                </form>
+                        <div class="form-group d-inline-block mx-3">
+                            <label class="text-uppercase py-1" for="localisation">
+                                {{$data['label']['searchimg4']}}
+                            </label>
+                            <input type="text"
+                                class="form-control inline-block @error('localisation') is-invalid @enderror"
+                                id="localisation" name="localisation" placeholder="Wpisz lokalizację">
+                        </div>
+                        <div class="form-group d-inline-block mx-3">
+                            <label class="text-uppercase py-1" for="category">
+                                {{$data['label']['searchimg5']}}
+                            </label>
+                            <select class="form-select" name="category">
+                                <option value="" selected>Wybierz kategorię</option>
+                                @foreach($data['categories'] as $category)
+                                <option value="{{$category->category}}" @if($category->id == old('category', $category))
+                                    selected @endif>
+                                    {{$category->category}}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('category')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-search btn-primary cover"><i
+                                class="bi d-flex justify-content-center bi-arrow-right-short"></i>
+                        </button>
+                        @method('POST')
+                        @csrf
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -338,40 +344,37 @@
         </div>
     </div>
 </div>
-<div class="row mx-0 my-5">
+<div class="d-flex my-5">
     <div class="col-6 p-0">
-        <div id="carousel1" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="caroseul-image-log img-fluid" src="{{asset('assets/images/pracodawca.jpg') }}"
-                        alt="Pracodawca">
-                    <div class="carousel-caption d-none d-md-block d-flex flex-column justify-content-center">
-                        <p class="font-weight-bold text-uppercase">Jestem</p>
-                        <h1 class="font-weight-bold text-uppercase">pracodawcą</h1>
-                        <p class="h5 my-5">Dodawaj ogłoszenia pracy, oraz szukaj kandydatów...</p>
+        <div id="intro-example" class="round p-5 text-center bg-image"
+            style="background-image: url('{{asset('assets/images/pracodawca.jpg') }}');background-repeat: no-repeat; background-size: cover;">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-white">
+                    <p class="mb-3 font-weight-bold text-uppercase">Jestem</p>
+                    <h1 class="mb-4 font-weight-bold text-uppercase">pracodawcą</h1>
+                    <p class="h5 my-5">Dodawaj ogłoszenia pracy, oraz szukaj kandydatów...</p>
+                    <div class="mb-4">
                         <a href=""
                             class="text-align-start text-uppercase bg-primary text-white p-3 text-decoration-none">
                             <i class="bi bi-building-fill"></i>
-                            {{$data['label']['business-register']}}</a>
+                            zarejestruj firmę</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-6 p-0">
-        <div id="carousel12" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="caroseul-image-log img-fluid" src="{{asset('assets/images/pracownik.jpg') }}"
-                        alt="Pracodawca">
-                    <div class="carousel-caption d-none d-md-block d-flex flex-column justify-content-center">
-                        <p class="font-weight-bold text-uppercase">Jestem</p>
-                        <h1 class="font-weight-bold text-uppercase">kandydatem</h1>
-                        <p class="h5 my-5">Przeszukaj bazę ofert pracy, aplikuj, zapisuj na później...</p>
+        <div id="intro-example" class="round p-5 text-center bg-image"
+            style="background-image: url('{{asset('assets/images/pracownik.jpg') }}');background-repeat: no-repeat; background-size: cover;">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-white">
+                    <p class="mb-3 font-weight-bold text-uppercase">Jestem</p>
+                    <h1 class="mb-4 font-weight-bold text-uppercase">kandydatem</h1>
+                    <p class="h5 my-5">Przeszukaj bazę ofert pracy, aplikuj, zapisuj na później...</p>
+                    <div class="mb-4">
                         <a href=""
                             class="text-align-start text-uppercase bg-success text-white p-3 text-decoration-none">
-                            <i class="bi bi-person-fill"></i>
-                            Zarejestruj się jako kandydat</a>
+                            <i class="bi bi-person-fill"></i>Zarejestruj się jako kandydat</a>
                     </div>
                 </div>
             </div>

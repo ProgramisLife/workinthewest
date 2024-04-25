@@ -47,7 +47,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('contact');
             $table->string('mainimagepath')->nullable();
-            $table->string('phone-number')->nullable();
+            $table->string('phone_number')->nullable();
             $table->integer('price_buy')->nullable();
             $table->integer('price_rent')->nullable();
             $table->string('slug')->unique();

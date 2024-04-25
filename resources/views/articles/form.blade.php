@@ -1,3 +1,6 @@
+<head>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+</head>
 <div class="bg-light col-lg-10 col-sm-6">
     <form action="{{ $action }}" method="{{ $formMethod ?? 'POST' }}" enctype="multipart/form-data" novalidate>
         @csrf
@@ -7,7 +10,8 @@
                 <label class="text-uppercase" for="title">
                     Tytuł*
                 </label>
-                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Wprowadź Tytuł" value="{{ $titleValue }}">
+                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title"
+                    placeholder="Wprowadź Tytuł" value="{{ $titleValue }}">
                 @error('title')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -25,7 +29,8 @@
                 <label for="description" class="text-uppercase">
                     Opis*
                 </label>
-                <textarea autofocus class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="5">{{ $descriptionValue }}</textarea>
+                <textarea autofocus class="form-control @error('description') is-invalid @enderror" id="editor"
+                    name="description" rows="5">{{ $descriptionValue }}</textarea>
                 @error('description')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -38,7 +43,8 @@
                 <label class="text-uppercase" for="source">
                     Źródło*
                 </label>
-                <input type="text" class="form-control @error('source') is-invalid @enderror" id="source" name="source" placeholder="Link do źródła" value="{{ $sourceValue }}">
+                <input type="text" class="form-control @error('source') is-invalid @enderror" id="source" name="source"
+                    placeholder="Link do źródła" value="{{ $sourceValue }}">
                 @error('source')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -51,7 +57,8 @@
                 <label class="text-uppercase" for="youtube">
                     Youtube
                 </label>
-                <input type="text" class="form-control @error('youtube') is-invalid @enderror" id="youtube" name="youtube" placeholder="Link do youtuba" value="{{ $youtubeValue }}">
+                <input type="text" class="form-control @error('youtube') is-invalid @enderror" id="youtube"
+                    name="youtube" placeholder="Link do youtuba" value="{{ $youtubeValue }}">
                 @error('youtube')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -64,7 +71,8 @@
                 <label class="text-uppercase" for="facebook">
                     Facebook
                 </label>
-                <input type="text" class="form-control @error('facebook') is-invalid @enderror" id="facebook" name="facebook" placeholder="Link do facebooka" value="{{ $facebookValue }}">
+                <input type="text" class="form-control @error('facebook') is-invalid @enderror" id="facebook"
+                    name="facebook" placeholder="Link do facebooka" value="{{ $facebookValue }}">
                 @error('facebook')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -77,7 +85,8 @@
                 <label class="text-uppercase" for="vimeo">
                     Vimeo
                 </label>
-                <input type="text" class="form-control @error('vimeo') is-invalid @enderror" id="vimeo" name="vimeo" placeholder="Link do Vimeo" value="{{ $vimeoValue }}">
+                <input type="text" class="form-control @error('vimeo') is-invalid @enderror" id="vimeo" name="vimeo"
+                    placeholder="Link do Vimeo" value="{{ $vimeoValue }}">
                 @error('vimeo')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -90,7 +99,8 @@
                 <label class="text-uppercase" for="vimeo">
                     X
                 </label>
-                <input type="text" class="form-control @error('x') is-invalid @enderror" id="x" name="x" placeholder="Link do X" value="{{ $xValue }}">
+                <input type="text" class="form-control @error('x') is-invalid @enderror" id="x" name="x"
+                    placeholder="Link do X" value="{{ $xValue }}">
                 @error('x')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -103,7 +113,8 @@
                 <label class="text-uppercase" for="linkedin">
                     Linkedin
                 </label>
-                <input type="text" class="form-control @error('linkedin') is-invalid @enderror" id="linkedin" name="linkedin" placeholder="Link do Linkedin" value="{{ $linkedinValue }}">
+                <input type="text" class="form-control @error('linkedin') is-invalid @enderror" id="linkedin"
+                    name="linkedin" placeholder="Link do Linkedin" value="{{ $linkedinValue }}">
                 @error('linkedin')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -117,3 +128,10 @@
             @method($method ?? 'POST')
     </form>
 </div>
+<script>
+    ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+</script>

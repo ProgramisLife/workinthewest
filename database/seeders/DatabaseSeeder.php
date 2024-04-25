@@ -12,6 +12,7 @@ use Database\Seeders\Shared\JobStateSeeders;
 use Database\Seeders\Localisation\CountryTableSeeders;
 use Database\Seeders\Localisation\StateTableSeeders;
 use Database\Seeders\Localisation\CityTableSeeders;
+use Database\Seeders\Shared\AccommodationCategorySeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
             StateTableSeeders::class,
             CityTableSeeders::class,
             JobStateSeeders::class,
+            AccommodationCategorySeeder::class,
         ]);
     }
 }

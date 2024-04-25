@@ -29,7 +29,7 @@
     <header>
         @include('components.navbar')
     </header>
-    <main class="my-5">
+    <main>
         @yield('content')
     </main>
     <footer>

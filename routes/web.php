@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\JobController;
-use App\Models\Shared\JobCategory;
+use App\Http\Controllers\AccommodationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ Route::prefix('/articles')->group(function () {
 
     Route::get('/add', [ArticleController::class, 'add'])->name('articles.add');
 
-    Route::post('/store', [ArticleController::class, 'store'])->name('articles.store'); // Zapisujemy zadania
+    Route::post('/store', [ArticleController::class, 'store'])->name('articles.store');
 
     Route::get('/{article}', [ArticleController::class, 'show'])->name('articles.show'); //Pokazywanie pojedyńczego zadania
 
@@ -60,4 +60,25 @@ Route::prefix('/articles')->group(function () {
     Route::put('/{article}', [ArticleController::class, 'update'])->name('articles.update');
 
     Route::delete('/{article}', [ArticleController::class, 'delete'])->name('articles.delete');
+});
+
+Route::prefix('/accommodation')->group(function () {
+
+    Route::get('/', [AccommodationController::class, 'index'])->name('accommodation.index');
+
+    Route::get('/add', [AccommodationController::class, 'add'])->name('accommodation.add');
+
+    Route::post('get-states-by-country', [AccommodationController::class, 'getState'])->name('accommodation.getState');
+
+    Route::post('get-cities-by-state', [AccommodationController::class, 'getCity'])->name('accommodation.getCity');
+
+    Route::post('/store', [AccommodationController::class, 'store'])->name('accommodation.store');
+
+    Route::get('/{accommodation}', [AccommodationController::class, 'show'])->name('accommodation.show');
+
+    Route::get('/{accommodation}/edit', [AccommodationController::class, 'edit'])->name('accommodation.edit');
+
+    Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodation.update');
+
+    Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodation.delete');
 });

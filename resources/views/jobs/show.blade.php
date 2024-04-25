@@ -175,24 +175,26 @@
             </div>
         </div>
         <div class="mx-5 col-3 bg-white">
-            <form>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">imię</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <form class="py-3">
+                Jego Avatar<br />
+                Nazwa użytkownika do którego należy ogłoszenie
+                <div class="text-uppercase fw-bold mx-4 my-4">Formularz kontaktowy</div>
+                <hr class="mx-4 border-top border-4 border-dark">
+                <div class="mb-3 mx-4">
+                    <input type="text" class="form-control" placeholder="Twoje imię">
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div class="mb-3 mx-4">
+                    <input type="email" class="form-control" placeholder="Twój email">
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">przedmiot</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div class="mb-3 mx-4">
+                    <input type="text" class="form-control" placeholder="Przedmiot">
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">wiadomość</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div class="mb-3 mx-4">
+                    <input type="text" class="form-control" placeholder="Wiadomość">
                 </div>
-                <a href="" class="btn btn-primary">Submit</a>
+                <div class="text-start">
+                    <a href="" class="btn btn-success text-uppercase mx-4">wyślij teraz</a>
+                </div>
             </form>
         </div>
     </div>
