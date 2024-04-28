@@ -23,6 +23,8 @@ Route::get('/', function () {
 
 Route::prefix('/jobs')->group(function () {
 
+    Route::match(['get', 'post'], '/search', [JobController::class, 'search'])->name('jobs.search'); // Wszukiwarka ?
+    
     Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 
     Route::get('/add', [JobController::class, 'add'])->name('jobs.add');
@@ -32,8 +34,6 @@ Route::prefix('/jobs')->group(function () {
     Route::post('get-cities-by-state', [JobController::class, 'getCity'])->name('jobs.getCity');
 
     Route::post('/store', [JobController::class, 'store'])->name('jobs.store'); // Zapisujemy pracę
-
-    Route::match(['get', 'post'], '/search', [JobController::class, 'search'])->name('jobs.search'); // Wszukiwarka ?
 
     Route::get('/{job}', [JobController::class, 'show'])->name('jobs.show'); //Pokazywanie pojedyńczego pracy
 
@@ -46,6 +46,8 @@ Route::prefix('/jobs')->group(function () {
 
 
 Route::prefix('/articles')->group(function () {
+
+     Route::match(['get', 'post'], '/search', [ArticleController::class, 'search'])->name('articles.search');
 
     Route::get('/', [ArticleController::class, 'index'])->name('articles.index');
 
@@ -63,6 +65,8 @@ Route::prefix('/articles')->group(function () {
 });
 
 Route::prefix('/accommodation')->group(function () {
+
+    Route::post('/search', [AccommodationController::class, 'search'])->name('accommodation.search');
 
     Route::get('/', [AccommodationController::class, 'index'])->name('accommodation.index');
 

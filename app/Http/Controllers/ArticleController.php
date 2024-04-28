@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Article\ArticleRequest;
 use App\Models\Article;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Request;
 
 class ArticleController extends Controller
 {
@@ -133,5 +133,10 @@ class ArticleController extends Controller
         }
 
         return redirect()->route('articles.index');
+    }
+
+    public function search(Request $request)
+    {
+        return dd('coś');
     }
 }

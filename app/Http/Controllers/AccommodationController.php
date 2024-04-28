@@ -16,7 +16,7 @@ use App\Http\Requests\Accommodation\AccommodationRequest;
 
 class AccommodationController extends Controller
 {
-    const Accommodation_PER_PAGE = 10;
+    const ACCOMMODATION_PER_PAGE = 10;
     /**
      * Show all jobs.
      *
@@ -24,7 +24,46 @@ class AccommodationController extends Controller
      */
     public function index()
     {
-        $data = [];
+        $news = Accommodation::orderBy('created_at', 'DESC')->paginate(self::ACCOMMODATION_PER_PAGE);
+        $featureds = Accommodation::where('featured', true)->paginate(self::ACCOMMODATION_PER_PAGE);
+
+        $currentDate = Carbon::now();
+
+        $yearsDifference = 0;
+        $monthsDifference = 0;
+        $daysDifference = 0;
+        $hoursDifference = 0;
+        $minutesDifference = 0;
+
+        foreach ($news as $new) {
+        $createdAt = $new->created_at;
+        $diff = $currentDate->diff($createdAt);
+
+        $yearsDifference = $diff->y;
+        $monthsDifference = $diff->m;
+        $daysDifference = $diff->d;
+        $hoursDifference = $diff->h;
+        $minutesDifference = $diff->i;
+    }
+
+        $data = [
+            'accommodation' => [
+                'news' => $news,
+                'featureds' => $featureds,
+            ],
+            'label' => [
+                'newest' => 'najnowsze oferty',
+                'featured' => 'wyróżnione',
+                'empty' => 'Brak ogłoszeń',
+            ],
+            'date' => [
+                'yearsDifference' => $yearsDifference,
+                'monthsDifference' => $monthsDifference,
+                'daysDifference' => $daysDifference,
+                'hoursDifference' => $hoursDifference,
+                'minutesDifference' => $minutesDifference,
+            ],
+        ];
         return view('accommodation.index', [
             'data' => $data,
         ]);
@@ -124,7 +163,7 @@ class AccommodationController extends Controller
         }
 
         if ($accommodation->save($accommodationRequest->validated())) {
-            session()->flash('status', ('Twoja zakwaterowanie został pomyślnie zmieniona'));
+            session()->flash('status', ('Twoja oferta został pomyślnie zapisana'));
         } else {
             session()->flash('status', ('Coś poszło nie tak :('));
         }
@@ -135,6 +174,13 @@ class AccommodationController extends Controller
 
     public function show(Accommodation $accommodation)
     {
+        $accommodationSimilarCategorys = Accommodation::where('id', $accommodation->country_id && $accommodation->state_id)
+            ->where('id', '!=', $accommodation->id)
+            ->get();
+        return view('accommodation.show', [
+            'accommodation' => $accommodation,
+            'accommodationSimilarCategorys' => $accommodationSimilarCategorys,
+        ]);
     }
 
 
@@ -148,7 +194,20 @@ class AccommodationController extends Controller
     }
 
 
-    public function delete()
+    public function delete(Accommodation $accommodation)
     {
+        if ($accommodation->delete()) {
+            session()->flash('status', 'Twoja oferta została usunięta.');
+        } else {
+            session()->flash('status', 'Wystąpił błąd podczas usuwania Twojej oferty pracy :(');
+        }
+
+        return redirect()->route('accommodation.index');
+    }
+
+    public function search(Request $request)
+    {
+        $data = 'coś';
+        return response()->json($data);
     }
 }

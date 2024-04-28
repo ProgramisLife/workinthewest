@@ -91,7 +91,7 @@
                                                     <a href="{{ route('jobs.show', ['job' => $newJob]) }}"
                                                         class="text-decoration-none">
                                                         <h2 class="card-title">
-                                                            {{ Str::limit($newJob->title, 20) }}
+                                                            {{ Str::limit($newJob->title, 25) }}
                                                         </h2>
                                                     </a>
                                                 </div>
@@ -215,7 +215,7 @@
                                                     <a href="{{ route('jobs.show', ['job' => $featuredJobs]) }}"
                                                         class="text-decoration-none">
                                                         <h2 class="card-title">
-                                                            {{ Str::limit($featuredJobs->title, 20) }}
+                                                            {{ Str::limit($featuredJobs->title, 25) }}
                                                         </h2>
                                                     </a>
                                                 </div>

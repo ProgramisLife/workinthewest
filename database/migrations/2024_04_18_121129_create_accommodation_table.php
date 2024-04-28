@@ -19,7 +19,7 @@ return new class extends Migration
      * @property string $title (min:3|max:255) tytuł
      * @property text $description
      * @property string $email
-     * @property string $phone-number
+     * @property string $phone_number
      * @property int $price
      * @property enum $sold {do kupienia, wynajem}
      * @property string $slug   (max:255|unique)
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('email');
             $table->string('contact');
-            $table->string('mainimagepath')->nullable();
+            $table->string('main_image_path')->nullable();
             $table->string('phone_number')->nullable();
             $table->integer('price_buy')->nullable();
             $table->integer('price_rent')->nullable();
