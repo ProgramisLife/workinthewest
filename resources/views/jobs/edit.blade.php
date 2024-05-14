@@ -3,7 +3,7 @@
 @section('title', 'Edytuj ofertę pracy')
 
 @section('content')
-<div class="container">
+<div class="container my-5">
     <div class="row py-5">
         <div class="d-flex justify-content-center">
             @include('jobs.form', [
@@ -25,6 +25,9 @@
             []),
             'jobstateValue' => old('jobstate', optional($job->jobstate)->isNotEmpty() ?
             $job->jobstate->pluck('id')->toArray() : []),
+            'countryValue' => old('countries', $job->country_id),
+            'stateValue' => old('states', $job->state_id),
+            'cityValue' => old('cities', $job->city_id),
             'submitBtnText' => 'Zaktualizuj ofertę pracy',
             'method' => 'PUT'
             ])

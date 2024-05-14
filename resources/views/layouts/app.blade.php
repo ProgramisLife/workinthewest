@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Workinthewest - Praca dla wszystkich') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -16,25 +16,18 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+    <!-- Custom CSS Style -->
+    <link rel="stylesheet" href="{{ asset('assets/css/shared/main.css') }}" type="text/css" />
+
 </head>
 
-<style>
-    body {
-        font-family: 'Open Sans', sans-serif;
-        background-color: #f6f7f9;
-    }
-</style>
-
-<body class="antialiased">
-    <header>
-        @include('components.navbar')
-    </header>
+<body class="antialiased font-family-open-sans background-light-white">
+    @include('components.navbar')
     <main>
         @yield('content')
     </main>
-    <footer>
-        @include('components.footer')
-    </footer>
+    @include('components.footer')
 </body>
 
 </html>

@@ -14,8 +14,6 @@ use Cviebrock\EloquentSluggable\Sluggable;
 
 class Accommodation extends Model
 {
-    use HasFactory;
-
     use Sluggable;
 
     public function sluggable(): array
@@ -113,4 +111,6 @@ class Accommodation extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    use HasFactory;
 }

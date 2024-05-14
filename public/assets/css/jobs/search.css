@@ -51,10 +51,24 @@
 }
 
 .image-container img {
-    max-width: 180px;
-    max-height: 180px;
-    min-width: 180px;
-    min-height: 180px;
-    width: auto;
-    height: auto;
+    max-width: 10rem;
+    max-height: 10rem;
+    min-width: 10rem;
+    min-height: 10rem;
+}
+
+.round {
+    height: 20rem;
+}
+
+.main-image-header-blue {
+    font-size: 64px;
+    color: #007bff;
+    text-transform: uppercase;
+}
+
+.main-image-header-white {
+    font-size: 64px;
+    color: white;
+    text-transform: uppercase;
 }

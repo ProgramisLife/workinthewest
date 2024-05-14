@@ -5,11 +5,14 @@
 <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 
 <div style="margin-top: 2rem;">
-    <div id="intro-example" class="round p-5 text-center bg-image"
-        style="background-image: url('{{asset('assets/images/szukaj.jpg') }}');background-repeat: no-repeat; background-size: cover;">
+    <div class="round p-5 text-center bg-image"
+        style="background-image: url('{{ asset('assets/images/szukaj.jpg') }}');background-repeat: no-repeat; background-size: cover;">
         <div class="d-flex justify-content-center align-items-center h-100">
             <div class="text-white">
-                <h1 class="text-left text-uppercase fw-bold my-5">oferty pracy</h1>
+                <div class="h1 text-left fw-bold mt-5">
+                    <span class="mx-2 main-image-header-blue">oferty</span>
+                    <span class="main-image-header-white">pracy</span>
+                </div>
             </div>
         </div>
     </div>

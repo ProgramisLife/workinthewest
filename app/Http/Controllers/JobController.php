@@ -52,7 +52,6 @@ class JobController extends Controller
         $createdAt = $job->created_at;
         $diff = $currentDate->diff($createdAt);
 
-        // Tutaj możesz wykorzystać różnicę czasu dla każdego rekordu
         $yearsDifference = $diff->y;
         $monthsDifference = $diff->m;
         $daysDifference = $diff->d;
@@ -68,13 +67,17 @@ class JobController extends Controller
                 'jobstate' => $jobstate,
             ],
             'label' => [
-                'searchimg1' => 'znajdź pracę',
-                'searchimg2' => 'Przeszukaj naszą bazę ofert, by odkryć coś dla siebie!',
-                'searchimg3' => 'Słowo kluczowe?',
-                'searchimg4' => 'gdzie ?',
-                'searchimg5' => 'branża ?',
-                'cooperation' => 'współpracujemy:',
+                'top' => [
+                    'top-header' => 'znajdź pracę',
+                    'top-text' => 'Przeszukaj naszą bazę ofert, by odkryć coś dla siebie!',
+                    'top-input-keyword' => 'Słowo kluczowe?',
+                    'top-input-location' => 'gdzie ?',
+                    'top-input-profession' => 'branża ?',
+                    'top-search' => 'Wyszukaj',
+                ],
                 'empty' => 'Brak ofert pracy',
+                'look-all' => 'zobacz wszystkie oferty',
+                'cooperation' => 'współpracujemy:',
                 'news' => 'Centrum Aktualności',
                 'news-content' => 'Tutaj możesz śledzić najnowsze newsy z świata pracy.',
                 'articles' => 'Brak artykułów do wyświetlenia.',
@@ -97,11 +100,6 @@ class JobController extends Controller
         ]);
     }
 
-    /**
-     * Show add job form.
-     *
-     * @return void
-     */
     public function add()
     {
         $job = new Job();
@@ -118,6 +116,8 @@ class JobController extends Controller
         $skills = Skill::all();
         $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
         $countries = Country::get(["country", "id"]);
+        $states = State::get(["state", "id"]);
+        $cities = City::get(["city", "id"]);
         $jobstate = JobState::all();
 
 
@@ -138,10 +138,12 @@ class JobController extends Controller
                 'hasExistingPhoto' => $hasExistingPhoto,
                 'hasExistingPhotos' => $hasExistingPhotos,
             ],
-            'countries' => $countries
+            'countries' => $countries,
+            'states' => $states,
+            'cities' => $cities,
         ];
         return view('jobs.add', [
-            'data' => $data
+            'data' => $data,
         ]);
     }
 
@@ -251,6 +253,9 @@ class JobController extends Controller
         $skills = Skill::all();
         $expiry = Carbon::now()->addDays(30)->format('Y-m-d');
         $countries = Country::get(["country", "id"]);
+        $states = State::get(["state", "id"]);
+        $cities = City::get(["city", "id"]);
+        
         $jobstate = JobState::all();
 
         $data = [
@@ -270,7 +275,9 @@ class JobController extends Controller
                 'hasExistingPhoto' => $hasExistingPhoto,
                 'hasExistingPhotos' => $hasExistingPhotos,
             ],
-            'countries' => $countries
+            'countries' => $countries,
+            'states' => $states,
+            'cities' => $cities,
         ];
 
         return view('jobs.edit', [
@@ -289,6 +296,12 @@ class JobController extends Controller
         $job->joblevel()->associate($jobrequest->input('level'));
 
         $job->currency()->associate($jobrequest->input('currency'));
+
+        $job->country()->associate($jobrequest->input('countries'));
+
+        $job->state()->associate($jobrequest->input('states'));
+
+        $job->city()->associate($jobrequest->input('cities'));
 
         if ($jobrequest->hasFile('photo')) {
             if (!empty($job->main_image_path)) {
@@ -428,32 +441,27 @@ class JobController extends Controller
         }
 
         $query->when(!is_null($keyword), function ($query) use ($keyword) {
-            return is_numeric($keyword) 
-                ? $query->where(function ($query) use ($keyword) {
-                    $query->where('salary_from', '<=', $keyword)
-                        ->orWhere('salary_to', '>=', $keyword);
-                }) 
-                : $query->where(function ($query) use ($keyword) {
-                    $query->where('title', 'like', "%$keyword%")
-                        ->orWhereHas('joblevel', function ($query) use ($keyword) {
-                            $query->where('level', 'like', "%$keyword%");
-                        })
-                        ->orWhereHas('skill', function ($query) use ($keyword) {
-                            $query->where('skill', 'like', "%$keyword%");
-                        })
-                        ->orWhereHas('jobtype', function ($query) use ($keyword){
-                            $query->where('type', 'like', "%$keyword%");
-                        });
+        return is_numeric($keyword) 
+        ? $query->where(function ($query) use ($keyword) {
+            $query->where('salary_from', '<=', $keyword)
+                ->orWhere('salary_to', '>=', $keyword);
+        }) 
+        : $query->where(function ($query) use ($keyword) {
+            $query->where('title', 'like', "%$keyword%")
+                ->orWhereHas('joblevel', function ($query) use ($keyword) {
+                    $query->where('level', 'like', "%$keyword%");
+                })
+                ->orWhereHas('skill', function ($query) use ($keyword) {
+                    $query->where('skill', 'like', "%$keyword%");
+                })
+                ->orWhereHas('jobtype', function ($query) use ($keyword){
+                    $query->where('type', 'like', "%$keyword%");
                 });
-        })
-        ->when(!is_null($category), function ($query) use ($category) {
-            return $query->whereHas('jobcategory', function ($query) use ($category) {
-                $query->where('category', 'like', "%$category%");
-            });
+        });
         })
         ->when(!is_null($localisation), function ($query) use ($localisation) {
-            return $query->when(!is_null($localisation), function ($query) use ($localisation) {
-                return $query->whereHas('country', function ($query) use ($localisation) {
+            return $query->where(function ($query) use ($localisation) {
+                $query->whereHas('country', function ($query) use ($localisation) {
                     $query->where('country', 'like', "%$localisation%");
                 })
                 ->orWhereHas('state', function ($query) use ($localisation) {
@@ -462,6 +470,11 @@ class JobController extends Controller
                 ->orWhereHas('city', function ($query) use ($localisation) {
                     $query->where('city', 'like', "%$localisation%");
                 });
+            });
+        })
+        ->when(!is_null($category), function ($query) use ($category) {
+            return $query->whereHas('jobcategory', function ($query) use ($category) {
+                $query->where('category', 'like', "%$category%");
             });
         });
         

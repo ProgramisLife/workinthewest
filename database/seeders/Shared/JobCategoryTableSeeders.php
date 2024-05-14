@@ -14,7 +14,7 @@ class JobCategoryTableSeeders extends Seeder
     {
         $categories = collect(['Administracja', 'Bankowość', ' Badania i rozwój',
         'BHP / Ochrona środowiska', 'Budownictwo', 'Call Center', 'Dobroczynność / praca socjalna',
-        'Call Center', 'Dobroczynność / praca socjalna', 'IT', 'Doradztwo - Konsulting', 'Edukacja / Szkolenia',
+        'Call Center', 'Dobroczynność / praca socjalna', 'Doradztwo - Konsulting', 'Edukacja / Szkolenia',
         'Energetyka', 'Finanse / Ekonomia', 'Franczyza / Własny biznes', 'Gastronomia / Catering', 'Hotelarstwo / Turystyka',
         'Human Resources / Zasoby ludzkie', 'Inne', 'Inżynieria', 'IT - Administracja', 'IT - Rozwój oprogramowania',
         'Kontrola jakości', 'Marketing', 'Media / Dziennikarstwo / Gazeta', 'Nieruchomości', 'Obsługa klienta',

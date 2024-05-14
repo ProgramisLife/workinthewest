@@ -3,7 +3,7 @@
 @section('title', 'Dodaj ofertę pracy')
 
 @section('content')
-<div class="container">
+<div class="container my-5">
     <div class="row py-5">
         <div class="d-flex justify-content-center">
             @include('jobs.form', [
@@ -22,6 +22,9 @@
             'deadlineValue' => old('deadline'),
             'skillValue' => old('skills', []),
             'jobstateValue' => old('jobstate', []),
+            'countryValue' => old('countries'),
+            'stateValue' => old('states'),
+            'cityValue' => old('cities'),
             'submitBtnText' => 'Dodaj nową pracę',
             ])
         </div>

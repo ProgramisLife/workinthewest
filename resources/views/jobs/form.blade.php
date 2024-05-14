@@ -208,7 +208,8 @@
             <div class="row justify-content-start">
                 <div class="col-lg-3 my-3 form-group mx-1">
                     <label class="text-uppercase" for="types">wymiar pracy *</label>
-                    <select multiple class="form-control @error('type') is-invalid @enderror" id="types" name="type[]">
+                    <select multiple class="form-control @error('type') is-invalid @enderror" id="types" name="type[]"
+                        style="height: 150px; overflow-y: auto;">
                         @foreach($data['job']['jobtypes'] as $type)
                         <option value="{{$type->id}}" @if(in_array($type->id, $typeValue)) selected @endif>
                             {{$type->type}}
@@ -225,7 +226,8 @@
                 <!-- języki -->
                 <div class="col-lg-4 my-3 form-group mx-1">
                     <label for="language" class="text-uppercase">języki</label>
-                    <select multiple class="form-control" id="language" name="language[]">
+                    <select multiple class="form-control" id="language" name="language[]"
+                        style="height: 150px; overflow-y: auto;">
                         @foreach($data['job']['joblanguages'] as $language)
                         <option value="{{$language->id}}" @if(in_array($language->id, $languageValue)) selected @endif>
                             {{$language->language}}
@@ -236,7 +238,8 @@
 
                 <div class="col-lg-4 my-3 form-group mx-1">
                     <label for="jobstate" class="text-uppercase">rodzaj pracy</label>
-                    <select multiple class="form-control" id="jobstate" name="jobstate[]">
+                    <select multiple class="form-control" id="jobstate" name="jobstate[]"
+                        style="height: 150px; overflow-y: auto;">
                         @foreach($data['job']['jobstate'] as $jobstate)
                         <option value="{{$jobstate->id}}" @if(in_array($jobstate->id, $jobstateValue)) selected @endif>
                             {{$jobstate->name}}
@@ -256,7 +259,7 @@
         <!-- Wymagane umiejętności -->
         <div class="form-group">
             <label class="titleheaders" for="skills">wymagane umiejętności</label>
-            <select multiple class="form-control" id="skills" name="skills[]">
+            <select multiple class="form-control" id="skills" name="skills[]" style="height: 250px; overflow-y: auto;">
                 @foreach($data['job']['jobskills'] as $skill)
                 <option value="{{$skill->id}}" @if(in_array($skill->id, $skillValue)) selected @endif>{{$skill->skill}}
                 </option>
@@ -288,9 +291,13 @@
                 <label class="text-uppercase" for="countries">wybierz kraj</label>
                 <select class="form-control @error('countries') is-invalid @enderror" id="countries" name="countries">
                     @foreach ($data['countries'] as $country)
-                    <option value="{{ $country->id }}" {{ old('countries')==$country->id ? 'selected' : '' }}>
-                        {{ $country->country }}
+                    @if(isset($job))
+                    <option value="{{$country->id}}" {{ $country->id == $countryValue ? 'selected' :''}}>
+                        {{$country->country}}
                     </option>
+                    @else
+                    <option value="{{$country->id}}">{{$country->country}}</option>
+                    @endif
                     @endforeach
                 </select>
                 @error('countries')
@@ -304,7 +311,13 @@
             <div class="col-4 form-group d-sm-block">
                 <label class="text-uppercase" for="states">wybierz stan</label>
                 <select class="form-control @error('states') is-invalid @enderror" id="states" name="states">
-                    <!-- Opcje stanów zostaną dynamicznie wygenerowane za pomocą AJAX -->
+                    @foreach ($data['states'] as $state)
+                    @if(isset($job))
+                    <option value="{{$state->id}}" {{ $state->id == $stateValue ? 'selected' :''}}>
+                        {{$state->state}}
+                    </option>
+                    @endif
+                    @endforeach
                 </select>
                 @error('states')
                 <div class="invalid-feedback">
@@ -317,7 +330,13 @@
             <div class="col-4 form-group mx-1 d-sm-block">
                 <label class="text-uppercase" for="cities">wybierz miasto</label>
                 <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities">
-                    <!-- Opcje miast zostaną dynamicznie wygenerowane za pomocą AJAX -->
+                    @foreach ($data['cities'] as $city)
+                    @if(isset($job))
+                    <option value="{{$city->id}}" {{ $city->id == $cityValue ? 'selected' :''}}>
+                        {{$city->city}}
+                    </option>
+                    @endif
+                    @endforeach
                 </select>
                 @error('cities')
                 <div class="invalid-feedback">

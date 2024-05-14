@@ -6,6 +6,7 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/jobs/show.css') }}" />
 </header>
 <div class="container my-5" style="margin-top: 150px !important;">
     <div class="d-flex">
@@ -60,8 +61,24 @@
                     </div>
                     <div class="text-uppercase mx-2">
                         <div class="d-flex text-success flex-wrap"><i class="bi bi-calendar mx-1"></i>
-                            <div class="text-dark mx-1">opublikowano</div>
+                            <div class="mx-1 text-success">opublikowano:</div>
                             <div class="text-dark mx-1">{{$job->created_at->format('d-m-Y')}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="d-flex justify-content-between mx-2">
+                        <div class="text-uppercase">
+                            <div class="d-flex" style="color: brown;"><i class="bi bi-tools"></i>
+                                <div>kategoria: </div>
+                                <div class="text-dark mx-2">{{$job->jobcategory->category}}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex text-uppercase mx-2">
+                            <p class="d-inline-block text-info"><i class="bi bi-mortarboard-fill"></i>
+                                termin ostateczny: </p>
+                            <div class="mx-2">{{ \Carbon\Carbon::parse($job->deadline)->format('d-m-Y') }}</div>
                         </div>
                     </div>
                 </div>
@@ -74,16 +91,6 @@
                 $totalDays = 30;
                 $progressPercentage = min(100, ($difference / $totalDays) * 100);
                 @endphp
-
-                <div class="row">
-                    <div class="d-flex justify-content-between">
-                        <div class="text-uppercase mx-2">
-                            <p class="d-inline-block text-info"><i class="bi bi-mortarboard-fill"></i>
-                                termin ostateczny: </p>
-                            {{ \Carbon\Carbon::parse($job->deadline)->format('d-m-Y') }}
-                        </div>
-                    </div>
-                </div>
 
                 <div class="my-4">
                     <div class="text-dark my-2 text-uppercase mx-2">Do końca oferty pozostało: {{$difference}} dni.
@@ -101,17 +108,6 @@
                     Ta oferta jest nieaktualna.
                 </div>
                 @endif
-
-                <div class="row my-5">
-                    <div class="d-flex justify-content-start mx-2">
-                        <div class="text-uppercase">
-                            <div class="d-flex" style="color: brown;"><i class="bi bi-tools"></i>
-                                <div>kategoria: </div>
-                                <div class="text-dark mx-2">{{$job->jobcategory->category}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="text-uppercase my-5">
                     <div class="d-flex text-secondary"><i class="bi bi-translate"></i>
@@ -154,6 +150,7 @@
                     @endif
                 </div>
 
+                @if(isset($job->city->city))
                 <!-- Lokalizacja -->
                 <div class="my-5">
                     <div class="text-uppercase fw-bold">Lokalizacja</div>
@@ -161,17 +158,17 @@
                 <div class="d-flex justify-content-center pb-5">
                     <div id="map" style="height: 400px; width:700px;"></div>
                 </div>
-
                 <script>
                     var map = L.map('map').setView([{{$job->city->latitude}}, {{$job->city->longitude}}], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        
-        L.marker([{{$job->city->latitude}}, {{$job->city->longitude}}]).addTo(map)
-        .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-        .openPopup();
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+                    
+                    L.marker([{{$job->city->latitude}}, {{$job->city->longitude}}]).addTo(map)
+                    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                    .openPopup();
                 </script>
+                @endif
             </div>
         </div>
         <div class="mx-5 col-3 bg-white">
@@ -211,12 +208,12 @@
                 <div class="card mb-3 border-0 bg-white" style="max-height: 200px;">
                     <div class="row g-0">
                         @if($jobSimilarCategory->main_image_path)
-                        <div class="col-md-4">
+                        <div class="col-md-4 image-container">
                             <img src="{{asset('images/jobs/main-photo/' . $jobSimilarCategory->main_image_path)}}"
-                                class="img-fluid rounded mx-5" style="max-height: 200px;">
+                                class="img-fluid rounded mx-5">
                             @else
                             <img src="{{asset('images/jobs/default-images/skytower.jpg/')}}"
-                                class="img-fluid rounded mx-5" style="max-height: 200px;">
+                                class="img-fluid rounded mx-5 ">
                             @endif
                         </div>
                         <div class="col-md-8">
@@ -231,15 +228,24 @@
                                 </p>
                                 <p class="card-text mx-1">
                                 <div class="d-flex" style="color: #FF5733;"><i class="bi bi-geo-alt-fill mx-1"></i>
-                                    <div class="text-uppercase">lokalizacja:</div>
+                                    <div class="text-uppercase">lokalizacja: </div>
                                     @if(isset($jobSimilarCategory->country->country))
-                                    <div class="text-dark mx-1">{{ $jobSimilarCategory->country->country}},</div>
+                                    <a href="{{ route('jobs.search', ['localisation' => $jobSimilarCategory->country->country ]) }}"
+                                        class="text-decoration-none mx-1">
+                                        {{$jobSimilarCategory->country->country}},
+                                    </a>
                                     @endif
                                     @if(isset($jobSimilarCategory->state->state))
-                                    <div class="text-dark">{{ $jobSimilarCategory->state->state}},</div>
+                                    <a href="{{ route('jobs.search', ['localisation' => $jobSimilarCategory->state->state ]) }}"
+                                        class="text-decoration-none">
+                                        {{$jobSimilarCategory->state->state}},
+                                    </a>
                                     @endif
                                     @if(isset($jobSimilarCategory->city->city))
-                                    <div class="text-dark mx-1">{{ $jobSimilarCategory->city->city}}</div>
+                                    <a href="{{ route('jobs.search', ['localisation' => $jobSimilarCategory->city->city ]) }}"
+                                        class="text-decoration-none mx-1">
+                                        {{$jobSimilarCategory->city->city}}
+                                    </a>
                                     @endif
                                 </div>
                                 </p>

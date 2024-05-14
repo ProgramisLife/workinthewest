@@ -1,0 +1,17 @@
+/** Style Globalne **/
+
+.font-family-open-sans {
+    font-family: "Open Sans", sans-serif;
+}
+
+.background-light-white {
+    background-color: #f6f7f9;
+}
+
+.background-main {
+    background-color: #004696;
+}
+
+.text-main {
+    color: #004696;
+}

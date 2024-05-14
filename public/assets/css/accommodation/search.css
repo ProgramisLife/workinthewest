@@ -14,16 +14,16 @@
     font-size: 16px;
 }
 
+.round {
+    height: 20rem;
+}
+
 .margin {
     padding-left: 8px;
 }
 
 .nav-text {
     font-size: 12px;
-}
-
-.round {
-    height: 30rem;
 }
 
 .image-container img {

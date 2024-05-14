@@ -17,11 +17,6 @@ use App\Http\Requests\Accommodation\AccommodationRequest;
 class AccommodationController extends Controller
 {
     const ACCOMMODATION_PER_PAGE = 10;
-    /**
-     * Show all jobs.
-     *
-     * @return void
-     */
     public function index()
     {
         $news = Accommodation::orderBy('created_at', 'DESC')->paginate(self::ACCOMMODATION_PER_PAGE);
@@ -68,12 +63,6 @@ class AccommodationController extends Controller
             'data' => $data,
         ]);
     }
-
-    /**
-     * Show add job form.
-     *
-     * @return void
-     */
     public function add()
     {
         $accommodation = new Accommodation();
@@ -174,12 +163,13 @@ class AccommodationController extends Controller
 
     public function show(Accommodation $accommodation)
     {
-        $accommodationSimilarCategorys = Accommodation::where('id', $accommodation->country_id && $accommodation->state_id)
-            ->where('id', '!=', $accommodation->id)
-            ->get();
+        $accommodationSimilarCategorys = $accommodation->accommodationcategory->pluck('id');
+        $similarAccommodations = Accommodation::whereHas('accommodationcategory', function($query) use ($accommodationSimilarCategorys) {
+        $query->whereIn('id', $accommodationSimilarCategorys);
+        })->where('id', '!=', $accommodation->id)->get();
         return view('accommodation.show', [
             'accommodation' => $accommodation,
-            'accommodationSimilarCategorys' => $accommodationSimilarCategorys,
+            'similarAccommodations' => $similarAccommodations,
         ]);
     }
 
@@ -207,7 +197,109 @@ class AccommodationController extends Controller
 
     public function search(Request $request)
     {
-        $data = 'coś';
-        return response()->json($data);
+        $news = Accommodation::orderBy('created_at', 'DESC')->paginate(self::ACCOMMODATION_PER_PAGE);
+        $featureds = Accommodation::where('featured', true)->paginate(self::ACCOMMODATION_PER_PAGE);
+
+        $currentDate = Carbon::now();
+
+        // Parametry wyszukiwania
+        $keyword = $request->input('keyword');
+        $localisation = $request->input('localisation');
+
+        // Sortowanie
+        $sortBy = $request->input('sorting');
+
+        $query = Accommodation::query();
+
+        if ($sortBy == 'low')
+        {
+            $query->orderBy('price_buy', 'asc');
+        }
+        else if ($sortBy == 'low_rent')
+        {
+            $query->orderBy('price_rent', 'asc');
+        }
+        else if ($sortBy == 'high_buy')
+        {
+            $query->orderBy('price_buy', 'desc');
+        }
+        else if ($sortBy == 'high_rent')
+        {
+            $query->orderBy('price_rent', 'desc');
+        }
+        else
+        {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $query->when(!is_null($keyword), function ($query) use ($keyword) {
+            return is_numeric($keyword) 
+                ? $query->where(function ($query) use ($keyword) {
+                    $query->where('price_buy', '<=', $keyword)
+                        ->orWhere('price_rent', '<=', $keyword);
+                }) 
+                : $query->where(function ($query) use ($keyword) {
+                    $query->where('title', 'like', "%$keyword%")
+                        ->orWhereHas('accommodationcategory', function ($query) use ($keyword) {
+                            $query->where('name', 'like', "%$keyword%");
+                        })
+                        ->orWhere('email', 'like', "%$keyword%")
+                        ->orWhere('contact', 'like', "%$keyword%")
+                        ->orWhere('phone_number', 'like', "%$keyword%")
+                        ->orWhere('phone_number', 'like', "%$keyword%");
+                });
+        })
+        ->when(!is_null($localisation), function ($query) use ($localisation) {
+            return $query->when(!is_null($localisation), function ($query) use ($localisation) {
+                return $query->whereHas('country', function ($query) use ($localisation) {
+                    $query->where('country', 'like', "%$localisation%");
+                })
+                ->orWhereHas('state', function ($query) use ($localisation) {
+                    $query->where('state', 'like', "%$localisation%");
+                })
+                ->orWhereHas('city', function ($query) use ($localisation) {
+                    $query->where('city', 'like', "%$localisation%");
+                });
+            });
+        });
+        
+        $accommodationSearchs = $query->paginate(12);
+
+        $yearsDifference = 0;
+        $monthsDifference = 0;
+        $daysDifference = 0;
+        $hoursDifference = 0;
+        $minutesDifference = 0;
+
+        foreach ($accommodationSearchs as $accommodation) {
+        $createdAt = $accommodation->created_at;
+        $diff = $currentDate->diff($createdAt);
+
+        $yearsDifference = $diff->y;
+        $monthsDifference = $diff->m;
+        $daysDifference = $diff->d;
+        $hoursDifference = $diff->h;
+        $minutesDifference = $diff->i;
+}
+        $data = [
+            'accommodation' => [
+                'news' => $news,
+                'featureds' => $featureds,
+                'accommodationSearchs' => $accommodationSearchs
+            ],
+            'label' => [
+                'newest' => 'najnowsze oferty',
+                'featured' => 'wyróżnione',
+                'empty' => 'Brak ogłoszeń',
+            ],
+            'date' => [
+                'yearsDifference' => $yearsDifference,
+                'monthsDifference' => $monthsDifference,
+                'daysDifference' => $daysDifference,
+                'hoursDifference' => $hoursDifference,
+                'minutesDifference' => $minutesDifference,
+            ],
+        ];
+        return view('accommodation.index', ['data' => $data]);
     }
 }
