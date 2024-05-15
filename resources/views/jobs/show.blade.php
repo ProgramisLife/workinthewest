@@ -121,7 +121,6 @@
                 <div class="mx-2 my-4">
                     <?php echo $job->description; ?>
                 </div>
-
                 <div class="my-3">
                     @if($job->photos()->count() > 0)
                     <div class="d-flex justify-content-center w-70">

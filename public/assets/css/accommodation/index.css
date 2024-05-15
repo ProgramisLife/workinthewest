@@ -1,3 +1,8 @@
+/** Top **/
+.top {
+    padding: 100px 0px 100px;
+}
+
 .main-image-header-blue {
     font-size: 64px;
     color: #007bff;
@@ -31,4 +36,11 @@
     max-height: 10rem;
     min-width: 10rem;
     min-height: 10rem;
+}
+
+/** Zakwaterowanie **/
+.accommodation .accommodation-header {
+    font-size: 16px;
+    color: #2980b9;
+    font-weight: bold;
 }

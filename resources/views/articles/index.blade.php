@@ -22,10 +22,11 @@
     </div>
 </section>
 
-<div class="container mt-5">
+<!-- Artykuły -->
+<div class="articles container my-5">
     <div class="row">
-        <div class="offset-lg-1 col-md-8">
-            @foreach($articles as $article)
+        <div class="offset-lg-1 col-md-7">
+            @forelse($articles as $article)
             <div class="mb-4"></div>
             <div class="card bg-white">
                 @if($article->main_image_path)
@@ -45,13 +46,12 @@
                     </div>
                     <a class="text-decoration-none text-black"
                         href="{{ route('articles.show', ['article' => $article]) }}">
-                        <h4 class="card-title title-hover" style="font-weight:bold;">{{ $article->title }}</h4>
+                        <h3 class="card-title title-hover fw-bold articles-header">{{ $article->title }}</h3>
                     </a>
-                    <p class="card-text">{{ Str::limit($article->description, 400) }}</p>
+                    <p class="card-text articles-text">{!! Str::limit($article->description, 400) !!}</p>
                     <div class="d-flex justify-content-between">
                         <a href="#" style="font-size:13px;" class="d-flex text-uppercase text-decoration-none">
-                            <p class="text-dark d-flex">przez: </p>
-                            <p class="text-dark" style="font-weight:bold;">użytkownika</p>
+                            <p class="text-dark">przez: <span class="fw-bold">użytkownika</span></p>
                         </a>
                         <a href="{{ route('articles.show', ['article' => $article]) }}"
                             class="btn btn-primary text-light">
@@ -69,7 +69,9 @@
                     </form>
                 </div>
             </div>
-            @endforeach
+            @empty
+            {{$data['label']['empty'] }}
+            @endforelse
         </div>
 
         <div class="bg-white col-md-3 my-4">

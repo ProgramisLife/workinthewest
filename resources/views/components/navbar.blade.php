@@ -31,12 +31,12 @@
                 </li>
                 <li class="nav-item text-uppercase">
                     <a class="nav-link text-white" aria-current="page"
-                        href="{{ route('accommodation.index') }}">zakwaterowanie
+                        href="{{ route('accommodations.index') }}">zakwaterowanie
                     </a>
                 </li>
                 <li class="nav-item text-uppercase">
                     <a class="nav-link text-white" aria-current="page"
-                        href="{{ route('accommodation.index') }}">pracodawca
+                        href="{{ route('accommodations.index') }}">pracodawca
                     </a>
                 </li>
                 <li class="nav-item text-uppercase">
@@ -49,7 +49,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="btn btn btn-success" href="{{ route('jobs.add') }}" rel="nofollow">
-                        <i class="bi bi-pencil-square"></i>
+                        <i class="bi bi-pencil-square p-2"></i>
                     </a>
                 </li>
             </ul>

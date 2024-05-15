@@ -104,11 +104,26 @@ class ArticleController extends Controller
     {
         $article->slug;
 
-        if (!empty($article->main_image_path)) {
-            $oldPath = public_path('images/article/main-photo/' . $article->main_image_path);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-                $article->main_image_path = null;
+        if ($articlerequest->hasFile('photo')) {
+            if (!empty($article->main_image_path)) {
+                $oldPath = public_path('images/article/main-photo/' . $article->main_image_path);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                    $article->main_image_path = null;
+                }
+            }
+            $photo = $articlerequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/article/main-photo/'), $imageName);
+                $article->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+
+            if (!$articlerequest->hasFile('photo') && !empty($article->main_image_path)) {
+                $article->main_image_path = $article->main_image_path;
             }
         }
 
@@ -174,6 +189,7 @@ class ArticleController extends Controller
                     'top-input-keyword' => 'Słowo kluczowe?',
                     'top-search' => 'Wyszukaj',
                 ],
+                'empty' => 'Nie znaleziono artykułu'
         ]
     ];
 

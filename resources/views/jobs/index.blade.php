@@ -21,14 +21,14 @@
                     <label class="text-uppercase pb-3" for="keyword">
                         {{$data['label']['top']['top-input-keyword']}}
                     </label>
-                    <input type="text" class="form-control @error('keyword') is-invalid @enderror" id="keyword"
+                    <input type="search" class="form-control @error('keyword') is-invalid @enderror" id="keyword"
                         name="keyword" placeholder="Posada, zawód ...">
                 </div>
                 <div class="form-group col-md mt-3">
                     <label class="text-uppercase  pb-3" for="localisation">
                         {{$data['label']['top']['top-input-location']}}
                     </label>
-                    <input type="text" class="form-control @error('localisation') is-invalid @enderror"
+                    <input type="search" class="form-control @error('localisation') is-invalid @enderror"
                         id="localisation" name="localisation" placeholder="Wpisz lokalizację">
                 </div>
                 <div class="form-group col-md mt-3">
@@ -84,6 +84,7 @@
                     <div class="tab-pane fade show active" id="newjob">
                         <div class="row">
                             @forelse($data['jobs']['newJobs'] as $newJob)
+
                             <div class="col-md-6">
                                 <div class="card mb-3 shadow p-3 mb-5 rounded">
                                     <div class="row g-0">
@@ -132,7 +133,7 @@
                                             @if($newJob->main_image_path)
                                             <div class="my-3 image-container">
                                                 <img src="{{asset('images/jobs/main-photo/' . $newJob->main_image_path)}}"
-                                                    class="img img-fluid rounded" alt="...">
+                                                    class="img img-fluid rounded" alt="{{$newJob->main_image_path}}">
                                             </div>
                                             @else
                                             <div class="my-3 image-container">
@@ -375,12 +376,12 @@
 </section>
 
 <div class="container d-flex justify-content-center">
-    <button class="btn btn-primary text-uppercase rounded-5 job-search-button">
+    <a href="{{route('jobs.search')}}" class="btn btn-primary text-uppercase rounded-5 job-search-button">
         <div class="d-flex justify-content-center text-center align-items-center">
             <div>{{ $data['label']['look-all'] }}</div>
             <i class="bi bi-arrow-right-circle-fill text-center text-icon"></i>
         </div>
-    </button>
+    </a>
 </div>
 
 <!-- Współpraca -->

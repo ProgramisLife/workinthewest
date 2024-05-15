@@ -64,25 +64,25 @@ Route::prefix('/articles')->group(function () {
     Route::delete('/{article}', [ArticleController::class, 'delete'])->name('articles.delete');
 });
 
-Route::prefix('/accommodation')->group(function () {
+Route::prefix('/accommodations')->group(function () {
 
-    Route::post('/search', [AccommodationController::class, 'search'])->name('accommodation.search');
+    Route::post('/search', [AccommodationController::class, 'search'])->name('accommodations.search');
 
-    Route::get('/', [AccommodationController::class, 'index'])->name('accommodation.index');
+    Route::get('/', [AccommodationController::class, 'index'])->name('accommodations.index');
 
-    Route::get('/add', [AccommodationController::class, 'add'])->name('accommodation.add');
+    Route::get('/add', [AccommodationController::class, 'add'])->name('accommodations.add');
 
-    Route::post('get-states-by-country', [AccommodationController::class, 'getState'])->name('accommodation.getState');
+    Route::post('get-states-by-country', [AccommodationController::class, 'getState'])->name('accommodations.getState');
 
-    Route::post('get-cities-by-state', [AccommodationController::class, 'getCity'])->name('accommodation.getCity');
+    Route::post('get-cities-by-state', [AccommodationController::class, 'getCity'])->name('accommodations.getCity');
 
-    Route::post('/store', [AccommodationController::class, 'store'])->name('accommodation.store');
+    Route::post('/store', [AccommodationController::class, 'store'])->name('accommodations.store');
 
-    Route::get('/{accommodation}', [AccommodationController::class, 'show'])->name('accommodation.show');
+     Route::get('/{accommodation:slug}', [AccommodationController::class, 'show'])->name('accommodations.show');
 
-    Route::get('/{accommodation}/edit', [AccommodationController::class, 'edit'])->name('accommodation.edit');
+    Route::get('/{accommodation:slug}/edit', [AccommodationController::class, 'edit'])->name('accommodations.edit');
 
-    Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodation.update');
+    Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodations.update');
 
-    Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodation.delete');
+    Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodations.delete');
 });

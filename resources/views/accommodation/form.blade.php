@@ -290,7 +290,7 @@
             if (countryId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('accommodation.getState') }}",
+                    url: "{{ route('accommodations.getState') }}",
                     data: {
                         country_id: countryId,
                         _token: "{{ csrf_token() }}"
@@ -321,7 +321,7 @@
             if (stateId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('accommodation.getCity') }}",
+                    url: "{{ route('accommodations.getCity') }}",
                     data: {
                         state_id: stateId,
                         _token: "{{ csrf_token() }}"

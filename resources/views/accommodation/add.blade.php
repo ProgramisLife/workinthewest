@@ -7,7 +7,7 @@
     <div class="row py-5">
         <div class="d-flex justify-content-center">
             @include('accommodation.form', [
-            'action' => route('accommodation.store'),
+            'action' => route('accommodations.store'),
             'titleValue' => old('title'),
             'descriptionValue' => old('description'),
             'emailValue' => old('email'),

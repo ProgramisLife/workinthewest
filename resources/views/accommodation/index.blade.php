@@ -4,22 +4,20 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/accommodation/index.css') }}" />
 
-<div style="margin-top: 2rem;">
-    <div class="round p-5 text-center bg-image"
-        style="background-image: url('{{ asset('assets/images/slider-image-acc.jpg') }}');background-repeat: no-repeat; background-size: cover;">
-        <div class="d-flex justify-content-center align-items-center h-100">
-            <div class="text-white">
-                <div class="h1 text-left fw-bold mt-5">
-                    <span class="mx-2 main-image-header-blue">Znajdź</span>
-                    <span class="main-image-header-white">Zakwaterowanie</span>
-                </div>
-                <div class="mt-5 image-p">Przeszukaj naszą bazę mieszkań i pokoi w całej Polsce</div>
+<div class="jumbotron jumbotron-fluid top img img-fluid"
+    style="background-image: url('{{ asset('assets/images/slider-image-acc.jpg') }}');background-repeat: no-repeat; background-size: cover;">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+            <div class="h1 text-left fw-bold mt-5">
+                <span class="mx-2 main-image-header-blue">Znajdź</span>
+                <span class="main-image-header-white">Zakwaterowanie</span>
             </div>
+            <div class="mt-5 image-p text-center">Przeszukaj naszą bazę mieszkań i pokoi w całej Polsce</div>
         </div>
     </div>
 </div>
 <div class="container mx-5 my-5">
-    <form method="POST" action="{{ route('accommodation.search') }}">
+    <form method="POST" action="{{ route('accommodations.search') }}">
         @csrf
         <div class="form-outline mb-4" data-mdb-input-init>
             <div class="d-flex bg-white border border-2 p-5">
@@ -49,44 +47,43 @@
 </div>
 
 @if (empty($data['accommodation']['accommodationSearchs']))
-<div class="container">
-    <div class="row py-5">
-        <div class="col-lg-10 offset-1">
-            <div class="row">
-                <ul class="nav nav-pills nav-justified my-3 justify-content-center" id="pills-tab">
-                    <li class="nav-item">
-                        <a class="nav-text nav-link active text-uppercase" id="new-tab" data-bs-toggle="pill"
-                            href="#new">
-                            {{$data['label']['newest']}}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-text nav-link text-uppercase" id="featured-tab" data-bs-toggle="pill"
-                            href="#featured">
-                            {{$data['label']['featured']}}
-                        </a>
-                    </li>
-                </ul>
+<section class="accommodation">
+    <div class="container">
+        <div class="row py-5">
+            <div class="col-lg-10 offset-1">
+                <div class="row my-3">
+                    <ul class="nav nav-pills justify-content-center flex-column flex-sm-row ">
+                        <li class="nav-item">
+                            <a class="nav-link active text-uppercase px-3" id="newjob-tab" data-bs-toggle="pill"
+                                href="#new">{{$data['label']['newest']}}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-uppercase px-3" id="featuredjobs-tab" data-bs-toggle="pill"
+                                href="#featured">{{$data['label']['featured']}}</a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="row">
                     <div class="tab-content my-3">
                         <div class="tab-pane fade show active" id="new">
                             <div class="row">
                                 @forelse($data['accommodation']['news'] as $new)
                                 <div class="col-md-6">
-                                    <div class="card mb-3" style="max-width: 540px;">
+                                    <div class="card mb-3 shadow p-3 mb-5 rounded">
                                         <div class="row g-0">
                                             <div class="d-flex justify-content-between">
                                                 <div class="mx-2 my-2">
-                                                    <a href="{{ route('accommodation.show', ['accommodation' => $new]) }}"
+                                                    <a href="{{ route('accommodations.show', ['accommodation' => $new]) }}"
                                                         class="text-decoration-none">
-                                                        <h2 class="card-title">
-                                                            {{ Str::limit($new->title, 25) }}
-                                                        </h2>
+                                                        <h3 class="card-title accommodation-header">
+                                                            {{ $new->title }}
+                                                        </h3>
                                                     </a>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                            <div
+                                                class="col-sm-4 col-md-4 mx-auto d-flex justify-content-center align-items-center">
                                                 @if($new->main_image_path)
                                                 <div class="mx-1 my-3 image-container">
                                                     <img src="{{asset('images/accommodation/main-photo/' . $new->main_image_path)}}"
@@ -126,7 +123,6 @@
                                                         Wynajem: {{ $new->price_rent }} {{$new->currency->currency}}
                                                     </p>
                                                     @else
-                                                    <p class="card-text">do negocjacji</p>
                                                     @endif
 
                                                     @if(!is_null($new->price_buy))
@@ -135,24 +131,23 @@
                                                         Kupno: {{ $new->price_buy }} {{$new->currency->currency}}
                                                     </p>
                                                     @else
-                                                    <p class="card-text">do negocjacji</p>
                                                     @endif
 
                                                     <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
                                                         @if(isset($new->country->country))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $new->country->country ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $new->country->country ]) }}"
                                                             class="text-decoration-none">
                                                             {{$new->country->country}},
                                                         </a>
                                                         @endif
                                                         @if(isset($new->state->state))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $new->state->state ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $new->state->state ]) }}"
                                                             class="text-decoration-none">
                                                             {{$new->state->state}},
                                                         </a>
                                                         @endif
                                                         @if(isset($new->city->city))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $new->city->city ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $new->city->city ]) }}"
                                                             class="text-decoration-none">
                                                             {{$new->city->city}}
                                                         </a>
@@ -204,7 +199,7 @@
                                                     <a href="{{ route('accommodation.show', ['accommodation' => $featured]) }}"
                                                         class="text-decoration-none">
                                                         <h2 class="card-title">
-                                                            {{ Str::limit($featured->title, 20) }}
+                                                            {{ $featured->title }}
                                                         </h2>
                                                     </a>
                                                 </div>
@@ -266,19 +261,19 @@
 
                                                     <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
                                                         @if(isset($featured->country->country))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $featured->country->country ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $featured->country->country ]) }}"
                                                             class="text-decoration-none">
                                                             {{$featured->country->country}},
                                                         </a>
                                                         @endif
                                                         @if(isset($featured->state->state))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $featured->state->state ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $featured->state->state ]) }}"
                                                             class="text-decoration-none">
                                                             {{$featured->state->state}},
                                                         </a>
                                                         @endif
                                                         @if(isset($featured->city->city))
-                                                        <a href="{{ route('accommodation.search', ['localisation' => $featured->city->city ]) }}"
+                                                        <a href="{{ route('accommodations.search', ['localisation' => $featured->city->city ]) }}"
                                                             class="text-decoration-none">
                                                             {{$featured->city->city}}
                                                         </a>
@@ -321,136 +316,137 @@
             </div>
         </div>
     </div>
-</div>
-@else
-<div class="container">
-    <div class="row py-5">
-        <div class="col-lg-11">
-            <div class="row">
-                <div class="tab-content my-3">
-                    <div class="row">
-                        @forelse($data['accommodation']['accommodationSearchs'] as $search)
-                        <div class="col-md-6">
-                            <div class="card mb-3" style="max-width: 700px;">
-                                <div class="row g-0">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="mx-2 my-2">
-                                            <a href="{{ route('accommodation.show', ['accommodation' => $search]) }}"
-                                                class="text-decoration-none">
-                                                <h2 class="card-title">
-                                                    {{ $search->title }}
-                                                </h2>
-                                            </a>
+    </div>
+    @else
+    <div class="container">
+        <div class="row py-5">
+            <div class="col-lg-11">
+                <div class="row">
+                    <div class="tab-content my-3">
+                        <div class="row">
+                            @forelse($data['accommodation']['accommodationSearchs'] as $search)
+                            <div class="col-md-6">
+                                <div class="card mb-3" style="max-width: 700px;">
+                                    <div class="row g-0">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="mx-2 my-2">
+                                                <a href="{{ route('accommodations.show', ['accommodation' => $search]) }}"
+                                                    class="text-decoration-none">
+                                                    <h2 class="card-title">
+                                                        {{ $search->title }}
+                                                    </h2>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
 
 
-                                    <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                        @if($search->main_image_path)
-                                        <div class="mx-1 my-3 image-container">
-                                            <img src="{{asset('images/accommodation/main-photo/' . $search->main_image_path)}}"
-                                                class="img-fluid rounded" alt="...">
-                                        </div>
-                                        @else
-                                        <div class="mx-1 my-3 image-container">
-                                            <img src="{{asset('images/accommodation/default-images/acc.jpg')}}"
-                                                class="img-fluid rounded" alt="...">
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="mx-1 card-body">
-                                            <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i>
-                                                Nazwa
-                                                użytkownika
-                                            </p>
-
-                                            @if(!is_null($search->email))
-                                            <p class="card-text">
-                                                <i class="bi bi-envelope"></i>
-                                                Email: {{ $search->email }}
-                                            </p>
-                                            @endif
-
-                                            @if(!is_null($search->phone_number))
-                                            <p class="card-text">
-                                                <i class="bi bi-telephone"></i>
-                                                Numer Telefonu: {{ $search->phone_number }}
-                                            </p>
-                                            @endif
-
-                                            @if(!is_null($search->price_rent) || !is_null($search->price_buy))
-                                            @if(!is_null($search->price_rent))
-                                            <p class="card-text">
-                                                <i class="bi bi-cash-coin"></i>
-                                                Wynajem: {{ $search->price_rent }} {{$search->currency->currency}}
-                                            </p>
-                                            @endif
-
-                                            @if(!is_null($search->price_buy))
-                                            <p class="card-text">
-                                                <i class="bi bi-cash-coin"></i>
-                                                Kupno: {{ $search->price_buy }} {{$search->currency->currency}}
-                                            </p>
-                                            @endif
+                                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                            @if($search->main_image_path)
+                                            <div class="mx-1 my-3 image-container">
+                                                <img src="{{asset('images/accommodation/main-photo/' . $search->main_image_path)}}"
+                                                    class="img-fluid rounded" alt="...">
+                                            </div>
                                             @else
-                                            <p class="card-text">do negocjacji</p>
+                                            <div class="mx-1 my-3 image-container">
+                                                <img src="{{asset('images/accommodation/default-images/acc.jpg')}}"
+                                                    class="img-fluid rounded" alt="...">
+                                            </div>
                                             @endif
-                                            <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
-                                                @if(isset($search->country->country))
-                                                <a href="{{ route('accommodation.search', ['localisation' => $search->country->country ]) }}"
-                                                    class="text-decoration-none">
-                                                    {{$search->country->country}},
-                                                </a>
-                                                @endif
-                                                @if(isset($search->state->state))
-                                                <a href="{{ route('accommodation.search', ['localisation' => $search->state->state ]) }}"
-                                                    class="text-decoration-none">
-                                                    {{$search->state->state}},
-                                                </a>
-                                                @endif
-                                                @if(isset($search->city->city))
-                                                <a href="{{ route('accommodation.search', ['localisation' => $search->city->city ]) }}"
-                                                    class="text-decoration-none">
-                                                    {{$search->city->city}}
-                                                </a>
-                                                @endif
-                                            </p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="mx-1 card-body">
+                                                <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i>
+                                                    Nazwa
+                                                    użytkownika
+                                                </p>
 
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    <i class="bi bi-clock text-primary"></i>
-                                                    Ogłoszenie dodano:
-                                                    @if($data['date']['yearsDifference'] > 0)
-                                                    {{ $data['date']['yearsDifference'] }} lat temu
-                                                    @elseif($data['date']['monthsDifference'] > 0 )
-                                                    {{ $data['date']['monthsDifference'] }} miesięcy temu
-                                                    @elseif($data['date']['daysDifference'] > 0 )
-                                                    {{ $data['date']['daysDifference'] }} dni temu
-                                                    @elseif($data['date']['hoursDifference'] > 0 )
-                                                    {{ $data['date']['hoursDifference'] }} godzin temu
-                                                    @elseif($data['date']['minutesDifference'] > 0 )
-                                                    {{ $data['date']['minutesDifference'] }} minut temu
-                                                    @else
-                                                    <p>Przed chwilą</p>
+                                                @if(!is_null($search->email))
+                                                <p class="card-text">
+                                                    <i class="bi bi-envelope"></i>
+                                                    Email: {{ $search->email }}
+                                                </p>
+                                                @endif
+
+                                                @if(!is_null($search->phone_number))
+                                                <p class="card-text">
+                                                    <i class="bi bi-telephone"></i>
+                                                    Numer Telefonu: {{ $search->phone_number }}
+                                                </p>
+                                                @endif
+
+                                                @if(!is_null($search->price_rent) || !is_null($search->price_buy))
+                                                @if(!is_null($search->price_rent))
+                                                <p class="card-text">
+                                                    <i class="bi bi-cash-coin"></i>
+                                                    Wynajem: {{ $search->price_rent }} {{$search->currency->currency}}
+                                                </p>
+                                                @endif
+
+                                                @if(!is_null($search->price_buy))
+                                                <p class="card-text">
+                                                    <i class="bi bi-cash-coin"></i>
+                                                    Kupno: {{ $search->price_buy }} {{$search->currency->currency}}
+                                                </p>
+                                                @endif
+                                                @else
+                                                <p class="card-text"></p>
+                                                @endif
+                                                <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
+                                                    @if(isset($search->country->country))
+                                                    <a href="{{ route('accommodations.search', ['localisation' => $search->country->country ]) }}"
+                                                        class="text-decoration-none">
+                                                        {{$search->country->country}},
+                                                    </a>
                                                     @endif
-                                                </small>
-                                            </p>
+                                                    @if(isset($search->state->state))
+                                                    <a href="{{ route('accommodations.search', ['localisation' => $search->state->state ]) }}"
+                                                        class="text-decoration-none">
+                                                        {{$search->state->state}},
+                                                    </a>
+                                                    @endif
+                                                    @if(isset($search->city->city))
+                                                    <a href="{{ route('accommodations.search', ['localisation' => $search->city->city ]) }}"
+                                                        class="text-decoration-none">
+                                                        {{$search->city->city}}
+                                                    </a>
+                                                    @endif
+                                                </p>
+
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-clock text-primary"></i>
+                                                        Ogłoszenie dodano:
+                                                        @if($data['date']['yearsDifference'] > 0)
+                                                        {{ $data['date']['yearsDifference'] }} lat temu
+                                                        @elseif($data['date']['monthsDifference'] > 0 )
+                                                        {{ $data['date']['monthsDifference'] }} miesięcy temu
+                                                        @elseif($data['date']['daysDifference'] > 0 )
+                                                        {{ $data['date']['daysDifference'] }} dni temu
+                                                        @elseif($data['date']['hoursDifference'] > 0 )
+                                                        {{ $data['date']['hoursDifference'] }} godzin temu
+                                                        @elseif($data['date']['minutesDifference'] > 0 )
+                                                        {{ $data['date']['minutesDifference'] }} minut temu
+                                                        @else
+                                                        <p>Przed chwilą</p>
+                                                        @endif
+                                                    </small>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @empty
+                            <div class="col-sm-12">
+                                <p>{{ $data['label']['empty'] }}</p>
+                            </div>
+                            @endforelse
                         </div>
-                        @empty
-                        <div class="col-sm-12">
-                            <p>{{ $data['label']['empty'] }}</p>
-                        </div>
-                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 @endforelse
 @endsection

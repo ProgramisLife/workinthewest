@@ -61,11 +61,13 @@ class AccommodationController extends Controller
         ];
         return view('accommodation.index', [
             'data' => $data,
-        ]);
+       ]);
     }
     public function add()
     {
         $accommodation = new Accommodation();
+
+        $accommodation->slug;
 
         $hasExistingPhoto = !empty($accommodation->main_image_path);
         $hasExistingPhotos = $accommodation->photos()->exists();
@@ -163,24 +165,62 @@ class AccommodationController extends Controller
 
     public function show(Accommodation $accommodation)
     {
-        $accommodationSimilarCategorys = $accommodation->accommodationcategory->pluck('id');
-        $similarAccommodations = Accommodation::whereHas('accommodationcategory', function($query) use ($accommodationSimilarCategorys) {
-        $query->whereIn('id', $accommodationSimilarCategorys);
-        })->where('id', '!=', $accommodation->id)->get();
+        $data = [
+            'label' => [
+                'top' => [
+                    'top-header' => 'Mieszkanie na wynajem',
+                ]
+                ]
+            ];
+        $accommodationShows = Accommodation::orderBy('created_at', 'DESC')->paginate(self::ACCOMMODATION_PER_PAGE);
         return view('accommodation.show', [
+            'data' => $data,
             'accommodation' => $accommodation,
-            'similarAccommodations' => $similarAccommodations,
+            'accommodationShows' => $accommodationShows,
         ]);
     }
 
 
     public function edit(Accommodation $accommodation)
     {
+        $data = [];
+        return view('accommodation.edit', ['accommodation' => $accommodation, 'data' => $data]);
     }
 
 
-    public function update()
+    public function update(Accommodation $accommodation, AccommodationRequest $accommodationRequest)
     {
+        $accommodation->slug;
+
+        if (!empty($accommodation->main_image_path)) {
+            $oldPath = public_path('images/article/main-photo/' . $accommodation->main_image_path);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+                $accommodation->main_image_path = null;
+            }
+        }
+
+        if ($accommodationRequest->hasFile('photo')) {
+            $photo = $accommodationRequest->file('photo');
+            $imageName = uniqid() . '_' . $photo->getClientOriginalName();
+
+            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
+                $photo->move(public_path('images/accommodation/main-photo'), $imageName);
+                $accommodation->main_image_path = $imageName;
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+        }
+
+
+        if ($accommodation->update($accommodationRequest->validated())) {
+            session()->flash('status', ('Twój artykuł został pomyślnie zmieniony'));
+        } else {
+            session()->flash('status', ('Coś poszło nie tak :('));
+        }
+
+        return redirect()->route('accommodation.show', ['accommodation' => $accommodation]);
     }
 
 

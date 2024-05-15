@@ -4,8 +4,13 @@
 
 <div class="container" style="margin-top: 10rem;">
     <div class="offset-1 d-flex my-2">
-        <a href="{{route('jobs.index')}}" class="text-align-center text-decoration-none">Start</a>
-        <a href="{{route('articles.index')}}" class="text-align-center text-decoration-none mx-3">Artykuły</a>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{route('jobs.index')}}">Start</a></li>
+                <li class="breadcrumb-item"><a href="{{route('articles.index')}}">Artykuły</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{$article->title}}</li>
+            </ol>
+        </nav>
     </div>
     <h1 class="col-8 h1 text-align-center text-decoration-none offset-1">{{$article->title}}</h1>
     <div class="row">

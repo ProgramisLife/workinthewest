@@ -1,11 +1,7 @@
 /** Top **/
 
 .top {
-    padding: 100px 0 100px;
-}
-.top-header {
-    color: #db890f;
-    font-size: 64px;
+    padding: 100px 0px 100px;
 }
 
 .btn-search:hover {
@@ -18,4 +14,18 @@
 
 .title-hover:hover {
     color: #0d6efd;
+}
+
+/** Artykuły **/
+.articles .articles-header {
+    font-size: 36px;
+}
+
+.articles .articles-text {
+    font-size: 13px;
+}
+
+.top-header {
+    color: #db890f;
+    font-size: 64px;
 }
