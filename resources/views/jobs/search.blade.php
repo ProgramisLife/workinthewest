@@ -4,25 +4,22 @@
 
 <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 
-<div style="margin-top: 2rem;">
-    <div class="round p-5 text-center bg-image"
-        style="background-image: url('{{ asset('assets/images/szukaj.jpg') }}');background-repeat: no-repeat; background-size: cover;">
-        <div class="d-flex justify-content-center align-items-center h-100">
-            <div class="text-white">
-                <div class="h1 text-left fw-bold mt-5">
-                    <span class="mx-2 main-image-header-blue">oferty</span>
-                    <span class="main-image-header-white">pracy</span>
-                </div>
-            </div>
-        </div>
+
+<div class="jumbotron jumbotron-fluid top img img-fluid" style="background-image: url('{{asset('assets/images/bg-info-home-3.png') }}'); background-repeat: no-repeat;
+    background-size: cover;">
+    <div class="container text-center">
+        <h1 class="top-header fw-bold text-uppercase py-4">{{$data['label']['top']['top-header']}}</h1>
+        <p class="lead text-white">{{$data['label']['top']['top-text']}}</p>
     </div>
 </div>
+
+
 <div class="container my-5">
     <form action="{{ route('jobs.search') }}" method="GET">
         @csrf
         <div class="row">
             <div class="d-inline-block offset-1 bg-white col-md-2">
-                <p class="p-bold text-uppercase pt-3">branża
+                <p class="fw-bold text-uppercase pt-3">branża
                 <div class="border-top border-dark border-1 mb-0"></div>
                 </p>
                 @foreach($data['jobs']['jobCategories'] as $category)
@@ -43,7 +40,7 @@
                 </div>
                 @endforeach
 
-                <p class="p-bold text-uppercase pt-3 font-weight-bold">umiejętności
+                <p class="fw-bold text-uppercase pt-3 font-weight-bold">umiejętności
                 <div class="border-top border-dark border-1 mb-0"></div>
                 </p>
                 @foreach($data['jobs']['jobSkills'] as $skill)
@@ -61,7 +58,7 @@
                 </div>
                 @endforeach
 
-                <p class="p-bold text-uppercase pt-3 font-weight-bold">typy
+                <p class="fw-bold text-uppercase pt-3 font-weight-bold">typy
                 <div class="border-top border-dark border-1 mb-0"></div>
                 </p>
                 @foreach($data['jobs']['jobtype'] as $type)
@@ -80,7 +77,7 @@
                 </div>
                 @endforeach
 
-                <p class="p-bold text-uppercase pt-3 font-weight-bold">poziomy
+                <p class="fw-bold text-uppercase pt-3 font-weight-bold">poziomy
                 <div class="border-top border-dark border-1 mb-0"></div>
                 </p>
                 @foreach($data['jobs']['joblevels'] as $level)
@@ -107,7 +104,7 @@
     <div class="d-inline-block bg-white col-md-6 mx-4 overflow-auto">
         <form action="{{ route('jobs.search') }}" method="GET">
             <label for="sorting">
-                <p class="p-bold text-uppercase pt-3 font-weight-bold">sortowanie
+                <p class="fw-bold text-uppercase pt-3 font-weight-bold">sortowanie
                 <div class="border-top border-dark border-1 mb-0"></div>
                 </p>
             </label>
@@ -127,7 +124,24 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
                         @if($jobSearch->jobtype->isNotEmpty())
-                        <a class="btn btn-primary my-1"
+                        @php
+                        $buttonColor = '';
+                        switch($jobSearch->jobtype->first()->type) {
+                        case 'Pełny etat':
+                        $buttonColor = 'btn-warning';
+                        break;
+                        case 'Kontrakt':
+                        $buttonColor = 'btn-danger';
+                        break;
+                        case 'Freelancer':
+                        $buttonColor = 'btn-dark';
+                        break;
+                        default:
+                        $buttonColor = 'btn-primary';
+                        break;
+                        }
+                        @endphp
+                        <a class="btn {{$buttonColor}} my-1"
                             href="{{ route('jobs.search', ['jobSearch' => $jobSearch->jobtype->first()->type]) }}"
                             role="button">{{$jobSearch->jobtype->first()->type}}</a>
                         @endif
@@ -224,37 +238,36 @@
     </div>
 
     <div class="d-inline-block bg-white col-md-2">
-        <p class="p-bold text-uppercase pt-3">ostatni pracodawcy
+        <p class="fw-bold text-uppercase pt-3">ostatni pracodawcy
         <div class="border-top border-dark border-1 mb-0"></div>
         </p>
 
-        <p class="p-bold text-uppercase pt-3">statystyki
+        <p class="fw-bold text-uppercase pt-3">statystyki
         <div class="border-top border-dark border-1 mb-0"></div>
         </p>
         <div class="display-info">
             <div class="h1 text-light text-center mb-0">0</div>
-            <p class="p-bold text-uppercase text-center pt-3 mb-0 green">pracodawcy</p>
+            <p class="fw-bold text-uppercase text-center pt-3 mb-0 green">pracodawcy</p>
         </div>
         <div class="display-info my-2">
             <div class="h1 text-light text-center mb-0">0</div>
-            <p class="p-bold text-uppercase text-center pt-3 mb-0 green">utworzono cv</p>
+            <p class="fw-bold text-uppercase text-center pt-3 mb-0 green">utworzono cv</p>
         </div>
         <div class="display-info my-2">
             <div class="h1 text-light text-center mb-0">{{ $data['jobs']['jobCount'] }}</div>
-            <p class="p-bold text-uppercase text-center pt-3 mb-0 green">opublikowane prace</p>
+            <p class="fw-bold text-uppercase text-center pt-3 mb-0 green">opublikowane prace</p>
         </div>
 
-        <p class="p-bold text-uppercase pt-4">ostatnie prace
+        <p class="fw-bold text-uppercase pt-4">ostatnie prace
         <div class="border-top border-dark border-1 mb-0"></div>
         </p>
         @foreach($data['jobs']['latestJob'] as $latest)
-        <p class="newesttitle text-uppercase p-bold">{{$latest->title}}</p>
+        <p class="newesttitle text-uppercase fw-bold">{{$latest->title}}</p>
         <p class="newesttitle">opublikowano w</p>
         <a href="{{ route('jobs.search', ['category' => $latest->jobcategory->category]) }}"
             class="newestcontent">{{$latest->jobcategory->category}}</a>
         @endforeach
     </div>
-</div>
 </div>
 
 

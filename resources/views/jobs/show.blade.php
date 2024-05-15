@@ -8,14 +8,18 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link rel="stylesheet" href="{{ asset('assets/css/jobs/show.css') }}" />
 </header>
-<div class="container my-5" style="margin-top: 150px !important;">
+<div class="container my-5">
     <div class="d-flex">
         <div class="offset-1 col-7 bg-white">
             <div class="mx-4">
                 <div class="pt-5">
-                    <a href="{{route('jobs.index')}}" class="mx-2 text-decoration-none">Start</a> >
-                    <a href="{{route('jobs.search')}}" class="text-decoration-none">Oferty pracy</a> >
-                    {{Str::limit($job->title,20)}}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{route('jobs.index')}}">Start</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('jobs.search')}}">Oferty pracy</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{Str::limit($job->title,20)}}</li>
+                        </ol>
+                    </nav>
                 </div>
                 <div class="h1 my-5 mx-2">
                     {{$job->title}}
@@ -103,17 +107,12 @@
                     </div>
                 </div>
 
-                @if(now() == $job->expiry)
-                <div class="alert alert-warning" role="alert">
-                    Ta oferta jest nieaktualna.
-                </div>
-                @endif
-
                 <div class="text-uppercase my-5">
                     <div class="d-flex text-secondary"><i class="bi bi-translate"></i>
-                        <div class="mx-2">jezyki:</div>
+                        <div class="mx-2">języki:</div>
                         @foreach($job->language()->pluck('language') as $language)
-                        <div class="badge bg-primary text-center mx-1">{{$language}}</div>
+                        <div class="badge bg-primary text-center mx-1">{{$language}}
+                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -169,32 +168,39 @@
                     .openPopup();
                 </script>
                 @endif
+
+                @if($job->expiry <= now()) <div class="col-5">
+                    <div class="alert alert-warning" role="alert">
+                        Ta oferta pracy jest nieaktualna.
+                    </div>
             </div>
-        </div>
-        <div class="mx-5 col-3 bg-white">
-            <form class="py-3">
-                Jego Avatar<br />
-                Nazwa użytkownika do którego należy ogłoszenie
-                <div class="text-uppercase fw-bold mx-4 my-4">Formularz kontaktowy</div>
-                <hr class="mx-4 border-top border-4 border-dark">
-                <div class="mb-3 mx-4">
-                    <input type="text" class="form-control" placeholder="Twoje imię">
-                </div>
-                <div class="mb-3 mx-4">
-                    <input type="email" class="form-control" placeholder="Twój email">
-                </div>
-                <div class="mb-3 mx-4">
-                    <input type="text" class="form-control" placeholder="Przedmiot">
-                </div>
-                <div class="mb-3 mx-4">
-                    <input type="text" class="form-control" placeholder="Wiadomość">
-                </div>
-                <div class="text-start">
-                    <a href="" class="btn btn-success text-uppercase mx-4">wyślij teraz</a>
-                </div>
-            </form>
+            @endif
         </div>
     </div>
+    <div class="mx-5 col-3 bg-white">
+        <form class="py-3">
+            Jego Avatar<br />
+            Nazwa użytkownika do którego należy ogłoszenie
+            <div class="text-uppercase fw-bold mx-4 my-4">Formularz kontaktowy</div>
+            <hr class="mx-4 border-top border-4 border-dark">
+            <div class="mb-3 mx-4">
+                <input type="text" class="form-control" placeholder="Twoje imię">
+            </div>
+            <div class="mb-3 mx-4">
+                <input type="email" class="form-control" placeholder="Twój email">
+            </div>
+            <div class="mb-3 mx-4">
+                <input type="text" class="form-control" placeholder="Przedmiot">
+            </div>
+            <div class="mb-3 mx-4">
+                <input type="text" class="form-control" placeholder="Wiadomość">
+            </div>
+            <div class="text-start">
+                <a href="" class="btn btn-success text-uppercase mx-4">wyślij teraz</a>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 
 <div class="container">

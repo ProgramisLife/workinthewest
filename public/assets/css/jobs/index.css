@@ -39,3 +39,47 @@
     font-size: 1.25rem;
     padding-left: 0.5rem;
 }
+
+/** Rejestracja **/
+
+.register .register-subheader {
+    font-size: 18px;
+}
+
+.register .register-header {
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.register .register-text {
+    font-size: 16px;
+}
+
+/** Artykuły **/
+.articles .articles-header {
+    font-weight: 600;
+    font-size: 36px;
+}
+
+.articles .articles-text {
+    font-size: 16px;
+}
+
+.articles-section {
+    margin-top: 150px;
+    margin-bottom: 100px;
+}
+
+.articles-section .card-img-top {
+    max-height: 245px;
+}
+
+.articles-section .articles-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.articles-section .articles-header:hover {
+    color: #2980c8;
+}

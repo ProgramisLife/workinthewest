@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Article\ArticleRequest;
 use App\Models\Article;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -20,9 +20,20 @@ class ArticleController extends Controller
 
         $files = ['job.png', 'job2.jpg'];
 
+        $data = [
+            'label' => [
+                'top' => [
+                    'top-header' => 'artykuły',
+                    'top-input-keyword' => 'Słowo kluczowe?',
+                    'top-search' => 'Wyszukaj',
+                ],
+        ]
+    ];
+
         return view('articles.index', [
             'articles' => $newestArticle,
-            'files' => $files
+            'files' => $files,
+            'data' => $data,
         ]);
     }
 
@@ -137,6 +148,38 @@ class ArticleController extends Controller
 
     public function search(Request $request)
     {
-        return dd('coś');
+
+        $keyword = $request->input('keyword');
+
+        $query = Article::query();
+
+        $query->when(!is_null($keyword), function ($query) use ($keyword) {
+        return is_numeric($keyword) 
+        ? $query->where(function ($query) use ($keyword) {
+            $query->where('created_at', 'like', "%$keyword%")
+            ->orwhere('updated_at', 'like', "%$keyword%");
+        }) 
+        : $query->where(function ($query) use ($keyword) {
+            $query->where('title', 'like', "%$keyword%")
+                ->orWhere('slug', 'like', "%$keyword%")
+                ->orWhere('youtube', 'like', "%$keyword%")
+                ->orWhere('source', 'like', "%$keyword%");
+                });
+        });
+
+        $data = [
+            'label' => [
+                'top' => [
+                    'top-header' => 'artykuły',
+                    'top-input-keyword' => 'Słowo kluczowe?',
+                    'top-search' => 'Wyszukaj',
+                ],
+        ]
+    ];
+
+        $articles = $query->paginate(20);
+
+        return view('articles.index', isset($articles) ? ['articles' => $articles, 
+        'data' => $data] : []);
     }
 }

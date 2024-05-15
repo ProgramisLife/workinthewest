@@ -1,15 +1,15 @@
-.links {
-    margin-top: 500px;
-}
+/** Top **/
 
-.oferty {
-    font-size: 36px;
+.top {
+    padding: 100px 0px 100px;
+}
+.top-header {
     color: #db890f;
-    font-weight: bold;
+    font-size: 64px;
 }
 
-.p-bold {
-    font-weight: bold;
+.btn-search:hover {
+    background-color: #004696;
 }
 
 .display-info {
@@ -19,19 +19,8 @@
     background-color: #5d6167;
     display: flex;
     flex-direction: column;
-    /* Ustawienie flexbox na kolumnowy układ */
     justify-content: center;
     align-items: center;
-}
-
-.text-center {
-    text-align: center !important;
-    /* Ustawienie tekst na środkowanie wewnątrz diva */
-}
-
-.mb-0 {
-    margin-bottom: 0 !important;
-    /* Usunięcie marginesu dolnego */
 }
 
 .green {
@@ -55,20 +44,4 @@
     max-height: 10rem;
     min-width: 10rem;
     min-height: 10rem;
-}
-
-.round {
-    height: 20rem;
-}
-
-.main-image-header-blue {
-    font-size: 64px;
-    color: #007bff;
-    text-transform: uppercase;
-}
-
-.main-image-header-white {
-    font-size: 64px;
-    color: white;
-    text-transform: uppercase;
 }

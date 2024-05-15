@@ -78,10 +78,22 @@ class JobController extends Controller
                 'empty' => 'Brak ofert pracy',
                 'look-all' => 'zobacz wszystkie oferty',
                 'cooperation' => 'współpracujemy:',
-                'news' => 'Centrum Aktualności',
-                'news-content' => 'Tutaj możesz śledzić najnowsze newsy z świata pracy.',
-                'articles' => 'Brak artykułów do wyświetlenia.',
-                'business-register' => 'Zarejestruj firmę',
+                'register' => [
+                    'employer-subheader' => 'Jestem',
+                    'employer-header' => 'PRACODAWCĄ',
+                    'employer-text' => 'Dodawaj ogłoszenia pracy, oraz szukaj kandydatów...',
+                    'employer-button' => 'ZAREJESTRUJ FIRME',
+
+                    'employee-subheader' => 'Jestem',
+                    'employee-header' => 'KANDYDATEM',
+                    'employee-text' => 'Przeszukaj bazę ofert pracy, aplikuj, zapisuj na później...',
+                    'employee-button' => 'ZAREJESTRUJ SIĘ JAKO KANDYDAT',
+                ],
+                'articles' => [
+                    'news' => 'Centrum Aktualności',
+                    'news-content' => 'Tutaj możesz śledzić najnowsze newsy z świata pracy.',
+                    'articles' => 'Brak artykułów do wyświetlenia.',
+                ],
                 'newest-ofert' => 'Najnowsze oferty',
                 'featured-ofert' => 'Wyróżnione',
             ],
@@ -385,6 +397,7 @@ class JobController extends Controller
 
     public function search(Request $request)
     {
+        
         $jobCategories = JobCategory::all();
         $jobSkills = Skill::all();
         $joblevels = JobLevel::all();
@@ -508,6 +521,11 @@ class JobController extends Controller
                 'hoursDifference' => $hoursDifference,
                 'minutesDifference' => $minutesDifference,
             ],
+            'label' => [
+                'top' => [
+                    'top-header' => 'znajdź pracę',
+                    'top-text' => 'Przeszukaj naszą bazę ofert, by odkryć coś dla siebie!',
+                ],],
         ];
 
         return view('jobs.search', isset($jobSearchs) ? ['jobSearchs' => $jobSearchs, 

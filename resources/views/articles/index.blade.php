@@ -3,9 +3,26 @@
 @section('content')
 
 <link rel="stylesheet" href="{{ asset('assets/css/articles/index.css') }}" />
+<section class="mask">
+    <div class="top-background">
+        <div class="jumbotron jumbotron-fluid top img img-fluid"
+            style="background-image: url('{{asset('assets/images/article-header.jpg') }}'); background-repeat: no-repeat; background-size: cover;">
+            <div class="container text-center py-5" style="background-color: rgba(0, 0, 0, 0.6);">
+                <h1 class=" top-header fw-bold text-uppercase py-4">{{$data['label']['top']['top-header']}}</h1>
+                <form class="d-flex col-md-8 mx-auto" method="POST" action="{{ route('articles.search') }}">
+                    <input class="form-control me-2" type="search" placeholder="Wyszukaj"
+                        class="@error('keyword') is-invalid @enderror" id="keyword" name="keyword">
+                    <button class="btn btn-lg btn-search background-main text-white"
+                        type="submit">{{$data['label']['top']['top-search']}}</button>
+                    @method('POST')
+                    @csrf
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="container" style="margin-top: 10rem;">
-    <div class="h1 text-align-center offset-1">Artykuły</div>
+<div class="container mt-5">
     <div class="row">
         <div class="offset-lg-1 col-md-8">
             @foreach($articles as $article)
