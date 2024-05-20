@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->string('city')->charset('utf8mb4');
-            $table->string('postal_code')->nullable();
             $table->double('longitude');
             $table->double('latitude');
             $table->softDeletes();

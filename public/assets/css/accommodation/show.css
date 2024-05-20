@@ -7,3 +7,16 @@
     color: #db890f;
     font-size: 64px;
 }
+
+.offerts-header {
+    font-size: 2.25rem;
+    padding-bottom: 2rem;
+}
+
+.offers-color-oranger {
+    color: #ff5733;
+}
+
+.offers-color-brown {
+    color: brown;
+}

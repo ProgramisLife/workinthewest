@@ -38,334 +38,338 @@
                 @enderror
             </div>
 
-        </div>
-
-        <!-- Zdjęcia -->
-        <div class="titleheaders">zdjęcia</div>
-
-        <div class="d-flex justify-content-between">
-            <div class="form-group">
-                <label for="photo">Zdjęcie profilowe:</label>
-                @if($data['photo']['hasExistingPhoto'])
-                <p>Obecne zdjęcie:</p>
-                <img style="max-width: 10rem; max-height:10rem;"
-                    src="{{ asset('images/jobs/main-photo/' . $job->main_image_path) }}" alt="Obecne zdjęcie">
-                <p>Obecna nazwa pliku: {{ $job->main_image_path }}</p>
-                <p>Jeśli chcesz zaktualizować to zdjęcie, wgraj nowe poniżej:</p>
-                <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                @else
-                <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                @endif
-            </div>
-
             <!-- Zdjęcia -->
-            <div class="form-group">
-                <label for="photos">Zdjęcia</label>
-                @if($data['photo']['hasExistingPhotos'])
-                <p>Obecne zdjęcia:</p>
-                <div class="text-align-center">
-                    @foreach($job->photos as $photo)
+            <div class="titleheaders">zdjęcia</div>
+
+            <div class="d-flex justify-content-between">
+                <div class="form-group">
+                    <label for="photo">Zdjęcie profilowe:</label>
+                    @if($data['photo']['hasExistingPhoto'])
+                    <p>Obecne zdjęcie:</p>
                     <img style="max-width: 10rem; max-height:10rem;"
-                        src="{{ asset('images/jobs/photos/' . $photo->photo) }}" alt="Zdjęcie">
-                    <p>Obecna nazwa pliku: {{ Str::limit($photo->photo, 20) }} , </p>
-                    <p>Jeśli chcesz zaktualizować te zdjęcia, wgraj nowe poniżej:</p>
-                    @endforeach
+                        src="{{ asset('images/jobs/main-photo/' . $job->main_image_path) }}" alt="Obecne zdjęcie">
+                    <p>Obecna nazwa pliku: {{ $job->main_image_path }}</p>
+                    <p>Jeśli chcesz zaktualizować to zdjęcie, wgraj nowe poniżej:</p>
+                    <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
+                    @else
+                    <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
+                    @endif
+                </div>
+
+                <!-- Zdjęcia -->
+                <div class="form-group">
+                    <label for="photos">Zdjęcia</label>
+                    @if($data['photo']['hasExistingPhotos'])
+                    <p>Obecne zdjęcia:</p>
+                    <div class="text-align-center">
+                        @foreach($job->photos as $photo)
+                        <img style="max-width: 10rem; max-height:10rem;"
+                            src="{{ asset('images/jobs/photos/' . $photo->photo) }}" alt="Zdjęcie">
+                        <p>Obecna nazwa pliku: {{ Str::limit($photo->photo, 20) }} , </p>
+                        <p>Jeśli chcesz zaktualizować te zdjęcia, wgraj nowe poniżej:</p>
+                        @endforeach
+                        <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
+                            accept=".jpg, .jpeg, .png, ,svg">
+                    </div>
+                    @else
                     <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
                         accept=".jpg, .jpeg, .png, ,svg">
+                    @endif
                 </div>
-                @else
-                <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
-                    accept=".jpg, .jpeg, .png, ,svg">
-                @endif
-            </div>
-        </div>
-
-        <!-- Wynagrodzenie od -->
-        <div class="titleheaders">wynagordzenie</div>
-        <div class="d-flex justify-content-start">
-            <div class="col-4 form-group d-inline-block">
-                <label class="text-uppercase" for="salary_from">
-                    wynagrodzenie od
-                </label>
-                <input type="text" class="form-control @error('salary_from') is-invalid @enderror" id="salary_from"
-                    name="salary_from" placeholder="4000" value="{{ $salaryFromValue }}">
-                @error('salary_from')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
             </div>
 
-            <!-- Wynagrodzenie do -->
-            <div class="col-4 form-group mx-2 d-inline-block">
-                <label class="text-uppercase" for="salary_to">
-                    wynagrodzenie do
-                </label>
-                <input type="text" class="form-control @error('salary_to') is-invalid @enderror" id="salary_to"
-                    name="salary_to" placeholder="10000" value="{{ $salaryToValue }}">
-                @error('salary_to')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
-            <!-- Waluta -->
-            <div class="col-3 form-group mx-2 d-inline-block">
-                <label class="text-uppercase" for="currency">waluta *</label>
-                <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency">
-                    @foreach($data['job']['jobcurrencies'] as $currency)
-                    <option value="{{$currency->id}}" {{ old('currency')==$currency->id ? 'selected' : ''}}>
-                        {{$currency->currency}}
-                    </option>
-                    @endforeach
-                </select>
-                @error('currency')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-        </div>
-
-        <!-- Email oraz data -->
-        <div class="titleheaders">ustawienia aplikacji</div>
-
-        <div class="d-flex row my-3">
+            <!-- Wynagrodzenie od -->
+            <div class="titleheaders">wynagordzenie</div>
             <div class="d-flex justify-content-start">
-                <div class="col-lg-4 form-group mx-1 d-sm-block">
-                    <label class="text-uppercase" for="email">
-                        e-mail do składania aplikacji*
+                <div class="col-4 form-group d-inline-block">
+                    <label class="text-uppercase" for="salary_from">
+                        wynagrodzenie od
                     </label>
-                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                        name="email" placeholder="administrator123@work.pl" value="{{ $emailValue }}">
-                    @error('email')
+                    <input type="text" class="form-control @error('salary_from') is-invalid @enderror" id="salary_from"
+                        name="salary_from" placeholder="4000" value="{{ $salaryFromValue }}">
+                    @error('salary_from')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
                     @enderror
                 </div>
 
-                <div class="col-lg-3 mx-4 form-group d-sm-block mx-2">
-                    <label class="text-uppercase" for="datepicker">termin składania aplikacji</label>
-                    <input id="datepicker" width="300" name="deadline" value="{{ old('deadline', $deadlineValue) }}"
-                        class="@error('deadline') is-invalid @enderror" />
-                    @error('deadline')
+                <!-- Wynagrodzenie do -->
+                <div class="col-4 form-group mx-2 d-inline-block">
+                    <label class="text-uppercase" for="salary_to">
+                        wynagrodzenie do
+                    </label>
+                    <input type="text" class="form-control @error('salary_to') is-invalid @enderror" id="salary_to"
+                        name="salary_to" placeholder="10000" value="{{ $salaryToValue }}">
+                    @error('salary_to')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
                     @enderror
-                    <script>
-                        $('#datepicker').datepicker({
+                </div>
+
+                <!-- Waluta -->
+                <div class="col-3 form-group mx-2 d-inline-block">
+                    <label class="text-uppercase" for="currency">waluta *</label>
+                    <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency">
+                        @foreach($data['job']['jobcurrencies'] as $currency)
+                        <option value="{{$currency->id}}" {{ old('currency')==$currency->id ? 'selected' : ''}}>
+                            {{$currency->currency}}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('currency')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Email oraz data -->
+            <div class="titleheaders">ustawienia aplikacji</div>
+
+            <div class="d-flex row my-3">
+                <div class="d-flex justify-content-start">
+                    <div class="col-lg-4 form-group mx-1 d-sm-block">
+                        <label class="text-uppercase" for="email">
+                            e-mail do składania aplikacji*
+                        </label>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                            name="email" placeholder="administrator123@work.pl" value="{{ $emailValue }}">
+                        @error('email')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+
+                    <div class="col-lg-3 mx-4 form-group d-sm-block mx-2">
+                        <label class="text-uppercase" for="datepicker">termin składania aplikacji</label>
+                        <input id="datepicker" width="300" name="deadline" value="{{ old('deadline', $deadlineValue) }}"
+                            class="@error('deadline') is-invalid @enderror" />
+                        @error('deadline')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                        <script>
+                            $('#datepicker').datepicker({
                     uiLibrary: 'bootstrap5',
                     format: "yyyy-mm-dd",
                     startView: "months",
                     minViewMode: "months",
                     });
-                    </script>
+                        </script>
+                    </div>
                 </div>
+
+                <!-- Poziom stanowiska -->
+                <div class="d-flex justify-content-start">
+                    <div class="col-lg-4 form-group mx-1 d-sm-block">
+                        <label class="text-uppercase" for="levels">poziom stanowiska *</label>
+                        <select class="form-control @error('level') is-invalid @enderror" id="levels" name="level">
+                            @foreach($data['job']['joblevels'] as $level)
+                            <option value="{{$level->id}}" {{ $level->id == $levelValue ? 'selected' :''}}>
+                                {{$level->level}}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('level')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+
+                    <!-- Kategoria pracy -->
+                    <div class="col-lg-4 form-group mx-4 d-sm-block">
+                        <label class="text-uppercase" for="categories">kategoria oferty pracy *</label>
+                        <select class="form-control @error('category') is-invalid @enderror" id="categories"
+                            name="category">
+                            @foreach($data['job']['jobcategories'] as $category)
+                            <option value="{{$category->id}}" {{ $category->id == $categoryValue ? 'selected' :''}}>
+                                {{$category->category}}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('category')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+
+                <!-- wymiar pracy -->
+                <div class="row justify-content-start">
+                    <div class="col-lg-3 my-3 form-group mx-1">
+                        <label class="text-uppercase" for="types">wymiar pracy *</label>
+                        <select multiple class="form-control @error('type') is-invalid @enderror" id="types"
+                            name="type[]" style="height: 150px; overflow-y: auto;">
+                            @foreach($data['job']['jobtypes'] as $type)
+                            <option value="{{$type->id}}" @if(in_array($type->id, $typeValue)) selected @endif>
+                                {{$type->type}}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('type')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+
+                    <!-- języki -->
+                    <div class="col-lg-4 my-3 form-group mx-1">
+                        <label for="language" class="text-uppercase">języki</label>
+                        <select multiple class="form-control" id="language" name="language[]"
+                            style="height: 150px; overflow-y: auto;">
+                            @foreach($data['job']['joblanguages'] as $language)
+                            <option value="{{$language->id}}" @if(in_array($language->id, $languageValue)) selected
+                                @endif>
+                                {{$language->language}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 my-3 form-group mx-1">
+                        <label for="jobstate" class="text-uppercase">rodzaj pracy</label>
+                        <select multiple class="form-control" id="jobstate" name="jobstate[]"
+                            style="height: 150px; overflow-y: auto;">
+                            @foreach($data['job']['jobstate'] as $jobstate)
+                            <option value="{{$jobstate->id}}" @if(in_array($jobstate->id, $jobstateValue)) selected
+                                @endif>
+                                {{$jobstate->name}}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('jobstate')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Poziom stanowiska -->
-            <div class="d-flex justify-content-start">
-                <div class="col-lg-4 form-group mx-1 d-sm-block">
-                    <label class="text-uppercase" for="levels">poziom stanowiska *</label>
-                    <select class="form-control @error('level') is-invalid @enderror" id="levels" name="level">
-                        @foreach($data['job']['joblevels'] as $level)
-                        <option value="{{$level->id}}" {{ $level->id == $levelValue ? 'selected' :''}}>
-                            {{$level->level}}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('level')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                    @enderror
-                </div>
-
-                <!-- Kategoria pracy -->
-                <div class="col-lg-4 form-group mx-4 d-sm-block">
-                    <label class="text-uppercase" for="categories">kategoria oferty pracy *</label>
-                    <select class="form-control @error('category') is-invalid @enderror" id="categories"
-                        name="category">
-                        @foreach($data['job']['jobcategories'] as $category)
-                        <option value="{{$category->id}}" {{ $category->id == $categoryValue ? 'selected' :''}}>
-                            {{$category->category}}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('category')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                    @enderror
-                </div>
+            <!-- Wymagane umiejętności -->
+            <div class="form-group">
+                <label class="titleheaders" for="skills">wymagane umiejętności</label>
+                <select multiple class="form-control" id="skills" name="skills[]"
+                    style="height: 250px; overflow-y: auto;">
+                    @foreach($data['job']['jobskills'] as $skill)
+                    <option value="{{$skill->id}}" @if(in_array($skill->id, $skillValue)) selected
+                        @endif>{{$skill->skill}}
+                    </option>
+                    @endforeach
+                </select>
             </div>
 
-
-            <!-- wymiar pracy -->
-            <div class="row justify-content-start">
-                <div class="col-lg-3 my-3 form-group mx-1">
-                    <label class="text-uppercase" for="types">wymiar pracy *</label>
-                    <select multiple class="form-control @error('type') is-invalid @enderror" id="types" name="type[]"
-                        style="height: 150px; overflow-y: auto;">
-                        @foreach($data['job']['jobtypes'] as $type)
-                        <option value="{{$type->id}}" @if(in_array($type->id, $typeValue)) selected @endif>
-                            {{$type->type}}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('type')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                    @enderror
+            <!-- Płeć -->
+            <div class="form-check my-3 d-inline-block">
+                <label class="form-check-label titleheaders">płeć</label>
+                @foreach($data['job']['sexOptions'] as $option)
+                <div>
+                    <input class="form-check-input @error('sex') is-invalid @enderror" type="radio"
+                        id="sex_{{ $option }}" name="sex" value="{{ $option }}" {{ $option==$sexOptionValue ? 'checked'
+                        : '' }}>
+                    <label class="form-check-label" for="sex_{{ $option }}">{{ ucfirst($option) }}</label>
                 </div>
-
-                <!-- języki -->
-                <div class="col-lg-4 my-3 form-group mx-1">
-                    <label for="language" class="text-uppercase">języki</label>
-                    <select multiple class="form-control" id="language" name="language[]"
-                        style="height: 150px; overflow-y: auto;">
-                        @foreach($data['job']['joblanguages'] as $language)
-                        <option value="{{$language->id}}" @if(in_array($language->id, $languageValue)) selected @endif>
-                            {{$language->language}}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-lg-4 my-3 form-group mx-1">
-                    <label for="jobstate" class="text-uppercase">rodzaj pracy</label>
-                    <select multiple class="form-control" id="jobstate" name="jobstate[]"
-                        style="height: 150px; overflow-y: auto;">
-                        @foreach($data['job']['jobstate'] as $jobstate)
-                        <option value="{{$jobstate->id}}" @if(in_array($jobstate->id, $jobstateValue)) selected @endif>
-                            {{$jobstate->name}}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('jobstate')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                    @enderror
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Wymagane umiejętności -->
-        <div class="form-group">
-            <label class="titleheaders" for="skills">wymagane umiejętności</label>
-            <select multiple class="form-control" id="skills" name="skills[]" style="height: 250px; overflow-y: auto;">
-                @foreach($data['job']['jobskills'] as $skill)
-                <option value="{{$skill->id}}" @if(in_array($skill->id, $skillValue)) selected @endif>{{$skill->skill}}
-                </option>
                 @endforeach
-            </select>
-        </div>
-
-        <!-- Płeć -->
-        <div class="form-check my-3 d-inline-block">
-            <label class="form-check-label titleheaders">płeć</label>
-            @foreach($data['job']['sexOptions'] as $option)
-            <div>
-                <input class="form-check-input @error('sex') is-invalid @enderror" type="radio" id="sex_{{ $option }}"
-                    name="sex" value="{{ $option }}" {{ $option==$sexOptionValue ? 'checked' : '' }}>
-                <label class="form-check-label" for="sex_{{ $option }}">{{ ucfirst($option) }}</label>
-            </div>
-            @endforeach
-            @error('sex')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
-        </div>
-
-        <!-- Państwo -->
-        <div class="d-flex row my-3 justify-content-start">
-            <div class="titleheaders">lokalizacja</div>
-            <div class="col-3 form-group d-sm-block">
-                <label class="text-uppercase" for="countries">wybierz kraj</label>
-                <select class="form-control @error('countries') is-invalid @enderror" id="countries" name="countries">
-                    @foreach ($data['countries'] as $country)
-                    @if(isset($job))
-                    <option value="{{$country->id}}" {{ $country->id == $countryValue ? 'selected' :''}}>
-                        {{$country->country}}
-                    </option>
-                    @else
-                    <option value="{{$country->id}}">{{$country->country}}</option>
-                    @endif
-                    @endforeach
-                </select>
-                @error('countries')
+                @error('sex')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
                 @enderror
             </div>
 
-            <!-- Stan -->
-            <div class="col-4 form-group d-sm-block">
-                <label class="text-uppercase" for="states">wybierz stan</label>
-                <select class="form-control @error('states') is-invalid @enderror" id="states" name="states">
-                    @foreach ($data['states'] as $state)
-                    @if(isset($job))
-                    <option value="{{$state->id}}" {{ $state->id == $stateValue ? 'selected' :''}}>
-                        {{$state->state}}
-                    </option>
-                    @endif
-                    @endforeach
-                </select>
-                @error('states')
-                <div class="invalid-feedback">
-                    {{ $message }}
+            <!-- Państwo -->
+            <div class="d-flex row my-3 justify-content-start">
+                <div class="titleheaders">lokalizacja</div>
+                <div class="col-3 form-group d-sm-block">
+                    <label class="text-uppercase" for="countries">wybierz kraj</label>
+                    <select class="form-control @error('countries') is-invalid @enderror" id="countries"
+                        name="countries">
+                        @foreach ($data['countries'] as $country)
+                        @if(isset($job))
+                        <option value="{{$country->id}}" {{ $country->id == $countryValue ? 'selected' :''}}>
+                            {{$country->country}}
+                        </option>
+                        @else
+                        <option value="{{$country->id}}">{{$country->country}}</option>
+                        @endif
+                        @endforeach
+                    </select>
+                    @error('countries')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
-                @enderror
+
+                <!-- Stan -->
+                <div class="col-4 form-group d-sm-block">
+                    <label class="text-uppercase" for="states">wybierz stan</label>
+                    <select class="form-control @error('states') is-invalid @enderror" id="states" name="states">
+                        @foreach ($data['states'] as $state)
+                        @if(isset($job))
+                        <option value="{{$state->id}}" {{ $state->id == $stateValue ? 'selected' :''}}>
+                            {{$state->state}}
+                        </option>
+                        @endif
+                        @endforeach
+                    </select>
+                    @error('states')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
+
+                <!-- Miasto -->
+                <div class="col-4 form-group mx-1 d-sm-block">
+                    <label class="text-uppercase" for="cities">wybierz miasto</label>
+                    <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities">
+                        @foreach ($data['cities'] as $city)
+                        @if(isset($job))
+                        <option value="{{$city->id}}" {{ $city->id == $cityValue ? 'selected' :''}}>
+                            {{$city->city}}
+                        </option>
+                        @endif
+                        @endforeach
+                    </select>
+                    @error('cities')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+                </div>
             </div>
 
-            <!-- Miasto -->
-            <div class="col-4 form-group mx-1 d-sm-block">
-                <label class="text-uppercase" for="cities">wybierz miasto</label>
-                <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities">
-                    @foreach ($data['cities'] as $city)
-                    @if(isset($job))
-                    <option value="{{$city->id}}" {{ $city->id == $cityValue ? 'selected' :''}}>
-                        {{$city->city}}
-                    </option>
-                    @endif
+            <!-- Wyróżnione -->
+            <input type="hidden" name="featured" value="false">
+
+            <!-- Data wygaśnięcia -->
+            <input type="hidden" name="expiry" value="{{ $data['job']['expiry'] }}" />
+
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
                     @endforeach
-                </select>
-                @error('cities')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
+                </ul>
             </div>
-        </div>
+            @endif
 
-        <!-- Wyróżnione -->
-        <input type="hidden" name="featured" value="false">
-
-        <!-- Data wygaśnięcia -->
-        <input type="hidden" name="expiry" value="{{ $data['job']['expiry'] }}" />
-
-        @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        <button type="submit" class="btn btn-primary my-3 d-block">
-            {{ $submitBtnText }}
-        </button>
-        @method($method ?? 'POST')
+            <button type="submit" class="btn btn-primary my-3 d-block">
+                {{ $submitBtnText }}
+            </button>
+            @method($method ?? 'POST')
     </form>
 </div>
 

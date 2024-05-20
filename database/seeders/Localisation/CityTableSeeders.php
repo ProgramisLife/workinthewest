@@ -16,7 +16,7 @@ class CityTableSeeders extends Seeder
         $cities = [
             // Austria
             [
-                'id' => 1, 'city' => 'Eisenstadt', 'postal_code' => '7000', 'latitude' => 16.5333, 'longitude' => 47.85,
+                'id' => 1, 'city' => 'Eisenstadt', 'latitude' => 16.5333, 'longitude' => 47.85,
                 'state_id' => 1,
             ],
             [

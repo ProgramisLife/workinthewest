@@ -16,6 +16,9 @@
             'priceBuyValue' => old('price_buy', $accommodation->price_buy),
             'priceRentValue' => old('price_rent', $accommodation->price_rent),
             'expiryValue' => old('expiry', $accommodation->expiry),
+            'countryValue' => old('countries', $accommodation->country_id),
+            'stateValue' => old('states', $accommodation->state_id),
+            'cityValue' => old('cities', $accommodation->city_id),
             'submitBtnText' => 'Zaktualizuj ogłoszenie',
             'method' => 'PUT'
             ])

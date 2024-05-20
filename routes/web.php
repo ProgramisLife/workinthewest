@@ -78,9 +78,9 @@ Route::prefix('/accommodations')->group(function () {
 
     Route::post('/store', [AccommodationController::class, 'store'])->name('accommodations.store');
 
-     Route::get('/{accommodation:slug}', [AccommodationController::class, 'show'])->name('accommodations.show');
+    Route::get('/{accommodation}', [AccommodationController::class, 'show'])->name('accommodations.show');
 
-    Route::get('/{accommodation:slug}/edit', [AccommodationController::class, 'edit'])->name('accommodations.edit');
+    Route::get('/{accommodation}/edit', [AccommodationController::class, 'edit'])->name('accommodations.edit');
 
     Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodations.update');
 

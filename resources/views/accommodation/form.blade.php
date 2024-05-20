@@ -43,48 +43,43 @@
 
                 </div>
 
-                <div class="row justify-content-start">
-                    <div class="text-uppercase h3 my-3">zdjęcia</div>
-                    <!-- Zdjęcie -->
-                    <div class="col-4 form-group">
-                        <label for="photo">Wybierz zdjęcie profilowe:</label>
-                        @if ($data['photos']['hasExistingPhoto'])
+                <!-- Zdjęcia -->
+                <div class="titleheaders">zdjęcia</div>
+
+                <div class="d-flex justify-content-between">
+                    <div class="form-group">
+                        <label for="photo">Zdjęcie profilowe:</label>
+                        @if($data['photos']['hasExistingPhoto'])
                         <p>Obecne zdjęcie:</p>
                         <img style="max-width: 10rem; max-height:10rem;"
                             src="{{ asset('images/accommodation/main-photo/' . $accommodation->main_image_path) }}"
                             alt="Obecne zdjęcie">
                         <p>Obecna nazwa pliku: {{ $accommodation->main_image_path }}</p>
-                        <p>Jeśli chcesz zaktualizować to zdjęcie, wybierz nowe poniżej:</p>
+                        <p>Jeśli chcesz zaktualizować to zdjęcie, wgraj nowe poniżej:</p>
+                        <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
                         @else
                         <input type="file" class="form-control-file" id="photo" name="photo" accept=".jpg, .jpeg, .png">
-                        @error('photo')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
                         @endif
                     </div>
 
                     <!-- Zdjęcia -->
-                    <div class="col-4 form-group">
-                        <label for="photos">Wybierz zdjęcia: </label>
-                        @if ($data['photos']['hasExistingPhotos'])
+                    <div class="form-group">
+                        <label for="photos">Zdjęcia</label>
+                        @if($data['photos']['hasExistingPhotos'])
                         <p>Obecne zdjęcia:</p>
                         <div class="text-align-center">
-                            @foreach ($job->photos as $photo)
+                            @foreach($accommodation->photos as $photo)
                             <img style="max-width: 10rem; max-height:10rem;"
-                                src="{{ asset('images/accommodation/photos/' . $photos->photo) }}" alt="Zdjęcie">
-                            <p>Obecna nazwa pliku: {{ Str::limit($photos->photo, 20) }} , </p>
+                                src="{{ asset('images/accommodation/photos/' . $photo->photo) }}" alt="Zdjęcie">
+                            <p>Obecna nazwa pliku: {{ Str::limit($photo->photo, 20) }} , </p>
+                            <p>Jeśli chcesz zaktualizować te zdjęcia, wgraj nowe poniżej:</p>
                             @endforeach
+                            <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
+                                accept=".jpg, .jpeg, .png, ,svg">
                         </div>
                         @else
                         <input type="file" name="photos[]" class="form-control-file" id="photos" multiple
                             accept=".jpg, .jpeg, .png, ,svg">
-                        @error('photos')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
                         @endif
                     </div>
                 </div>
@@ -180,7 +175,7 @@
                             Osoba kontaktowa / Nazwa firmy*
                         </label>
                         <input type="text" class="form-control @error('contact') is-invalid @enderror" id="contact"
-                            name="contact" placeholder="Januszex" value="{{ $contactValue }}">
+                            name="contact" placeholder="Firma XYZ" value="{{ $contactValue }}">
                         @error('contact')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -218,14 +213,18 @@
 
         <!-- Państwo -->
         <div class="d-flex row my-3 justify-content-start">
-            <div class="text-uppercase h3 my-3">lokalizacja</div>
+            <div class="titleheaders">lokalizacja</div>
             <div class="col-3 form-group d-sm-block">
                 <label class="text-uppercase" for="countries">wybierz kraj</label>
                 <select class="form-control @error('countries') is-invalid @enderror" id="countries" name="countries">
                     @foreach ($data['countries'] as $country)
-                    <option value="{{ $country->id }}" {{ old('countries')==$country->id ? 'selected' : '' }}>
-                        {{ $country->country }}
+                    @if(isset($job))
+                    <option value="{{$country->id}}" {{ $country->id == $countryValue ? 'selected' :''}}>
+                        {{$country->country}}
                     </option>
+                    @else
+                    <option value="{{$country->id}}">{{$country->country}}</option>
+                    @endif
                     @endforeach
                 </select>
                 @error('countries')
@@ -236,10 +235,16 @@
             </div>
 
             <!-- Stan -->
-            <div class="col-3 form-group d-sm-block">
+            <div class="col-4 form-group d-sm-block">
                 <label class="text-uppercase" for="states">wybierz stan</label>
                 <select class="form-control @error('states') is-invalid @enderror" id="states" name="states">
-                    <!-- Opcje stanów zostaną dynamicznie wygenerowane za pomocą AJAX -->
+                    @foreach ($data['states'] as $state)
+                    @if(isset($job))
+                    <option value="{{$state->id}}" {{ $state->id == $stateValue ? 'selected' :''}}>
+                        {{$state->state}}
+                    </option>
+                    @endif
+                    @endforeach
                 </select>
                 @error('states')
                 <div class="invalid-feedback">
@@ -249,10 +254,16 @@
             </div>
 
             <!-- Miasto -->
-            <div class="col-3 form-group mx-1 d-sm-block">
+            <div class="col-4 form-group mx-1 d-sm-block">
                 <label class="text-uppercase" for="cities">wybierz miasto</label>
                 <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities">
-                    <!-- Opcje miast zostaną dynamicznie wygenerowane za pomocą AJAX -->
+                    @foreach ($data['cities'] as $city)
+                    @if(isset($job))
+                    <option value="{{$city->id}}" {{ $city->id == $cityValue ? 'selected' :''}}>
+                        {{$city->city}}
+                    </option>
+                    @endif
+                    @endforeach
                 </select>
                 @error('cities')
                 <div class="invalid-feedback">
@@ -261,6 +272,9 @@
                 @enderror
             </div>
         </div>
+
+        <!-- Wyróżnione -->
+        <input type="hidden" name="featured" value="false">
 
         @if ($errors->any())
         <div class="alert alert-danger">

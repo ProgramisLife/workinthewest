@@ -15,8 +15,10 @@
                 <div class="pt-5">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('jobs.index')}}">Start</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('jobs.search')}}">Oferty pracy</a></li>
+                            <li class="breadcrumb-item"><a class="text-decoration-none"
+                                    href="{{route('jobs.index')}} ">Start</a></li>
+                            <li class="breadcrumb-item"><a class="text-decoration-none"
+                                    href="{{route('jobs.search')}}">Oferty pracy</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{Str::limit($job->title,20)}}</li>
                         </ol>
                     </nav>
@@ -107,57 +109,64 @@
                     </div>
                 </div>
 
-                <div class="text-uppercase my-5">
-                    <div class="d-flex text-secondary"><i class="bi bi-translate"></i>
-                        <div class="mx-2">języki:</div>
-                        @foreach($job->language()->pluck('language') as $language)
-                        <div class="badge bg-primary text-center mx-1">{{$language}}
-                        </div>
-                        @endforeach
+                @if($job->deadline <= now()) <div class="col-5">
+                    <div class="alert alert-warning" role="alert">
+                        Ta oferta pracy jest nieaktualna.
                     </div>
-                </div>
+            </div>
+            @endif
 
-                <!-- Opis -->
-                <div class="mx-2 my-4">
-                    <?php echo $job->description; ?>
+            <div class="text-uppercase my-5">
+                <div class="d-flex text-secondary"><i class="bi bi-translate"></i>
+                    <div class="mx-2">języki:</div>
+                    @foreach($job->language()->pluck('language') as $language)
+                    <div class="badge bg-primary text-center mx-1">{{$language}}
+                    </div>
+                    @endforeach
                 </div>
-                <div class="my-3">
-                    @if($job->photos()->count() > 0)
-                    <div class="d-flex justify-content-center w-70">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                @foreach($job->photos as $key => $photo)
-                                <div class="carousel-item {{$key == 0 ? 'active' : ''}}">
-                                    <img src="{{ asset('images/jobs/photos/' . $photo->photo) }}" class="d-block w-70"
-                                        alt="{{ $photo->photo }}" style="max-height: 400px; object-fit: cover;">
-                                </div>
-                                @endforeach
+            </div>
+
+            <!-- Opis -->
+            <div class="mx-2 my-4">
+                <?php echo $job->description; ?>
+            </div>
+            <div class="my-3">
+                @if($job->photos()->count() > 0)
+                <div class="d-flex justify-content-center w-70">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @foreach($job->photos as $key => $photo)
+                            <div class="carousel-item {{$key == 0 ? 'active' : ''}}">
+                                <img src="{{ asset('images/jobs/photos/' . $photo->photo) }}" class="d-block w-70"
+                                    alt="{{ $photo->photo }}" style="max-height: 400px; object-fit: cover;">
                             </div>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                            @endforeach
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    @endif
                 </div>
+                @endif
+            </div>
 
-                @if(isset($job->city->city))
-                <!-- Lokalizacja -->
-                <div class="my-5">
-                    <div class="text-uppercase fw-bold">Lokalizacja</div>
-                </div>
-                <div class="d-flex justify-content-center pb-5">
-                    <div id="map" style="height: 400px; width:700px;"></div>
-                </div>
-                <script>
-                    var map = L.map('map').setView([{{$job->city->latitude}}, {{$job->city->longitude}}], 13);
+            @if(isset($job->city->city))
+            <!-- Lokalizacja -->
+            <div class="my-5">
+                <div class="text-uppercase fw-bold">Lokalizacja</div>
+            </div>
+            <div class="d-flex justify-content-center pb-5">
+                <div id="map" style="height: 400px; width:700px;"></div>
+            </div>
+            <script>
+                var map = L.map('map').setView([{{$job->city->latitude}}, {{$job->city->longitude}}], 13);
                     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(map);
@@ -165,14 +174,7 @@
                     L.marker([{{$job->city->latitude}}, {{$job->city->longitude}}]).addTo(map)
                     .bindPopup('A pretty CSS popup.<br> Easily customizable.')
                     .openPopup();
-                </script>
-                @endif
-
-                @if($job->expiry <= now()) <div class="col-5">
-                    <div class="alert alert-warning" role="alert">
-                        Ta oferta pracy jest nieaktualna.
-                    </div>
-            </div>
+            </script>
             @endif
         </div>
     </div>
@@ -199,7 +201,6 @@
             </div>
         </form>
     </div>
-</div>
 </div>
 
 <div class="container">

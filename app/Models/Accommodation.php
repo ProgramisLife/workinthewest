@@ -55,7 +55,7 @@ class Accommodation extends Model
     protected $fillable = [
         'owner_id', 'main_image_path', 'email', 'title', 'description',
         'price_buy', 'price_rent', 'slug', 'featured', 'sold',
-        '$phone_number', 'contact', 'expiry',
+        'phone_number', 'contact', 'expiry',
         'city_id', 'state_id', 'country_id'
     ];
 
@@ -110,6 +110,11 @@ class Accommodation extends Model
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     use HasFactory;

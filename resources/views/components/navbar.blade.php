@@ -53,16 +53,6 @@
                     </a>
                 </li>
             </ul>
-            <div class="dropdown">
-                <button class="btn dropdown-toggle text-white" type="button" data-bs-toggle='dropdown'>
-                    polski
-                </button>
-                <div class="dropdown-menu">
-                    <button class="dropdown-item" type="button">angielski</button>
-                    <button class="dropdown-item" type="button">rosyjski</button>
-                    <button class="dropdown-item" type="button">ukraiński</button>
-                </div>
-            </div>
             <button class="navbar-toggler border-white" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>

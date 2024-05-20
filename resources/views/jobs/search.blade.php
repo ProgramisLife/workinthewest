@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+<header>
+    <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
+</header>
 
-<link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 
 
 <div class="jumbotron jumbotron-fluid top img img-fluid" style="background-image: url('{{asset('assets/images/bg-info-home-3.png') }}'); background-repeat: no-repeat;
@@ -109,7 +111,7 @@
                 </p>
             </label>
             <div class="d-flex justify-content-between">
-                <select class="form-select my-1" name="sorting">
+                <select class="form-select my-1" name="sorting" id="sorting">
                     <option selected>Ustawienia domyślne</option>
                     <option value="salary">Wynagrodzenie</option>
                     <option value="title">Tytuł pracy</option>
@@ -117,116 +119,119 @@
                 <button type="submit" class="btn btn-primary mx-3">Szukaj</button>
             </div>
         </form>
-        @foreach($jobSearchs as $jobSearch)
-        <a class="text-decoration-none" href="{{ route('jobs.show', ['job' => $jobSearch]) }}">
-            <div class="card my-2">
-                <div class="card-body card-body d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
-                        @if($jobSearch->jobtype->isNotEmpty())
-                        @php
-                        $buttonColor = '';
-                        switch($jobSearch->jobtype->first()->type) {
-                        case 'Pełny etat':
-                        $buttonColor = 'btn-warning';
-                        break;
-                        case 'Kontrakt':
-                        $buttonColor = 'btn-danger';
-                        break;
-                        case 'Freelancer':
-                        $buttonColor = 'btn-dark';
-                        break;
-                        default:
-                        $buttonColor = 'btn-primary';
-                        break;
-                        }
-                        @endphp
-                        <a class="btn {{$buttonColor}} my-1"
-                            href="{{ route('jobs.search', ['jobSearch' => $jobSearch->jobtype->first()->type]) }}"
-                            role="button">{{$jobSearch->jobtype->first()->type}}</a>
-                        @endif
+        <!-- Kontener na wyniki -->
+        <div id="result">
+            @foreach($jobSearchs as $jobSearch)
+            <a class="text-decoration-none" href="{{ route('jobs.show', ['job' => $jobSearch]) }}">
+                <div class="card my-2">
+                    <div class="card-body card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title d-inline-block">{{ Str::limit($jobSearch->title, 20) }}</h3>
+                            @if($jobSearch->jobtype->isNotEmpty())
+                            @php
+                            $buttonColor = '';
+                            switch($jobSearch->jobtype->first()->type) {
+                            case 'Pełny etat':
+                            $buttonColor = 'btn-warning';
+                            break;
+                            case 'Kontrakt':
+                            $buttonColor = 'btn-danger';
+                            break;
+                            case 'Freelancer':
+                            $buttonColor = 'btn-dark';
+                            break;
+                            default:
+                            $buttonColor = 'btn-primary';
+                            break;
+                            }
+                            @endphp
+                            <a class="btn {{$buttonColor}} my-1"
+                                href="{{ route('jobs.search', ['jobSearch' => $jobSearch->jobtype->first()->type]) }}"
+                                role="button">{{$jobSearch->jobtype->first()->type}}</a>
+                            @endif
+                        </div>
                     </div>
-                </div>
-                <div class="d-flex flex-row align-items-center">
-                    @if($jobSearch->main_image_path)
-                    <div class="mx-1 my-1 image-container">
-                        <img src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}"
-                            class="img-fluid rounded" alt="...">
-                    </div>
-                    @else
-                    <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
-                        src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
-                    @endif
-                    <div class="mx-3">
-                        <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika
-                        </p>
-                        @if(!is_null($jobSearch->salary_from) && !is_null($jobSearch->salary_to))
-                        <p class="card-text">Od: {{ $jobSearch->salary_from }} Do: {{ $jobSearch->salary_to }}
-                            {{$jobSearch->currency->currency}}
-                        </p>
+                    <div class="d-flex flex-row align-items-center">
+                        @if($jobSearch->main_image_path)
+                        <div class="mx-1 my-1 image-container">
+                            <img src="{{asset('images/jobs/main-photo/' . $jobSearch->main_image_path)}}"
+                                class="img-fluid rounded" alt="...">
+                        </div>
                         @else
-                        <p class="card-text">do negocjacji</p>
+                        <img class="thumbnail mr-2" style="max-width: 140px; max-height: 140px;"
+                            src="{{asset('images/jobs/default-images/skytower.jpg/')}}" alt="Default Image">
                         @endif
-                        <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
-                            @if(isset($jobSearch->country->country))
-                            <a href="{{ route('jobs.search', ['localisation' => $jobSearch->country->country ]) }}"
-                                class="text-decoration-none">
-                                {{$jobSearch->country->country}},
-                            </a>
+                        <div class="mx-3">
+                            <p class="card-text"><i class="bi bi-suitcase-lg-fill text-dark"></i> Nazwa użytkownika
+                            </p>
+                            @if(!is_null($jobSearch->salary_from) && !is_null($jobSearch->salary_to))
+                            <p class="card-text">Od: {{ $jobSearch->salary_from }} Do: {{ $jobSearch->salary_to }}
+                                {{$jobSearch->currency->currency}}
+                            </p>
+                            @else
+                            <p class="card-text">do negocjacji</p>
                             @endif
-                            @if(isset($jobSearch->state->state))
-                            <a href="{{ route('jobs.search', ['localisation' => $jobSearch->state->state ]) }}"
-                                class="text-decoration-none">
-                                {{$jobSearch->state->state}},
-                            </a>
-                            @endif
-                            @if(isset($jobSearch->city->city))
-                            <a href="{{ route('jobs.search', ['localisation' => $jobSearch->city->city ]) }}"
-                                class="text-decoration-none">
-                                {{$jobSearch->city->city}}
-                            </a>
-                            @endif
-                        </p>
-
-                        @if($jobSearch->jobstate->isNotEmpty())
-                        <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
-                            @foreach($jobSearch->jobstate->take(2) as $jobstate)
-                            {{ $jobstate->name }},
-                            @endforeach
-                        </p>
-                        @endif
-
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <i class="bi bi-clock text-primary"></i>
-                                Ogłoszenie dodano:
-                                @if($data['date']['yearsDifference'] > 0)
-                                {{ $data['date']['yearsDifference'] }} lat temu
-                                @elseif($data['date']['monthsDifference'] > 0 )
-                                {{ $data['date']['monthsDifference'] }} miesięcy temu
-                                @elseif($data['date']['daysDifference'] > 0 )
-                                {{ $data['date']['daysDifference'] }} dni temu
-                                @elseif($data['date']['hoursDifference'] > 0 )
-                                {{ $data['date']['hoursDifference'] }} godzin temu
-                                @elseif($data['date']['minutesDifference'] > 0 )
-                                {{ $data['date']['minutesDifference'] }} minut temu
-                                @else
-                                <p>Przed chwilą</p>
+                            <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i>
+                                @if(isset($jobSearch->country->country))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->country->country ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->country->country}},
+                                </a>
                                 @endif
-                            </small>
-                        </p>
+                                @if(isset($jobSearch->state->state))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->state->state ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->state->state}},
+                                </a>
+                                @endif
+                                @if(isset($jobSearch->city->city))
+                                <a href="{{ route('jobs.search', ['localisation' => $jobSearch->city->city ]) }}"
+                                    class="text-decoration-none">
+                                    {{$jobSearch->city->city}}
+                                </a>
+                                @endif
+                            </p>
 
-                        <div class="skill-badge my-2">
-                            @foreach($jobSearch->skill as $skill)
-                            <a href="{{ route('jobs.search', ['keyword' => $skill->skill]) }}"
-                                class="badge badge-pill bg-primary text-decoration-none">{{ $skill->skill }}</a>
-                            @endforeach
+                            @if($jobSearch->jobstate->isNotEmpty())
+                            <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
+                                @foreach($jobSearch->jobstate->take(2) as $jobstate)
+                                {{ $jobstate->name }},
+                                @endforeach
+                            </p>
+                            @endif
+
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock text-primary"></i>
+                                    Ogłoszenie dodano:
+                                    @if($data['date']['yearsDifference'] > 0)
+                                    {{ $data['date']['yearsDifference'] }} lat temu
+                                    @elseif($data['date']['monthsDifference'] > 0 )
+                                    {{ $data['date']['monthsDifference'] }} miesięcy temu
+                                    @elseif($data['date']['daysDifference'] > 0 )
+                                    {{ $data['date']['daysDifference'] }} dni temu
+                                    @elseif($data['date']['hoursDifference'] > 0 )
+                                    {{ $data['date']['hoursDifference'] }} godzin temu
+                                    @elseif($data['date']['minutesDifference'] > 0 )
+                                    {{ $data['date']['minutesDifference'] }} minut temu
+                                    @else
+                                    <p>Przed chwilą</p>
+                                    @endif
+                                </small>
+                            </p>
+
+                            <div class="skill-badge my-2">
+                                @foreach($jobSearch->skill as $skill)
+                                <a href="{{ route('jobs.search', ['keyword' => $skill->skill]) }}"
+                                    class="badge badge-pill bg-primary text-decoration-none">{{ $skill->skill }}</a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </a>
-        @endforeach
+            </a>
+            @endforeach
+        </div>
 
         {{ $jobSearchs->links() }}
 
@@ -269,6 +274,4 @@
         @endforeach
     </div>
 </div>
-
-
 @endsection

@@ -114,8 +114,6 @@ class AccommodationController extends Controller
     {
         $accommodation = new Accommodation($accommodationRequest->validated());
 
-        $accommodation->slug;
-
         $accommodation->currency()->associate($accommodationRequest->input('currency'));
 
         $accommodation->country()->associate($accommodationRequest->input('countries'));
@@ -123,8 +121,6 @@ class AccommodationController extends Controller
         $accommodation->state()->associate($accommodationRequest->input('states'));
 
         $accommodation->city()->associate($accommodationRequest->input('cities'));
-
-        $accommodation->save();
 
          if ($accommodationRequest->hasFile('photo')) {
             $photo = $accommodationRequest->file('photo');
@@ -148,7 +144,6 @@ class AccommodationController extends Controller
                 $newPhoto = new APhoto();
                 $newPhoto->photo = $imageName;
                 $newPhoto->save();
-
                 $accommodation->photos()->attach($newPhoto->id);
             }
         }
@@ -159,31 +154,57 @@ class AccommodationController extends Controller
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect()->route('accommodation.show',['accommodation' => $accommodation]);
+        return redirect()->route('accommodations.show',['accommodation' => $accommodation]);
     }
 
 
     public function show(Accommodation $accommodation)
     {
+        $accommodationSimilar = Accommodation::where('city_id', $accommodation->city_id)
+            ->where('id', '!=', $accommodation->id)
+            ->get();
         $data = [
             'label' => [
                 'top' => [
                     'top-header' => 'Mieszkanie na wynajem',
-                ]
-                ]
+                ],
+            ],
+            'similar' => [
+                    'accommodationSimilar' => $accommodationSimilar
+            ],
             ];
-        $accommodationShows = Accommodation::orderBy('created_at', 'DESC')->paginate(self::ACCOMMODATION_PER_PAGE);
         return view('accommodation.show', [
             'data' => $data,
             'accommodation' => $accommodation,
-            'accommodationShows' => $accommodationShows,
         ]);
     }
 
 
     public function edit(Accommodation $accommodation)
     {
-        $data = [];
+        $hasExistingPhoto = !empty($accommodation->main_image_path);
+        $hasExistingPhotos = $accommodation->photos()->exists();
+
+        $accommodationCategory = AccommodationCategory::all();
+        $currency = Currency::all();
+
+        $countries = Country::all();
+        $states = State::all();
+        $cities = City::all();
+
+        $data = [
+            'accommodation' => [
+                'accommodationCategory' => $accommodationCategory,
+                'currency' => $currency,
+            ],
+            'countries' => $countries,
+            'states' => $states,
+            'cities' => $cities,
+            'photos' => [
+                'hasExistingPhoto' => $hasExistingPhoto,
+                'hasExistingPhotos' => $hasExistingPhotos,
+            ]
+        ];
         return view('accommodation.edit', ['accommodation' => $accommodation, 'data' => $data]);
     }
 
@@ -204,7 +225,6 @@ class AccommodationController extends Controller
             $photo = $accommodationRequest->file('photo');
             $imageName = uniqid() . '_' . $photo->getClientOriginalName();
 
-            // Przesuń nowe zdjęcie do folderu i zaktualizuj ścieżkę do zdjęcia w bazie danych
             if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
                 $photo->move(public_path('images/accommodation/main-photo'), $imageName);
                 $accommodation->main_image_path = $imageName;
@@ -220,7 +240,7 @@ class AccommodationController extends Controller
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect()->route('accommodation.show', ['accommodation' => $accommodation]);
+        return redirect()->route('accommodations.show', ['accommodation' => $accommodation]);
     }
 
 
@@ -232,7 +252,7 @@ class AccommodationController extends Controller
             session()->flash('status', 'Wystąpił błąd podczas usuwania Twojej oferty pracy :(');
         }
 
-        return redirect()->route('accommodation.index');
+        return redirect()->route('accommodations.index');
     }
 
     public function search(Request $request)
@@ -340,6 +360,6 @@ class AccommodationController extends Controller
                 'minutesDifference' => $minutesDifference,
             ],
         ];
-        return view('accommodation.index', ['data' => $data]);
+        return view('accommodations.index', ['data' => $data]);
     }
 }
