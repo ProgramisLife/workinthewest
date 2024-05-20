@@ -174,8 +174,6 @@ class JobController extends Controller
     {
         $job = new Job($jobrequest->validated());
 
-        $job->slug;
-
         $job->jobcategory()->associate($jobrequest->input('category'));
 
         $job->joblevel()->associate($jobrequest->input('level'));
@@ -220,7 +218,6 @@ class JobController extends Controller
                 $newPhoto = new Photo();
                 $newPhoto->photo = $imageName;
                 $newPhoto->save();
-
                 $job->photos()->attach($newPhoto->id);
             }
         }
@@ -301,8 +298,6 @@ class JobController extends Controller
 
     public function update(JobRequest $jobrequest, Job $job)
     {
-        $job->slug;
-
         $job->jobcategory()->associate($jobrequest->input('category'));
 
         $job->joblevel()->associate($jobrequest->input('level'));
@@ -343,8 +338,6 @@ class JobController extends Controller
         $job->language()->sync($jobrequest->input('language'));
 
         $job->skill()->sync($jobrequest->input('skills'));
-
-        $job->photos()->sync($jobrequest->input('photos'));
 
         if ($jobrequest->hasFile('photos')) {
             if ($job->photos()->exists()) {

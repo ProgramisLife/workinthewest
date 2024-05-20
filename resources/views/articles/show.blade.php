@@ -31,28 +31,18 @@
                             {{$article->source}}
                         </a>
                     </div>
-                    @if(isset($article->youtube) || isset($article->facebook) || isset($article->vimeo) ||
-                    isset($article->linkedin))
+                    @if(isset($article->youtube) || isset($article->vimeo))
+                    <div class="ratio ratio-16x9 my-5">
+                        <iframe src="{{$article->embedUrl}}" title="{{$article->embedUrl}}" allowfullscreen></iframe>
+                    </div>
+                    @endif
                     <div class="row align-items-center">
                         <div class="col-auto">
                             <p class="mb-0">Udostępnij:</p>
                         </div>
                         <div class="col display-6">
-                            @if(isset($article->youtube))
-                            <a href="{{$article->youtube}}"><i class="bi text-danger bi-youtube"></i></a>
-                            @endif
-                            @if(isset($article->facebook))
-                            <a href="{{$article->facebook}}"><i class="bi bi-facebook"></i></a>
-                            @endif
-                            @if(isset($article->vimeo))
-                            <a href="{{$article->vimeo}}"><i class="bi bi-vimeo"></i></a>
-                            @endif
-                            @if(isset($article->linkedin))
-                            <a href="{{$article->linkedin}}"><i class="bi bi-linkedin"></i></a>
-                            @endif
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
             <div class="d-flex justify-content-start">

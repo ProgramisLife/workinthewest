@@ -289,19 +289,15 @@
 
             <!-- Państwo -->
             <div class="d-flex row my-3 justify-content-start">
-                <div class="titleheaders">lokalizacja</div>
+                <div class="titleheaders">Lokalizacja</div>
                 <div class="col-3 form-group d-sm-block">
-                    <label class="text-uppercase" for="countries">wybierz kraj</label>
+                    <label class="text-uppercase" for="countries">Wybierz kraj</label>
                     <select class="form-control @error('countries') is-invalid @enderror" id="countries"
                         name="countries">
                         @foreach ($data['countries'] as $country)
-                        @if(isset($job))
-                        <option value="{{$country->id}}" {{ $country->id == $countryValue ? 'selected' :''}}>
-                            {{$country->country}}
+                        <option value="{{ $country->id }}" {{ $country->id == $countryValue ? 'selected' : '' }}>
+                            {{ $country->country }}
                         </option>
-                        @else
-                        <option value="{{$country->id}}">{{$country->country}}</option>
-                        @endif
                         @endforeach
                     </select>
                     @error('countries')
@@ -313,15 +309,10 @@
 
                 <!-- Stan -->
                 <div class="col-4 form-group d-sm-block">
-                    <label class="text-uppercase" for="states">wybierz stan</label>
-                    <select class="form-control @error('states') is-invalid @enderror" id="states" name="states">
-                        @foreach ($data['states'] as $state)
-                        @if(isset($job))
-                        <option value="{{$state->id}}" {{ $state->id == $stateValue ? 'selected' :''}}>
-                            {{$state->state}}
-                        </option>
-                        @endif
-                        @endforeach
+                    <label class="text-uppercase" for="states">Wybierz stan</label>
+                    <select class="form-control @error('states') is-invalid @enderror" id="states" name="states"
+                        data-selected="{{ $stateValue }}">
+                        <option value="">Wybierz stan</option>
                     </select>
                     @error('states')
                     <div class="invalid-feedback">
@@ -332,15 +323,10 @@
 
                 <!-- Miasto -->
                 <div class="col-4 form-group mx-1 d-sm-block">
-                    <label class="text-uppercase" for="cities">wybierz miasto</label>
-                    <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities">
-                        @foreach ($data['cities'] as $city)
-                        @if(isset($job))
-                        <option value="{{$city->id}}" {{ $city->id == $cityValue ? 'selected' :''}}>
-                            {{$city->city}}
-                        </option>
-                        @endif
-                        @endforeach
+                    <label class="text-uppercase" for="cities">Wybierz miasto</label>
+                    <select class="form-control @error('cities') is-invalid @enderror" id="cities" name="cities"
+                        data-selected="{{ $cityValue }}">
+                        <option value="">Wybierz miasto</option>
                     </select>
                     @error('cities')
                     <div class="invalid-feedback">
@@ -383,58 +369,81 @@
 
 <script>
     $(document).ready(function() {
-        // Obsługa zmiany kraju
-        $('#countries').change(function() {
-            var countryId = $(this).val();
+        function loadStates(countryId, selectedStateId = null) {
             if (countryId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('jobs.getState') }}",
+                    url: "{{ route('accommodations.getState') }}",
                     data: {
                         country_id: countryId,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
                         var states = response.states;
-                        $('#states').empty();
+                        $('#states').empty().append('<option value="">Wybierz stan</option>');
                         if (states.length > 0) {
-                            // Jeśli kraj ma stany, wyświetl je
                             $.each(states, function(key, value) {
-                                $('#states').append('<option value="' + value.id +
-                                    '">' + value.state + '</option>');
+                                $('#states').append('<option value="' + value.id + '">' + value.state + '</option>');
                             });
-                        } else {
-                            // Jeśli kraj nie ma stanów, wyczyść pole stanów i miast
-                            $('#states').append('<option value="">Wybierz stan</option>');
-                            $('#cities').empty().append(
-                                '<option value="">Wybierz miasto</option>');
+                            if (selectedStateId) {
+                                $('#states').val(selectedStateId);
+                                loadCities(selectedStateId, $('#cities').data('selected'));
+                            }
                         }
                     }
                 });
+            } else {
+                $('#states').empty().append('<option value="">Wybierz stan</option>');
+                $('#cities').empty().append('<option value="">Wybierz miasto</option>');
             }
-        });
+        }
 
-        // Obsługa zmiany stanu
-        $('#states').change(function() {
-            var stateId = $(this).val();
+        function loadCities(stateId, selectedCityId = null) {
             if (stateId) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('jobs.getCity') }}",
+                    url: "{{ route('accommodations.getCity') }}",
                     data: {
                         state_id: stateId,
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
                         var cities = response.cities;
-                        $('#cities').empty();
-                        $.each(cities, function(key, value) {
-                            $('#cities').append('<option value="' + value.id +
-                                '">' + value.city + '</option>');
-                        });
+                        $('#cities').empty().append('<option value="">Wybierz miasto</option>');
+                        if (cities.length > 0) {
+                            $.each(cities, function(key, value) {
+                                $('#cities').append('<option value="' + value.id + '">' + value.city + '</option>');
+                            });
+                            if (selectedCityId) {
+                                $('#cities').val(selectedCityId);
+                            }
+                        }
                     }
                 });
+            } else {
+                $('#cities').empty().append('<option value="">Wybierz miasto</option>');
             }
+        }
+
+        // Obsługa zmiany kraju
+        $('#countries').change(function() {
+            var countryId = $(this).val();
+            loadStates(countryId);
         });
+
+        // Obsługa zmiany stanu
+        $('#states').change(function() {
+            var stateId = $(this).val();
+            loadCities(stateId);
+        });
+
+        // Przy ładowaniu strony ustaw stany i miasta, jeśli są już wybrane
+        var selectedCountry = $('#countries').val();
+        var selectedState = $('#states').data('selected');
+        var selectedCity = $('#cities').data('selected');
+
+        if (selectedCountry) {
+            loadStates(selectedCountry, selectedState);
+        }
     });
 </script>

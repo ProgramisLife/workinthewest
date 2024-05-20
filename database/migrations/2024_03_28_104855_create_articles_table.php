@@ -19,10 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('source');
             $table->string('youtube')->nullable();
-            $table->string('facebook')->nullable();
             $table->string('vimeo')->nullable();
-            $table->string('x')->nullable();
-            $table->string('linkedin')->nullable();
             $table->timestamps();
         });
     }

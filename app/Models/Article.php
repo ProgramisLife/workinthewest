@@ -30,10 +30,7 @@ class Article extends Model
      * @property string $slug   (max:255|unique)
      * @property string $source
      * @property string $youtube
-     * @property string $facebook
      * @property string $vimeo
-     * @property string $x
-     * @property string $linkedin
      */
 
     protected $atributes = [
@@ -41,8 +38,7 @@ class Article extends Model
     ];
 
     protected $fillable = [
-        'title', 'description', 'slug', 'owner_id', 'main_image_path', 'source', 'youtube', 'facebook', 'vimeo',
-        'x', 'linkedin'
+        'title', 'description', 'slug', 'owner_id', 'main_image_path', 'source', 'youtube', 'vimeo'
     ];
 
     public function getRouteKeyName()

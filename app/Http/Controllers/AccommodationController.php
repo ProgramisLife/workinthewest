@@ -12,6 +12,7 @@ use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
 use App\Http\Requests\Accommodation\AccommodationRequest;
+use Illuminate\Support\Facades\Storage;
 
 
 class AccommodationController extends Controller
@@ -97,15 +98,13 @@ class AccommodationController extends Controller
         ]);
     }
 
-    public function getState(Request $request)
-    {
-        $data["states"] = State::where("country_id", $request->country_id)->get(["state", "id"]);
+    public function getState(Request $request){
+        $data['states'] = State::where('country_id', $request->country_id)->get(['state', 'id']);
         return response()->json($data);
     }
 
-    public function getCity(Request $request)
-    {
-        $data["cities"] = City::where("state_id", $request->state_id)->get(["city", "id"]);
+    public function getCity(Request $request){
+        $data['cities'] = City::where('state_id', $request->state_id)->get(['city', 'id']);
         return response()->json($data);
     }
 
@@ -188,9 +187,9 @@ class AccommodationController extends Controller
         $accommodationCategory = AccommodationCategory::all();
         $currency = Currency::all();
 
-        $countries = Country::all();
-        $states = State::all();
-        $cities = City::all();
+        $countries = Country::get(["country", "id"]);
+        $states = State::get(["state", "id"]);
+        $cities = City::get(["city", "id"]);
 
         $data = [
             'accommodation' => [
@@ -211,27 +210,55 @@ class AccommodationController extends Controller
 
     public function update(Accommodation $accommodation, AccommodationRequest $accommodationRequest)
     {
-        $accommodation->slug;
-
-        if (!empty($accommodation->main_image_path)) {
-            $oldPath = public_path('images/article/main-photo/' . $accommodation->main_image_path);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-                $accommodation->main_image_path = null;
-            }
-        }
-
         if ($accommodationRequest->hasFile('photo')) {
+            if (!empty($accommodation->main_image_path)) {
+                $oldPath = public_path('images/jobs/main-photo/' . $accommodation->main_image_path);
+                if (file_exists($oldPath)) {
+                    Storage::delete($oldPath);
+                    $accommodation->main_image_path = null;
+                }
+            }
             $photo = $accommodationRequest->file('photo');
             $imageName = uniqid() . '_' . $photo->getClientOriginalName();
 
             if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false) {
-                $photo->move(public_path('images/accommodation/main-photo'), $imageName);
+                $photo->move(public_path('images/accommodation/main-photo/'), $imageName);
                 $accommodation->main_image_path = $imageName;
             } else {
                 session()->flash('status', 'Nieprawidłowe zdjęcie');
             }
+
+            if (!$accommodationRequest->hasFile('photo') && !empty($accommodation->main_image_path)) {
+                $accommodation->main_image_path = $accommodation->main_image_path;
+            }
         }
+
+        if ($accommodationRequest->hasFile('photos')) {
+            if ($accommodation->photos()->exists()) {
+                foreach ($accommodation->photos as $photo) {
+                    $oldPath = 'images/accommodation/photos/' . $photo->photo;
+                    if (file_exists($oldPath)) {
+                        Storage::delete($oldPath);
+                        $accommodation->photos()->detach();
+                    }
+                }
+            }
+            foreach ($accommodationRequest->file('photos') as $photo) {
+            if ($photo->isValid() && strpos($photo->getMimeType(), 'image/') !== false)
+            {
+                $imageName = time() . '_' . $photo->getClientOriginalName();
+                $photo->move(public_path('images/accommodation/photos/'), $imageName);
+
+                $newPhoto = new APhoto();
+                $newPhoto->photo = $imageName;
+                $newPhoto->save();
+
+                $accommodation->photos()->attach($newPhoto->id);
+            } else {
+                session()->flash('status', 'Nieprawidłowe zdjęcie');
+            }
+        }
+    }
 
 
         if ($accommodation->update($accommodationRequest->validated())) {

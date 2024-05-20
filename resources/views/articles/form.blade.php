@@ -66,20 +66,6 @@
                 @enderror
             </div>
 
-            <!-- Facebook -->
-            <div class="form-group my-3">
-                <label class="text-uppercase" for="facebook">
-                    Facebook
-                </label>
-                <input type="text" class="form-control @error('facebook') is-invalid @enderror" id="facebook"
-                    name="facebook" placeholder="Link do facebooka" value="{{ $facebookValue }}">
-                @error('facebook')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
             <!-- Vimeo -->
             <div class="form-group my-3">
                 <label class="text-uppercase" for="vimeo">
@@ -88,34 +74,6 @@
                 <input type="text" class="form-control @error('vimeo') is-invalid @enderror" id="vimeo" name="vimeo"
                     placeholder="Link do Vimeo" value="{{ $vimeoValue }}">
                 @error('vimeo')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
-            <!-- X -->
-            <div class="form-group my-3">
-                <label class="text-uppercase" for="vimeo">
-                    X
-                </label>
-                <input type="text" class="form-control @error('x') is-invalid @enderror" id="x" name="x"
-                    placeholder="Link do X" value="{{ $xValue }}">
-                @error('x')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
-            <!-- Linkedin -->
-            <div class="form-group my-3">
-                <label class="text-uppercase" for="linkedin">
-                    Linkedin
-                </label>
-                <input type="text" class="form-control @error('linkedin') is-invalid @enderror" id="linkedin"
-                    name="linkedin" placeholder="Link do Linkedin" value="{{ $linkedinValue }}">
-                @error('linkedin')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
