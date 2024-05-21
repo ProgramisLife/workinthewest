@@ -19,6 +19,7 @@ use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
 use Illuminate\Support\Facades\Storage;
+use Share;
 
 class JobController extends Controller
 {
@@ -239,9 +240,18 @@ class JobController extends Controller
         $jobSimilarCategorys = Job::where('jobcategory_id', $jobCategory->id)
             ->where('id', '!=', $job->id)
             ->get();
+
+        $shareButtons = Share::page( url('/job.show'),
+        $job->title)
+        ->facebook()
+        ->twitter()
+        ->linkedin()
+        ->whatsapp();
+
         return view('jobs.show', [
             'job' => $job,
             'jobSimilarCategorys' => $jobSimilarCategorys,
+            'shareButtons' => $shareButtons,
         ]);
     }
 

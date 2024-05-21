@@ -2,6 +2,16 @@
 
 @section('content')
 
+<header>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/share.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('assets/css/articles/show.css') }}" />
+</header>
+
 <div class="container" style="margin-top: 10rem;">
     <div class="offset-1 d-flex my-2">
         <nav aria-label="breadcrumb">
@@ -25,29 +35,25 @@
                     <div class="h1 px-5 my-4">{{$article->title}}</div>
                     <div class="px-5 my-4"><b>Data publikacji:</b> {{$article->updated_at->format('d-M-Y')}}</div>
                     <div class="px-5">{!!$article->description!!}</div>
-                    <div class="d-flex px-5 my-4">
+                    <div class="d-flex px-5">
                         <p>Źródło:</p>
                         <a href="{{$article->source}}" class="text-decoration-none mx-3">
                             {{$article->source}}
                         </a>
                     </div>
-                    @if(isset($article->youtube) || isset($article->vimeo))
-                    <div class="ratio ratio-16x9 my-5">
-                        <iframe src="{{$article->embedUrl}}" title="{{$article->embedUrl}}" allowfullscreen></iframe>
-                    </div>
-                    @endif
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <p class="mb-0">Udostępnij:</p>
-                        </div>
-                        <div class="col display-6">
+                    <div class="d-inline-flex align-items-center">
+                        Udostępnij
+                        <div id="social-links" class="ml-2">
+                            <ul class="list-inline mb-0">
+                                {!! $shareButtons !!}
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-start">
+            <div class="d-flex justify-content-start my-2">
                 @if($previousArticle)
-                <div class="d-flex text-center mt-3">
+                <div class="d-flex text-center">
                     <p>Poprzedni artykuł: </p>
                     <a href="{{ route('articles.show', ['article' => $previousArticle]) }}"
                         class="text-decoration-none mx-2">{{$previousArticle->title}}</a>

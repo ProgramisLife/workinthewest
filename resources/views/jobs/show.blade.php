@@ -6,6 +6,12 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/share.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('assets/css/jobs/show.css') }}" />
 </header>
 <div class="container my-5">
@@ -159,7 +165,7 @@
 
             @if(isset($job->city->city))
             <!-- Lokalizacja -->
-            <div class="my-5">
+            <div class="my-2">
                 <div class="text-uppercase fw-bold">Lokalizacja</div>
             </div>
             <div class="d-flex justify-content-center pb-5">
@@ -176,6 +182,14 @@
                     .openPopup();
             </script>
             @endif
+            <div class="d-inline-flex align-items-center">
+                Udostępnij
+                <div id="social-links" class="ml-2">
+                    <ul class="list-inline mb-0">
+                        {!! $shareButtons !!}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div class="mx-5 col-3 bg-white">

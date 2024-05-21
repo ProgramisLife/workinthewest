@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description');
             $table->string('source');
-            $table->string('youtube')->nullable();
-            $table->string('vimeo')->nullable();
             $table->timestamps();
         });
     }

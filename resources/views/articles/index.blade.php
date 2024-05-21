@@ -59,15 +59,6 @@
                         </a>
                     </div>
                 </div>
-                <div class="d-flex justify-content-left">
-                    <a class="btn btn-info text-light"
-                        href="{{ route('articles.edit', ['article' => $article]) }}">Edytuj</a>
-                    <form action="{{ route('articles.delete', ['article' => $article]) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Usuń</button>
-                    </form>
-                </div>
             </div>
             @empty
             {{$data['label']['empty'] }}

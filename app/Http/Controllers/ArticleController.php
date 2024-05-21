@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Article\ArticleRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Share;
 
 class ArticleController extends Controller
 {
@@ -27,7 +29,7 @@ class ArticleController extends Controller
                     'top-input-keyword' => 'Słowo kluczowe?',
                     'top-search' => 'Wyszukaj',
                 ],
-        ]
+            ],
     ];
 
         return view('articles.index', [
@@ -81,6 +83,13 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
+        $shareButtons = Share::page( url('/articles.show'),
+        $article->title)
+        ->facebook()
+        ->twitter()
+        ->linkedin()
+        ->whatsapp();
+
         $files = ['job.png', 'job2.jpg'];
         $newestArticle = Article::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);
         $nextArticle = Article::where('id', '>', $article->id)->orderBy('id')->first();
@@ -92,6 +101,7 @@ class ArticleController extends Controller
             'previousArticle' => $previousArticle,
             'articles' => $newestArticle,
             'files' => $files,
+            'shareButtons' => $shareButtons,
         ]);
     }
 

@@ -52,34 +52,6 @@
                 @enderror
             </div>
 
-            <!-- Youtube -->
-            <div class="form-group my-3">
-                <label class="text-uppercase" for="youtube">
-                    Youtube
-                </label>
-                <input type="text" class="form-control @error('youtube') is-invalid @enderror" id="youtube"
-                    name="youtube" placeholder="Link do youtuba" value="{{ $youtubeValue }}">
-                @error('youtube')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
-            <!-- Vimeo -->
-            <div class="form-group my-3">
-                <label class="text-uppercase" for="vimeo">
-                    Vimeo
-                </label>
-                <input type="text" class="form-control @error('vimeo') is-invalid @enderror" id="vimeo" name="vimeo"
-                    placeholder="Link do Vimeo" value="{{ $vimeoValue }}">
-                @error('vimeo')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror
-            </div>
-
             <button type="submit" class="btn btn-primary my-3 d-block">
                 {{ $submitBtnText }}
             </button>
