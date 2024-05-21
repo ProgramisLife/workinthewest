@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\JobController;
 use App\Http\Controllers\AccommodationController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\Users\EmployerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,4 +86,23 @@ Route::prefix('/accommodations')->group(function () {
     Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodations.update');
 
     Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodations.delete');
+});
+
+Route::prefix('/employers')->group(function () {
+
+     Route::match(['get', 'post'], '/search', [EmployerController::class, 'search'])->name('employers.search');
+
+    Route::get('/', [EmployerController::class, 'index'])->name('employers.index');
+
+    Route::get('/add', [EmployerController::class, 'add'])->name('employers.add');
+
+    Route::post('/store', [EmployerController::class, 'store'])->name('employers.store');
+
+    Route::get('/{employer}', [EmployerController::class, 'show'])->name('employers.show'); //Pokazywanie pojedyńczego zadania
+
+    Route::get('/{employer}/edit', [EmployerController::class, 'edit'])->name('employers.edit');
+
+    Route::put('/{employer}', [EmployerController::class, 'update'])->name('employers.update');
+
+    Route::delete('/{employer}', [EmployerController::class, 'delete'])->name('employers.delete');
 });

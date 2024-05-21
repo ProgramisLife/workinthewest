@@ -15,3 +15,11 @@
     outline: none;
     box-shadow: none;
 }
+
+.navbar-bg-main {
+    background-color: #004696;
+}
+
+.dropdown-item:hover {
+    background-color: #115796;
+}

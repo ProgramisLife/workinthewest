@@ -481,7 +481,7 @@
         </div>
         @empty
         <div class="col-sm-12">
-            <p>{{ $data['label']['articles'] }}</p>
+            <p>{{ $data['label']['articles']['articles'] }}</p>
         </div>
         @endforelse
     </div>

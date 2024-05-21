@@ -52,11 +52,5 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orderBy('updated_at', 'DESC');
     }
 
-    public function jobs()
-    {
-        return $this->hasMany(Job::class, 'owner_id', 'id')
-            ->orderBy('updated_at', 'DESC');
-    }
-
     use HasFactory;
 }

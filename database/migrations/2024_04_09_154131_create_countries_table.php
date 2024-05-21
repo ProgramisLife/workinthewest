@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('country')->unique();
-            $table->string('shortcut')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

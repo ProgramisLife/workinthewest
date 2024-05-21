@@ -5,6 +5,7 @@ namespace App\Models\Shared;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Job;
+use App\Models\Users\Employer;
 
 class Photo extends Model
 {
@@ -30,6 +31,11 @@ class Photo extends Model
     public function jobs()
     {
         return $this->belongsToMany(Job::class, 'photo_job', 'photo_id', 'job_id');
+    }
+
+    public function Employer()
+    {
+        return $this->belongsToMany(Employer::class, 'employer_photo', 'photo_id', 'employer_id');
     }
 
     public function delete()

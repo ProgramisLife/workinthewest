@@ -24,7 +24,6 @@ return new class extends Migration
             $table->boolean('featured');
             $table->date('expiry');
             $table->date('deadline');
-            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

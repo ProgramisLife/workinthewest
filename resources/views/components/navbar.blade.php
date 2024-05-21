@@ -25,6 +25,36 @@
                     <a class="nav-link text-white" aria-current="page" href="">strefa
                         pracownika</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-uppercase text-white" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        panel kandydata
+                    </a>
+                    <ul class="dropdown-menu navbar-bg-main" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Mój profil</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Złożone aplikacje</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Obserwowani pracodawcy</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Zapisane aplikacje</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Powiadomienia</a></li>>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Opinie</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-uppercase text-white" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        panel pracodawcy
+                    </a>
+                    <ul class="dropdown-menu navbar-bg-main" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Mój profil</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Dodaj ofertę</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Moje oferty</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Oferty aplikacyjne</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Pakiet ofert</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Pakiety kandydatów</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Przeglądane życiorysy</a></li>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Opinie</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item text-uppercase">
                     <a class="nav-link text-white" aria-current="page" href="{{ route('jobs.search') }}">oferty
                         pracy</a>

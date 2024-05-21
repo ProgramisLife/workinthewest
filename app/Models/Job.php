@@ -17,6 +17,7 @@ use App\Models\Shared\Tag;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
+use App\Models\Users\Employer;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Job extends Model
@@ -198,7 +199,7 @@ class Job extends Model
 
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner_id', 'id');
+        return $this->belongsTo(Employer::class, 'owner_id', 'id');
     }
 
     use HasFactory;
