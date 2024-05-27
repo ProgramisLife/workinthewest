@@ -94,7 +94,7 @@ Route::prefix('/employers')->group(function () {
 
     Route::get('/', [EmployerController::class, 'index'])->name('employers.index');
 
-    Route::get('/add', [EmployerController::class, 'add'])->name('employers.add');
+    Route::get('/register', [EmployerController::class, 'register'])->name('employers.register');
 
     Route::post('/store', [EmployerController::class, 'store'])->name('employers.store');
 

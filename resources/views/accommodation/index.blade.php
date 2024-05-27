@@ -192,7 +192,7 @@
                             <div class="row">
                                 @forelse($data['accommodation']['featureds'] as $featured)
                                 <div class="col-md-6">
-                                    <div class="card mb-3" style="max-width: 540px;">
+                                    <div class="card mb-3">
                                         <div class="row g-0">
                                             <div class="d-flex justify-content-between">
                                                 <div class="mx-2 my-2">
@@ -326,7 +326,7 @@
                         <div class="row">
                             @forelse($data['accommodation']['accommodationSearchs'] as $search)
                             <div class="col-md-6">
-                                <div class="card mb-3" style="max-width: 700px;">
+                                <div class="card mb-3">
                                     <div class="row g-0">
                                         <div class="d-flex justify-content-between">
                                             <div class="mx-2 my-2">

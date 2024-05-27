@@ -13,6 +13,12 @@
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('assets/css/jobs/show.css') }}" />
+
+    <title>{{$job->title}} - {{env('APP_NAME')}}</title>
+    <meta property="og:title" content="{{$job->title}}">
+    <meta property="og:description" content="{{ Str::limit($job->description, 100)}}">
+    <meta property="og:image" content="{{ asset('images/job/main-photo/' . $job->main_image_path) }}">
+    <meta name="keywords" content="{{$job->title}}, praca, oferta pracy, zatrudnienie">
 </header>
 <div class="container my-5">
     <div class="d-flex">
@@ -79,10 +85,10 @@
                     </div>
                 </div>
 
-                <div class="row my-3">
+                <div class="row my-2">
                     <div class="d-flex justify-content-between mx-2">
                         <div class="text-uppercase">
-                            <div class="d-flex" style="color: brown;"><i class="bi bi-tools"></i>
+                            <div class="d-flex" style="color: brown;"><i class="bi bi-tools mx-1"></i>
                                 <div>kategoria: </div>
                                 <div class="text-dark mx-2">{{$job->jobcategory->category}}</div>
                             </div>
@@ -91,6 +97,19 @@
                             <p class="d-inline-block text-info"><i class="bi bi-mortarboard-fill"></i>
                                 termin ostateczny: </p>
                             <div class="mx-2">{{ \Carbon\Carbon::parse($job->deadline)->format('d-m-Y') }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-my-2">
+                    <div class="d-flex justify-content-between mx-2">
+                        <div class="text-uppercase">
+                            <div class="d-flex" style="color: #FF5733;"><i class="bi bi-building-fill mx-1"></i>
+                                <div>typ pracy: </div>
+                                @foreach($job->jobstate()->pluck('name') as $name)
+                                <div class="text-dark mx-1">{{$name}},</div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

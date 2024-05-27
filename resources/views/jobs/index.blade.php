@@ -138,7 +138,8 @@
                                             @else
                                             <div class="my-3 image-container">
                                                 <img src="{{asset('images/jobs/default-images/skytower.jpg')}}"
-                                                    class="img img-fluid rounded" alt="...">
+                                                    class="img img-fluid rounded"
+                                                    alt="{{asset('images/jobs/default-images/skytower.jpg')}}">
                                             </div>
                                             @endif
                                         </div>
@@ -324,11 +325,13 @@
                                                     @endif
                                                 </p>
 
+                                                @if($featuredJobs->jobstate->isNotEmpty())
                                                 <p class="card-text"><i class="bi bi-building-fill text-dark"></i>
                                                     @foreach($featuredJobs->jobstate->take(2) as $jobstate)
                                                     {{ $jobstate->name }},
                                                     @endforeach
                                                 </p>
+                                                @endif
 
                                                 <p class="card-text">
                                                     <small class="text-muted">
@@ -412,7 +415,7 @@
                         </h2>
                         <p class=" my-5 register-text">{{ $data['label']['register']['employer-text'] }}</p>
                         <div class="mb-4">
-                            <a href=""
+                            <a href="{{ route('employers.register') }}"
                                 class="text-align-start text-uppercase bg-primary text-white p-3 text-decoration-none">
                                 <i class="bi bi-building-fill"></i>
                                 {{ $data['label']['register']['employer-button'] }}</a>

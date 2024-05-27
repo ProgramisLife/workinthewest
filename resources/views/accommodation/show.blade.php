@@ -5,6 +5,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link rel="stylesheet" href="{{ asset('assets/css/accommodation/show.css') }}" />
+
+    <title>{{$accommodation->title}} - {{env('APP_NAME')}}</title>
+    <meta property="og:title" content="{{$accommodation->title}}">
+    <meta property="og:description" content="{{ Str::limit($accommodation->description, 100)}}">
+    <meta property="og:image"
+        content="{{ asset('images/accommodation/main-photo/' . $accommodation->main_image_path) }}">
+    <meta name="keywords" content="{{$accommodation->title}}, praca, oferta pracy, zatrudnienie">
 </header>
 @section('content')
 <!-- Top -->
@@ -203,7 +210,7 @@
                                 Nazwa użytkownika
                             </p>
                             <p class="card-text mx-1">
-                            <div class="d-flex" style="color: #FF5733;"><i class="bi bi-geo-alt-fill mx-1"></i>
+                            <div class="d-flex offers-color-oranger"><i class="bi bi-geo-alt-fill mx-1"></i>
                                 <div class="text-uppercase">lokalizacja: </div>
                                 @if(isset($similar->country->country))
                                 <a href="{{ route('accommodations.search', ['localisation' => $similar->country->country ]) }}"

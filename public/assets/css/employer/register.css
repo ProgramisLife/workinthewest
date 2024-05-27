@@ -1,0 +1,12 @@
+.main-color {
+    color: #004696;
+    font-size: 11px;
+}
+
+.second-bg-color {
+    background-color: #2980b9;
+}
+
+.second-bg-color:hover {
+    background-color: #2d7cb0;
+}

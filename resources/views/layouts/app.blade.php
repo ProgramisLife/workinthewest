@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Workinthewest - Praca dla wszystkich') }}</title>
+    <title>{{ config('app.name', 'Workinthewest - praca dla wszystkich') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">

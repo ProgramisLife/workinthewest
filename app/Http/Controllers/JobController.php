@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Article;
@@ -19,7 +20,7 @@ use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
 use Illuminate\Support\Facades\Storage;
-use Share;
+use Jorenvh\Share\ShareFacade;
 
 class JobController extends Controller
 {
@@ -241,12 +242,19 @@ class JobController extends Controller
             ->where('id', '!=', $job->id)
             ->get();
 
-        $shareButtons = Share::page( url('/job.show'),
-        $job->title)
+        $shareButtons = ShareFacade::page(
+        route('jobs.show', ['job' => $job->slug]),
+        $job->title,
+        [
+            'description' => Str::limit($job->description, 100)
+        ]
+        )
         ->facebook()
         ->twitter()
         ->linkedin()
-        ->whatsapp();
+        ->whatsapp()
+        ->reddit()
+        ->telegram();
 
         return view('jobs.show', [
             'job' => $job,
@@ -348,6 +356,10 @@ class JobController extends Controller
         $job->language()->sync($jobrequest->input('language'));
 
         $job->skill()->sync($jobrequest->input('skills'));
+
+        $job->photos()->sync($jobrequest->input('photos'));
+
+        $job->jobstate()->sync($jobrequest->input('jobstate'));
 
         if ($jobrequest->hasFile('photos')) {
             if ($job->photos()->exists()) {

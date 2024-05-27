@@ -16,6 +16,9 @@
             'priceBuyValue' => old('price_buy'),
             'priceRentValue' => old('price_rent'),
             'expiryValue' => old('expiry'),
+            'countryValue' => old('countries'),
+            'stateValue' => old('states'),
+            'cityValue' => old('cities'),
             'submitBtnText' => 'Dodaj nowe ogłoszenie',
             ])
         </div>

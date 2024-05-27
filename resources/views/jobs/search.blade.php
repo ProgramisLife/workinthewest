@@ -2,6 +2,9 @@
 
 @section('content')
 <header>
+    <title>{{env('APP_NAME')}}</title>
+    <meta property="og:title" content="{{env('APP_NAME')}}">
+    <meta name="keywords" content="{{env('APP_NAME')}}, praca, oferta pracy, zatrudnienie">
     <link rel="stylesheet" href="{{ asset('assets/css/jobs/search.css') }}" />
 </header>
 

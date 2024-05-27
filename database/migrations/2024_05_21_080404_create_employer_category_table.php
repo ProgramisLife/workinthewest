@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('employer_category', function (Blueprint $table) {
-            $table->unsignedBigInteger('employer_id');
+            $table->unsignedBigInteger('employeer_id');
             $table->unsignedBigInteger('jobcategory_id');
 
-            $table->foreign('employer_id')
-                ->references('id')->on('employer')
+            $table->foreign('employeer_id')
+                ->references('id')->on('employeer')
                 ->onDelete('CASCADE');
 
             $table->foreign('jobcategory_id')
                 ->references('id')->on('jobcategories')
                 ->onDelete('CASCADE');
-            $table->unique(['employer_id', 'jobcategory_id']);
+            $table->unique(['employeer_id', 'jobcategory_id']);
         });
     }
 

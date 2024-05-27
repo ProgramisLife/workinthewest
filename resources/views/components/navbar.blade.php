@@ -25,6 +25,7 @@
                     <a class="nav-link text-white" aria-current="page" href="">strefa
                         pracownika</a>
                 </li>
+                @if(auth()->check() && auth()->user()->kandydata)
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-uppercase text-white" href="#" id="navbarDropdown"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -35,10 +36,12 @@
                         <li><a class="dropdown-item text-white navbar-bg-main" href="#">Złożone aplikacje</a></li>
                         <li><a class="dropdown-item text-white navbar-bg-main" href="#">Obserwowani pracodawcy</a></li>
                         <li><a class="dropdown-item text-white navbar-bg-main" href="#">Zapisane aplikacje</a></li>
-                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Powiadomienia</a></li>>
+                        <li><a class="dropdown-item text-white navbar-bg-main" href="#">Powiadomienia</a></li>
                         <li><a class="dropdown-item text-white navbar-bg-main" href="#">Opinie</a></li>
                     </ul>
                 </li>
+                @endif
+                @if(auth()->check() && auth()->user()->employee)
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-uppercase text-white" href="#" id="navbarDropdown"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -55,6 +58,7 @@
                         <li><a class="dropdown-item text-white navbar-bg-main" href="#">Opinie</a></li>
                     </ul>
                 </li>
+                @endif
                 <li class="nav-item text-uppercase">
                     <a class="nav-link text-white" aria-current="page" href="{{ route('jobs.search') }}">oferty
                         pracy</a>

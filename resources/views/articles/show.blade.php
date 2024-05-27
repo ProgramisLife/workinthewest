@@ -10,6 +10,12 @@
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('assets/css/articles/show.css') }}" />
+
+    <title>{{$article->title}} - {{env('APP_NAME')}}</title>
+    <meta property="og:title" content="{{$article->title}}">
+    <meta property="og:description" content="{{ Str::limit($article->description, 100)}}">
+    <meta property="og:image" content="{{ asset('images/article/main-photo/' . $article->main_image_path) }}">
+    <meta name="keywords" content="{{$article->title}}, praca, oferta pracy, zatrudnienie">
 </header>
 
 <div class="container" style="margin-top: 10rem;">

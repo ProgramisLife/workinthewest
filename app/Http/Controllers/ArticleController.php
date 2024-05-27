@@ -6,7 +6,7 @@ use App\Http\Requests\Article\ArticleRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Share;
+use Jorenvh\Share\ShareFacade;
 
 class ArticleController extends Controller
 {
@@ -29,6 +29,7 @@ class ArticleController extends Controller
                     'top-input-keyword' => 'Słowo kluczowe?',
                     'top-search' => 'Wyszukaj',
                 ],
+                'empty' => 'Brak artykułów',
             ],
     ];
 
@@ -83,12 +84,19 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        $shareButtons = Share::page( url('/articles.show'),
-        $article->title)
+        $shareButtons = ShareFacade::page(
+        route('articles.show', ['article' => $article->slug]),
+        $article->title,
+        [
+            'description' => Str::limit($article->description, 100)
+        ]
+        )
         ->facebook()
         ->twitter()
         ->linkedin()
-        ->whatsapp();
+        ->whatsapp()
+        ->reddit()
+        ->telegram();
 
         $files = ['job.png', 'job2.jpg'];
         $newestArticle = Article::orderBy('created_at', 'DESC')->paginate(self::JOBS_PER_PAGE);

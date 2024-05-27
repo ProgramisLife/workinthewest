@@ -2,9 +2,11 @@
 
 namespace App\Models\Users;
 
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Job;
 use App\Models\Shared\JobCategory;
@@ -15,6 +17,9 @@ use App\Models\Shared\Localisation\City;
 
 class Employer extends User
 {
+
+    use HasApiTokens, Notifiable, MustVerifyEmail, Sluggable, HasFactory;
+
     public function sluggable(): array
     {
         return [
@@ -23,7 +28,6 @@ class Employer extends User
             ]
         ];
     }
-    use Sluggable;
     /**
      * 
      * Pracodawca Model
@@ -71,7 +75,7 @@ class Employer extends User
      * @property int $city_id
      */
 
-    protected $table = 'employer';
+    protected $table = 'employeer';
 
     protected $atributes = [
         'description' => '',
@@ -79,10 +83,20 @@ class Employer extends User
     ];
 
     protected $fillable = [
-        'main_imagepath', 'featured_imagepath', 'background_imagepath', 'name',
+        'main_imagepath', 'featured_imagepath', 'background_imagepath', 'name', 'password',
         'header', 'description', 'slug', 'email', 'phone', 'companywebsite', 'creation_date',
         'company_size', 'featured', 'facebook', 'twitter', 'youtube', 'vimeo', 'linkedin',
         'country_id', 'state_id', 'city_id'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     public function getRouteKeyName()
@@ -131,5 +145,8 @@ class Employer extends User
             ->orderBy('updated_at', 'DESC');
     }
 
-    use HasFactory;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
