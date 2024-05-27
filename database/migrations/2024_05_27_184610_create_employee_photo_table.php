@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employers_photo', function (Blueprint $table) {
-            $table->unsignedBigInteger('employers_id');
+        Schema::create('employee_photo', function (Blueprint $table) {
+            $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('photo_id');
 
-            $table->foreign('employers_id')
-                ->references('id')->on('employers')
+            $table->foreign('employee_id')
+                ->references('id')->on('employee')
                 ->onDelete('CASCADE');
 
             $table->foreign('photo_id')
                 ->references('id')->on('photos')
                 ->onDelete('CASCADE');
+            $table->unique(['employee_id', 'photo_id']);
         });
     }
 
@@ -30,7 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-       Schema::dropIfExists('employers_photo', function (Blueprint $table) {
-        });
+        Schema::dropIfExists('employee_photo');
     }
 };

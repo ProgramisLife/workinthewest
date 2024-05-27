@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employer_category', function (Blueprint $table) {
-            $table->unsignedBigInteger('employeer_id');
+        Schema::create('employers_category', function (Blueprint $table) {
+            $table->unsignedBigInteger('employers_id');
             $table->unsignedBigInteger('jobcategory_id');
 
-            $table->foreign('employeer_id')
-                ->references('id')->on('employeer')
+            $table->foreign('employers_id')
+                ->references('id')->on('employers')
                 ->onDelete('CASCADE');
 
             $table->foreign('jobcategory_id')
                 ->references('id')->on('jobcategories')
                 ->onDelete('CASCADE');
-            $table->unique(['employeer_id', 'jobcategory_id']);
+            $table->unique(['employers_id', 'jobcategory_id']);
         });
     }
 

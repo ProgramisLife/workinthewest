@@ -8,6 +8,7 @@ use App\Models\Article;
 
 class Moderator extends User
 {
+    
 
     public function articles()
     {

@@ -75,7 +75,7 @@ class Employer extends User
      * @property int $city_id
      */
 
-    protected $table = 'employeer';
+    protected $table = 'employers';
 
     protected $atributes = [
         'description' => '',
@@ -111,7 +111,7 @@ class Employer extends User
      */
     public function jobcategory()
     {
-        return $this->belongsToMany(JobCategory::class, 'employer_category', 'employer_id', 'jobcategory_id');
+        return $this->belongsToMany(JobCategory::class, 'employers_category', 'employers_id', 'jobcategory_id');
     }
 
     /**
@@ -121,7 +121,7 @@ class Employer extends User
      */
     public function photos()
     {
-        return $this->belongsToMany(Photo::class, 'employer_photo', 'employer_id', 'photo_id');
+        return $this->belongsToMany(Photo::class, 'employers_photo', 'employers_id', 'photo_id');
     }
 
     public function country()

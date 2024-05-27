@@ -16,7 +16,7 @@ return new class extends Migration
                 ->unsignedBigInteger('owner_id')->nullable();
 
             $table->foreign('owner_id')
-                ->references('id')->on('employeer')
+                ->references('id')->on('employers')
                 ->onDelete('CASCADE')
                 ->after('slug');
         });

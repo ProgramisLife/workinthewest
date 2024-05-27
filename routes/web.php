@@ -28,21 +28,21 @@ Route::prefix('/jobs')->group(function () {
     
     Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 
-    Route::get('/add', [JobController::class, 'add'])->name('jobs.add');
+    Route::get('/add', [JobController::class, 'add'])->name('jobs.add')->middleware('auth');
 
     Route::post('get-states-by-country', [JobController::class, 'getState'])->name('jobs.getState');
 
     Route::post('get-cities-by-state', [JobController::class, 'getCity'])->name('jobs.getCity');
 
-    Route::post('/store', [JobController::class, 'store'])->name('jobs.store'); // Zapisujemy pracę
+    Route::post('/store', [JobController::class, 'store'])->name('jobs.store')->middleware('auth'); // Zapisujemy pracę
 
     Route::get('/{job}', [JobController::class, 'show'])->name('jobs.show'); //Pokazywanie pojedyńczego pracy
 
-    Route::get('/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit'); // Edytowanie konkretnej pracy.
+    Route::get('/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit')->middleware('auth'); // Edytowanie konkretnej pracy.
 
-    Route::put('/{job}', [JobController::class, 'update'])->name('jobs.update');
+    Route::put('/{job}', [JobController::class, 'update'])->name('jobs.update')->middleware('auth');
 
-    Route::delete('/{job}', [JobController::class, 'delete'])->name('jobs.delete');
+    Route::delete('/{job}', [JobController::class, 'delete'])->name('jobs.delete')->middleware('auth');
 });
 
 
@@ -52,17 +52,17 @@ Route::prefix('/articles')->group(function () {
 
     Route::get('/', [ArticleController::class, 'index'])->name('articles.index');
 
-    Route::get('/add', [ArticleController::class, 'add'])->name('articles.add');
+    Route::get('/add', [ArticleController::class, 'add'])->name('articles.add')->middleware('auth');
 
-    Route::post('/store', [ArticleController::class, 'store'])->name('articles.store');
+    Route::post('/store', [ArticleController::class, 'store'])->name('articles.store')->middleware('auth');
 
     Route::get('/{article}', [ArticleController::class, 'show'])->name('articles.show'); //Pokazywanie pojedyńczego zadania
 
-    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit')->middleware('auth');
 
-    Route::put('/{article}', [ArticleController::class, 'update'])->name('articles.update');
+    Route::put('/{article}', [ArticleController::class, 'update'])->name('articles.update')->middleware('auth');
 
-    Route::delete('/{article}', [ArticleController::class, 'delete'])->name('articles.delete');
+    Route::delete('/{article}', [ArticleController::class, 'delete'])->name('articles.delete')->middleware('auth');
 });
 
 Route::prefix('/accommodations')->group(function () {
@@ -71,21 +71,21 @@ Route::prefix('/accommodations')->group(function () {
 
     Route::get('/', [AccommodationController::class, 'index'])->name('accommodations.index');
 
-    Route::get('/add', [AccommodationController::class, 'add'])->name('accommodations.add');
+    Route::get('/add', [AccommodationController::class, 'add'])->name('accommodations.add')->middleware('auth');
 
     Route::post('get-states-by-country', [AccommodationController::class, 'getState'])->name('accommodations.getState');
 
     Route::post('get-cities-by-state', [AccommodationController::class, 'getCity'])->name('accommodations.getCity');
 
-    Route::post('/store', [AccommodationController::class, 'store'])->name('accommodations.store');
+    Route::post('/store', [AccommodationController::class, 'store'])->name('accommodations.store')->middleware('auth');
 
     Route::get('/{accommodation}', [AccommodationController::class, 'show'])->name('accommodations.show');
 
-    Route::get('/{accommodation}/edit', [AccommodationController::class, 'edit'])->name('accommodations.edit');
+    Route::get('/{accommodation}/edit', [AccommodationController::class, 'edit'])->name('accommodations.edit')->middleware('auth');
 
-    Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodations.update');
+    Route::put('/{accommodation}', [AccommodationController::class, 'update'])->name('accommodations.update')->middleware('auth');
 
-    Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodations.delete');
+    Route::delete('/{accommodation}', [AccommodationController::class, 'delete'])->name('accommodations.delete')->middleware('auth');
 });
 
 Route::prefix('/employers')->group(function () {

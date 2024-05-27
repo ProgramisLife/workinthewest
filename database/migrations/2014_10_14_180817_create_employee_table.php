@@ -11,24 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employers', function (Blueprint $table) {
+        Schema::create('employee', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('password');
-            $table->string('slug')->unique();
+            $table->string('lastname');
             $table->string('email')->unique();
-            $table->date('creation_date')->nullable();
-            $table->boolean('featured');
-            $table->rememberToken();
-            $table->string('main_image_path')->nullable();
+            $table->string('slug')->unique();
+            $table->string('main_imagepath')->nullable();
             $table->string('featured_imagepath')->nullable();
             $table->string('background_imagepath')->nullable();
-            $table->string('header')->nullable();
             $table->text('description')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('companywebsite')->nullable();
-            $table->enum('company_size', ['Mikro', 'Małe', 'Średnie', 'Duże'])->nullable();
+            $table->text('phone')->nullable();
+            $table->enum('sex',['mężczyzna', 'kobieta', 'inne'])->nullable();
+            $table->boolean('featured');
             $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
 
             $table->string('facebook')->nullable();
             $table->string('twitter')->nullable();
@@ -66,6 +63,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employeer');
+        Schema::dropIfExists('employee');
     }
 };
