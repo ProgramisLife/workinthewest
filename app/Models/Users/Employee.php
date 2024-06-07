@@ -19,7 +19,7 @@ use App\Models\Shared\Skill;
 
 class Employee extends User
 {
-    use HasFactory;
+    use HasApiTokens, Notifiable, MustVerifyEmail, HasFactory;
 
     public function sluggable(): array
     {
@@ -92,13 +92,15 @@ class Employee extends User
     * @property int $country_id
     * @property int $state_id
     * @property int $city_id
+    * @property int $banned
     */
 
     protected $table = 'employee';
 
     protected $atributes = [
         'description' => '',
-        'bool' => 'false',
+        'featured' => 'false',
+        'banned' => 'false',
     ];
 
     protected $fillable = [

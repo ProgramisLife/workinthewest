@@ -36,10 +36,10 @@ return new class extends Migration
         Schema::create('accommodation', function (Blueprint $table) {
             $table->id();
             $table
-                ->unsignedBigInteger('owner_id')->nullable();
+                ->unsignedBigInteger('owner_id');
 
             $table->foreign('owner_id')
-                ->references('id')->on('users')
+                ->references('id')->on('employers')
                 ->onDelete('CASCADE');
 
             $table->string('title');

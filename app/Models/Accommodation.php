@@ -10,6 +10,7 @@ use App\Models\Shared\Currency;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\City;
 use App\Models\Shared\Localisation\State;
+use App\Models\Users\Employer;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Accommodation extends Model
@@ -115,6 +116,11 @@ class Accommodation extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Employer::class, 'owner_id', 'id');
     }
 
     use HasFactory;

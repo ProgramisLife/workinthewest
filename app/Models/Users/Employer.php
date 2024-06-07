@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Models\Accommodation;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -73,13 +74,15 @@ class Employer extends User
      * @property int $country_id
      * @property int $state_id
      * @property int $city_id
+     * @property bool $banned
      */
 
     protected $table = 'employers';
 
     protected $atributes = [
         'description' => '',
-        'bool' => 'false',
+        'featured' => 'false',
+        'banned' => 'false',
     ];
 
     protected $fillable = [
@@ -142,6 +145,12 @@ class Employer extends User
     public function jobs()
     {
         return $this->hasMany(Job::class, 'owner_id', 'id')
+            ->orderBy('updated_at', 'DESC');
+    }
+
+    public function accommodation()
+    {
+        return $this->hasMany(Accommodation::class, 'owner_id', 'id')
             ->orderBy('updated_at', 'DESC');
     }
 

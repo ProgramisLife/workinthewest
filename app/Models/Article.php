@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Users\Editor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -58,7 +59,7 @@ class Article extends Model
 
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner_id', 'id');
+        return $this->belongsTo(Editor::class, 'owner_id', 'id');
     }
 
     use HasFactory;

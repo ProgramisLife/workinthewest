@@ -56,6 +56,8 @@ return new class extends Migration
             $table->foreign('country_id')
                 ->references('id')->on('countries')
                 ->onDelete('CASCADE');
+                
+            $table->boolean('banned');
 
             $table->timestamps();
         });

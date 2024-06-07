@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
             $table
-                ->unsignedBigInteger('owner_id')->nullable();
+                ->unsignedBigInteger('owner_id');
 
             $table->foreign('owner_id')
-                ->references('id')->on('users')
+                ->references('id')->on('editors')
                 ->onDelete('CASCADE');
         });
     }
