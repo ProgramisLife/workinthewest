@@ -1,0 +1,30 @@
+.top {
+    padding: 50px 0px 50px;
+}
+.top-header {
+    color: white;
+    font-size: 64px;
+}
+
+.login-text {
+    color: #2980b9;
+}
+
+.btn-main {
+    background-color: #2980b9; /* Green */
+    border: none;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+
+.btn-main:hover {
+    background-color: #2981c0; /* Green */
+    color: white;
+}

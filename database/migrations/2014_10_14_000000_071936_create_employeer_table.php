@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('email')->unique();
             $table->date('creation_date')->nullable();
-            $table->boolean('featured');
             $table->rememberToken();
             $table->string('main_image_path')->nullable();
             $table->string('featured_imagepath')->nullable();
@@ -29,36 +28,37 @@ return new class extends Migration
             $table->string('companywebsite')->nullable();
             $table->enum('company_size', ['Mikro', 'Małe', 'Średnie', 'Duże'])->nullable();
             $table->timestamp('email_verified_at')->nullable();
-
+            
             $table->string('facebook')->nullable();
             $table->string('twitter')->nullable();
             $table->string('youtube')->nullable();
             $table->string('vimeo')->nullable();
             $table->string('linkedin')->nullable();
-
+            
             $table
-                ->unsignedBigInteger('city_id')->nullable();
-
+            ->unsignedBigInteger('city_id')->nullable();
+            
             $table->foreign('city_id')
-                ->references('id')->on('cities')
-                ->onDelete('CASCADE');
-
+            ->references('id')->on('cities')
+            ->onDelete('CASCADE');
+            
             $table
-                ->unsignedBigInteger('state_id')->nullable();
-
+            ->unsignedBigInteger('state_id')->nullable();
+            
             $table->foreign('state_id')
-                ->references('id')->on('states')
-                ->onDelete('CASCADE');
-
+            ->references('id')->on('states')
+            ->onDelete('CASCADE');
+            
             $table
-                ->unsignedBigInteger('country_id')->nullable();
-
+            ->unsignedBigInteger('country_id')->nullable();
+            
             $table->foreign('country_id')
-                ->references('id')->on('countries')
-                ->onDelete('CASCADE');
-                
-            $table->boolean('banned');
-
+            ->references('id')->on('countries')
+            ->onDelete('CASCADE');
+            
+            $table->boolean('featured')->default(false);
+            $table->boolean('banned')->default(false);
+            
             $table->timestamps();
         });
     }
@@ -68,6 +68,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employeer');
+         Schema::table('employers', function (Blueprint $table) {
+            $table->dropColumn(['featured', 'banned']);
+        });
     }
 };

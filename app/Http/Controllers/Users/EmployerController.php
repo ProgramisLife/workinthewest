@@ -5,74 +5,52 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Users\Employer;
+use App\Models\Job;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
-use App\Http\Requests\Users\EmployerRequest;
-use App\Models\User;
-use Faker\Calculator\Ean;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class EmployerController extends Controller
 {
 
     public function __construct()
     {   
-        $this->middleware('auth')->except(['register', 'store']);
+        $this->middleware('auth')->except(['register', 'registerStore']);
     }
 
-    public function index()
+    public function dashboard()
     {
-        $employers = Employer::all();
-        return view('employers.index', compact('employers'));
-    }
+        $userId = auth()->user()->id;
+        $jobs = Job::where('owner_id', '=', $userId)->get();
 
-    public function register()
-    {
         $data = [
-            'label' => [
-                'top' => [
-                    'register' => 'Rejestracja'
-                ],
-                'register-forms' => [
-                    'user-name' => 'nazwa użytkownika',
-                    'email' => 'email',
-                    'companyname' => 'nazwa firmy',
-                    'password' => 'hasło',
-                    'password-repeat' => 'powtórz hasło',
-                    'statute' => 'Oświadczam, że znam i akceptuję postanowienia Regulaminu'
-                ],
-            ],
+            'jobs' => $jobs,
         ];
-        return view('employers.register', compact('data'));
+
+        return view('employers.dashboard', compact('data'));
     }
 
-    
-    public function store(EmployerRequest $employerRequest)
+    // Create new user
+    public function registerStore(Request $request)
     {
-        $employer = new Employer($employerRequest->validated());
+        $formFields = $request->validate([
+            'username' => ['required', 'min:3', 'max:255'],
+            'companyname' => ['required', 'min:3', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('employers', 'email')],
+            'password' => ['required', 'confirmed', 'min:6', 'regex:/[A-Z]/', 'regex:/[!@#$%^&*(),.?":{}|<>]/'],
+            'statute' => 'accepted',
+        ]);
 
-        $user = $this->create($employerRequest->all());
+        $formFields['password'] = bcrypt($formFields['password']);
+
+        $user = Employer::create($formFields);
+
+        $user->sendEmailVerificationNotification();
 
         auth()->login($user);
 
-        redirect()->route('employers.show',['employer' => $employer->id]);
-    }
-    
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['username'],
-            'email' => $data['email'],
-            'companyname' => $data['companyname'],
-            'password' => Hash::make($data['password']),
-        ]);
-    }
-    
-    public function show()
-    {
-        
+        redirect()->route('auth.verify')->with('message', 'Konto zostało utworzone. Sprawdź swój e-mail w celu weryfikacji konta.');
     }
     
     public function edit()

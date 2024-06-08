@@ -3,11 +3,8 @@
 namespace App\Models\Users;
 
 use App\Models\Accommodation;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
 use Cviebrock\EloquentSluggable\Sluggable;
 use App\Models\Job;
 use App\Models\Shared\JobCategory;
@@ -15,11 +12,14 @@ use App\Models\Shared\Photo;
 use App\Models\Shared\Localisation\Country;
 use App\Models\Shared\Localisation\State;
 use App\Models\Shared\Localisation\City;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
 
-class Employer extends User
+class Employer extends Authenticatable implements MustVerifyEmail
 {
 
-    use HasApiTokens, Notifiable, MustVerifyEmail, Sluggable, HasFactory;
+    use HasApiTokens, Notifiable, Sluggable, HasFactory;
 
     public function sluggable(): array
     {
@@ -154,8 +154,8 @@ class Employer extends User
             ->orderBy('updated_at', 'DESC');
     }
 
-    public function user()
+    public function setPasswordAttribute($password)
     {
-        return $this->belongsTo(User::class);
+        $this->attributes['password'] = bcrypt($password);
     }
 }

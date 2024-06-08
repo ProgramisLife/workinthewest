@@ -153,7 +153,7 @@ class AccommodationController extends Controller
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect()->route('accommodations.show',['accommodation' => $accommodation]);
+        return redirect()->route('accommodation.show',['accommodation' => $accommodation]);
     }
 
 
@@ -267,7 +267,7 @@ class AccommodationController extends Controller
             session()->flash('status', ('Coś poszło nie tak :('));
         }
 
-        return redirect()->route('accommodations.show', ['accommodation' => $accommodation]);
+        return redirect()->route('accommodation.show', ['accommodation' => $accommodation]);
     }
 
 
@@ -279,7 +279,7 @@ class AccommodationController extends Controller
             session()->flash('status', 'Wystąpił błąd podczas usuwania Twojej oferty pracy :(');
         }
 
-        return redirect()->route('accommodations.index');
+        return redirect()->route('accommodation.index');
     }
 
     public function search(Request $request)
@@ -387,6 +387,6 @@ class AccommodationController extends Controller
                 'minutesDifference' => $minutesDifference,
             ],
         ];
-        return view('accommodations.index', ['data' => $data]);
+        return view('accommodation.index', ['data' => $data]);
     }
 }

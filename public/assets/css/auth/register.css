@@ -1,0 +1,38 @@
+.top {
+    padding: 50px 0px 50px;
+}
+.top-header {
+    color: white;
+    font-size: 64px;
+}
+
+.register-text {
+    color: #2980b9;
+}
+
+.btn-main {
+    background-color: #2980b9;
+    border: none;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+}
+
+.btn-main:hover {
+    background-color: #2981c0;
+    color: white;
+}
+
+.container .nav .nav-item {
+    color: #2980b9;
+}
+
+.container .nav .nav-item .active {
+    background-color: #2980b9;
+}

@@ -2,16 +2,17 @@
 
 namespace App\Models\Users;
 
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
 use App\Models\Article;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
 
-class Editor extends User
+
+class Editor extends Authenticatable  implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable, MustVerifyEmail, HasFactory;
+    use HasApiTokens, Notifiable, HasFactory;
 
     /**
      * Redaktor model
@@ -50,8 +51,8 @@ class Editor extends User
             ->orderBy('updated_at', 'DESC');
     }
 
-    public function user()
+    public function setPasswordAttribute($password)
     {
-        return $this->belongsTo(User::class);
+        $this->attributes['password'] = bcrypt($password);
     }
 }

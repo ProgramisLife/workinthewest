@@ -415,7 +415,7 @@
                         </h2>
                         <p class=" my-5 register-text">{{ $data['label']['register']['employer-text'] }}</p>
                         <div class="mb-4">
-                            <a href="{{ route('employers.register') }}"
+                            <a href="{{ route('register', 'employer') }}"
                                 class="text-align-start text-uppercase bg-primary text-white p-3 text-decoration-none">
                                 <i class="bi bi-building-fill"></i>
                                 {{ $data['label']['register']['employer-button'] }}</a>
@@ -437,9 +437,10 @@
                         </h2>
                         <p class="register-text my-5">{{ $data['label']['register']['employee-text'] }}</p>
                         <div class="mb-4">
-                            <a href=""
+                            <a href="{{ route('register', 'employee') }}"
                                 class="text-align-start text-uppercase bg-success text-white p-3 text-decoration-none">
-                                <i class="bi bi-person-fill"></i>{{ $data['label']['register']['employee-button'] }}</a>
+                                <i class="bi bi-person-fill"></i>{{ $data['label']['register']['employee-button'] }}
+                            </a>
                         </div>
                     </div>
                 </div>

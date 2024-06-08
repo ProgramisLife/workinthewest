@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Users\Employee;
+
 return [
 
     /*
@@ -40,6 +42,22 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'employer' => [
+            'driver' => 'session',
+            'provider' => 'employers',
+        ],
+
+        'employee' => [
+            'driver' => 'session',
+            'provider' => 'employees',
+        ],
+
+        'editor' => [
+            'driver' => 'session',
+            'provider' => 'editors',
+        ],
+
     ],
 
     /*
@@ -65,10 +83,20 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'employers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Users\Employer::class,
+        ],
+
+        'employees' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Users\Employee::class,
+        ],
+
+        'editors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Users\Editor::class,
+        ]
     ],
 
     /*
@@ -111,3 +139,4 @@ return [
     'password_timeout' => 10800,
 
 ];
+

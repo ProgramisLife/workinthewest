@@ -195,7 +195,6 @@ class ArticleController extends Controller
         : $query->where(function ($query) use ($keyword) {
             $query->where('title', 'like', "%$keyword%")
                 ->orWhere('slug', 'like', "%$keyword%")
-                ->orWhere('youtube', 'like', "%$keyword%")
                 ->orWhere('source', 'like', "%$keyword%");
                 });
         });
